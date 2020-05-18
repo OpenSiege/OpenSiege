@@ -3,5 +3,6 @@
 
 int main(int argc, char * argv[])
 {
-    return 0;
+    auto console = spdlog::stdout_color_st("console");
+    console->info("Hello, World!");
 }
