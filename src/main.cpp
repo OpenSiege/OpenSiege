@@ -1,6 +1,8 @@
 
 #include <whereami.h>
 #include <spdlog/spdlog.h>
+#include <vdf_parser.hpp>
+#include <minIni.h>
 
 int main(int argc, char * argv[])
 {

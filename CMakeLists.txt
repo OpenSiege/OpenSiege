@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.11)
 project(OpenSiege)
 
-# used to automatically include and build dependencies
-include(FetchContent)
-
 if (UNIX)
     find_package(PkgConfig)
     pkg_check_modules(XDGBASEDIR REQUIRED libxdg-basedir)
@@ -22,12 +19,12 @@ find_package(Threads REQUIRED)
 find_package(spdlog CONFIG QUIET)
 
 # main open siege target
-add_executable(OpenSiege "${FETCHCONTENT_BASE_DIR}/whereami-src/src/whereami.c" "src/main.cpp")
+add_executable(OpenSiege "${FETCHCONTENT_BASE_DIR}/whereami-src/src/whereami.c" "${FETCHCONTENT_BASE_DIR}/minIni-src/dev/minIni.c" "src/main.cpp")
 
 # force C++17
 set_target_properties(OpenSiege PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
 
-target_include_directories(OpenSiege PUBLIC src ${OPENSCENEGRAPH_INCLUDE_DIRS} "${FETCHCONTENT_BASE_DIR}/whereami-src/src")
+target_include_directories(OpenSiege PUBLIC src ${OPENSCENEGRAPH_INCLUDE_DIRS} "${FETCHCONTENT_BASE_DIR}/whereami-src/src" "${FETCHCONTENT_BASE_DIR}/valvefilevdf-src" "${FETCHCONTENT_BASE_DIR}/minIni-src/dev")
 target_link_libraries(OpenSiege PRIVATE ${OPENSCENEGRAPH_LIBRARIES} Threads::Threads "$<$<CXX_COMPILER_ID:GNU>:stdc++fs;${XDGBASEDIR_LIBRARIES}>" spdlog::spdlog)
 
 install(TARGETS OpenSiege RUNTIME DESTINATION bin)
