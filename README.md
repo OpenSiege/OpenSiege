@@ -16,10 +16,11 @@ These instructions will get you a copy of the project up and running on your loc
 ### Building from source
 
 ```
-1. Checkout reporsitory with: git clone --recurse-submodules https://git.fosslib.net/DungeonSiege/OpenSiege.git
-2. If you have checked out the repository but need to init the submodules: git submodule update --init --recursive
-3. Run CMake
-4. Compile
+1. Checkout repository with: git clone https://github.com/OpenSiege/OpenSiege
+2. Run CMake
+3. Build
+4. Re-run CMake to pick up built dependencies
+3. Compile
 ```
 
 ## Built With
