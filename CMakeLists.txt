@@ -22,12 +22,12 @@ find_package(Threads REQUIRED)
 find_package(spdlog CONFIG QUIET)
 
 # main open siege target
-add_executable(OpenSiege "${CMAKE_CURRENT_BINARY_DIR}/extern/whereami-prefix/src/whereami/src/whereami.c" "src/main.cpp")
+add_executable(OpenSiege "${FETCHCONTENT_BASE_DIR}/whereami-src/src/whereami.c" "src/main.cpp")
 
 # force C++17
 set_target_properties(OpenSiege PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
 
-target_include_directories(OpenSiege PUBLIC src ${OPENSCENEGRAPH_INCLUDE_DIRS} "${CMAKE_CURRENT_BINARY_DIR}/extern/whereami-prefix/src/whereami/src")
+target_include_directories(OpenSiege PUBLIC src ${OPENSCENEGRAPH_INCLUDE_DIRS} "${FETCHCONTENT_BASE_DIR}/whereami-src/src")
 target_link_libraries(OpenSiege PRIVATE ${OPENSCENEGRAPH_LIBRARIES} Threads::Threads "$<$<CXX_COMPILER_ID:GNU>:stdc++fs;${XDGBASEDIR_LIBRARIES}>" spdlog::spdlog)
 
 install(TARGETS OpenSiege RUNTIME DESTINATION bin)

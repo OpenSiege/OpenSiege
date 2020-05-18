@@ -7,12 +7,10 @@ FetchContent_Declare (
     GIT_REPOSITORY https://github.com/gabime/spdlog.git
 )
 
-ExternalProject_Add (
+FetchContent_Declare (
     whereami
     GIT_REPOSITORY https://github.com/gpakosz/whereami.git
-    CONFIGURE_COMMAND ""
-    BUILD_COMMAND ""
-    INSTALL_COMMAND ""
 )
 
 add_subdirectory(spdlog)
+add_subdirectory(whereami)
