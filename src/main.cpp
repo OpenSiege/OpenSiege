@@ -2,7 +2,6 @@
 #include <filesystem>
 #include <whereami.h>
 #include <spdlog/spdlog.h>
-#include <spdlog/sinks/file_sinks.h>
 #include "cfg/WritableConfig.hpp"
 
 // TODO: move to Report class
