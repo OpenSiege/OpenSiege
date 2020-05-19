@@ -26,6 +26,9 @@ int main(int argc, char * argv[])
     config.dump();
 
     registerSiegeLogger(config.getString("logs_path", ""), "filesystem");
+    registerSiegeLogger(config.getString("logs_path", ""), "game");
+    registerSiegeLogger(config.getString("logs_path", ""), "scene");
+    registerSiegeLogger(config.getString("logs_path", ""), "world");
 
     return 0;
 }
