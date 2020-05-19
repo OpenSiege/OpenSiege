@@ -18,8 +18,18 @@ find_package(OpenSceneGraph REQUIRED COMPONENTS osg osgDB osgViewer osgGA osgAni
 find_package(Threads REQUIRED)
 find_package(spdlog CONFIG QUIET)
 
+set(SIEGE_SOURCES
+    "src/cfg/ArgsConfig.cpp"
+    "src/cfg/IniConfig.cpp"
+    "src/cfg/RegistryConfig.cpp"
+    "src/cfg/SteamConfig.cpp"
+    "src/cfg/UserConfig.cpp"
+    "src/cfg/WritableConfig.cpp"
+    "src/main.cpp"
+)
+
 # main open siege target
-add_executable(OpenSiege ${EXTERN_SOURCE_FILES} "src/main.cpp")
+add_executable(OpenSiege ${EXTERN_SOURCE_FILES} ${SIEGE_SOURCES})
 
 # force C++17
 set_target_properties(OpenSiege PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
