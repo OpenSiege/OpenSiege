@@ -17,15 +17,19 @@ These instructions will get you a copy of the project up and running on your loc
 
 ```
 1. Checkout repository with: git clone https://github.com/OpenSiege/OpenSiege
-2. Run CMake
+2. Run cmake
 3. Build
-4. Re-run CMake to pick up built dependencies
+4. Re-run cmake to pick up built dependencies
 3. Compile
 ```
 
 ## Built With
 
 * [OpenSceneGraph](http://www.openscenegraph.org/)
+* [spdlog](https://github.com/gabime/spdlog.git)
+* [minIni](https://www.compuphase.com/minini.htm)
+* [whereami](https://github.com/gpakosz/whereami)
+* [ValveFileVDF](https://github.com/TinyTinni/ValveFileVDF)
 
 ## Authors
 
@@ -33,7 +37,7 @@ Open Siege Team
 
 ## License
 
-This project is licensed under the GPLv3 License - see the [LICENSE.md](LICENSE.md) file for details
+This project is licensed under the GPLv3 License - see the [LICENSE](LICENSE) file for details
 
 ## Acknowledgments
 

@@ -26,6 +26,7 @@ add_subdirectory(whereami)
 add_subdirectory(ValveFileVDF)
 add_subdirectory(minIni)
 
+# the below don't have a cmake build system so we will just manually include them
 set(EXTERN_INCLUDE_PATHS
     "${FETCHCONTENT_BASE_DIR}/whereami-src/src"
     "${FETCHCONTENT_BASE_DIR}/valvefilevdf-src"
