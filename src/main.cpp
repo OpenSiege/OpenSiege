@@ -43,6 +43,10 @@ void registerSiegeLogger(const std::string& path, const std::string& name)
     std::time_t now = std::time(nullptr);
     strftime(dateTime, sizeof(dateTime), "%m/%d/%Y %I:%M:%S %p", std::localtime(&now));
 
+    // TODO: what are the last 4 digits of the m
+    char msqa[128] = { '\0' };
+    strftime(msqa, sizeof(msqa), "%Y.%m.0202", std::localtime(&now));
+
     std::filesystem::path fullpath(path);
     fullpath = fullpath / std::string(name + ".log");
 
@@ -54,7 +58,7 @@ void registerSiegeLogger(const std::string& path, const std::string& name)
         log->info("-== App          : Open Siege ({} - Retail)", exe); // Platform::getExecutablePath()
         log->info("-== Log category : {}", log->name());
         log->info("-== Session      : {}", dateTime);
-        log->info("-== Build        : {} (1.11.1.1486 (msqa:2003.07.0202))");
+        log->info("-== Build        : [] (1.11.1.1486 (msqa:{}))", msqa);
         log->info("-==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==-");
 
         // TODO: assign the console sink to the file loggers for verbose console output
