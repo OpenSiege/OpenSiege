@@ -6,7 +6,7 @@ if (UNIX)
     pkg_check_modules(XDGBASEDIR REQUIRED libxdg-basedir)
 endif(UNIX)
 
-set_property(GLOBAL PROPERTY USE_FOLDERS YES)
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 # windows specific - DO NOT ENABLE UNLESS ABSOLUTELY NECESSARY
 option(DISABLE_MSVC_DEBUG_ITERATOR "Disable the debug iterator for MSVC. All libraries must be built with the same option" OFF)

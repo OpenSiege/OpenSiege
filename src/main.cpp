@@ -6,7 +6,7 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include "cfg/WritableConfig.hpp"
 
-// TODO: move to Report class
+// TODO: move to a new Report class
 void registerSiegeLogger(const std::string& path, const std::string& name);
 
 int main(int argc, char * argv[])
@@ -27,6 +27,7 @@ int main(int argc, char * argv[])
     WritableConfig config(argc, argv);
     config.dump();
 
+    // all loggers should be registered here before the Game class gets instantiated
     registerSiegeLogger(config.getString("logs_path", ""), "filesystem");
     registerSiegeLogger(config.getString("logs_path", ""), "game");
     registerSiegeLogger(config.getString("logs_path", ""), "scene");
@@ -56,6 +57,7 @@ void registerSiegeLogger(const std::string& path, const std::string& name)
     {
         auto log = spdlog::basic_logger_mt(name, fullpath.string(), true);
 
+        // TODO: create a platform class to wrap whereami functionality into a singleton
         log->info("-==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==-");
         log->info("-== App          : Open Siege ({} - Retail)", exe); // Platform::getExecutablePath()
         log->info("-== Log category : {}", log->name());
