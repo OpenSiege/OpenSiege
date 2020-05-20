@@ -2,6 +2,8 @@
 #include <filesystem>
 #include <whereami.h>
 #include <spdlog/spdlog.h>
+#include <spdlog/sinks/basic_file_sink.h>
+#include <spdlog/sinks/stdout_color_sinks.h>
 #include "cfg/WritableConfig.hpp"
 
 // TODO: move to Report class
@@ -61,7 +63,8 @@ void registerSiegeLogger(const std::string& path, const std::string& name)
         log->info("-== Build        : [] (1.11.1.1486 (msqa:{}))", msqa);
         log->info("-==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==-");
 
-        // TODO: assign the console sink to the file loggers for verbose console output
+        auto console = spdlog::get("log")->sinks().back();
+        log->sinks().push_back(console);
     }
     catch (std::exception& e)
     {

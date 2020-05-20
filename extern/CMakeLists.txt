@@ -4,21 +4,25 @@ include(FetchContent)
 FetchContent_Declare(
     spdlog
     GIT_REPOSITORY https://github.com/gabime/spdlog.git
+    GIT_TAG v1.x
 )
 
 FetchContent_Declare(
     whereami
     GIT_REPOSITORY https://github.com/gpakosz/whereami.git
+    GIT_TAG master
 )
 
 FetchContent_Declare(
     ValveFileVDF
     GIT_REPOSITORY https://github.com/TinyTinni/ValveFileVDF.git
+    GIT_TAG master
 )
 
 FetchContent_Declare(
     minIni
     GIT_REPOSITORY https://github.com/compuphase/minIni.git
+    GIT_TAG master
 )
 
 add_subdirectory(spdlog)
