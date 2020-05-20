@@ -5,6 +5,7 @@
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include "cfg/WritableConfig.hpp"
+#include "Platform.hpp"
 
 // TODO: move to a new Report class
 void registerSiegeLogger(const std::string& path, const std::string& name);
@@ -38,10 +39,6 @@ int main(int argc, char * argv[])
 
 void registerSiegeLogger(const std::string& path, const std::string& name)
 {
-    const int length = wai_getExecutablePath(nullptr, 0, nullptr);
-    std::string exe(length, '\0');
-    wai_getExecutablePath(exe.data(), length, nullptr);
-
     char dateTime[128] = { '\0' };
     std::time_t now = std::time(nullptr);
     strftime(dateTime, sizeof(dateTime), "%m/%d/%Y %I:%M:%S %p", std::localtime(&now));
@@ -57,9 +54,8 @@ void registerSiegeLogger(const std::string& path, const std::string& name)
     {
         auto log = spdlog::basic_logger_mt(name, fullpath.string(), true);
 
-        // TODO: create a platform class to wrap whereami functionality into a singleton
         log->info("-==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==-");
-        log->info("-== App          : Open Siege ({} - Retail)", exe); // Platform::getExecutablePath()
+        log->info("-== App          : Open Siege ({} - Retail)", ehb::Platform::instance().getExecutablePath());
         log->info("-== Log category : {}", log->name());
         log->info("-== Session      : {}", dateTime);
         log->info("-== Build        : [] (1.11.1.1486 (msqa:{}))", msqa);
