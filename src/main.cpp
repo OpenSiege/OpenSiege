@@ -43,7 +43,7 @@ void registerSiegeLogger(const std::string& path, const std::string& name)
     std::time_t now = std::time(nullptr);
     strftime(dateTime, sizeof(dateTime), "%m/%d/%Y %I:%M:%S %p", std::localtime(&now));
 
-    // TODO: what are the last 4 digits of the m
+    // TODO: what are the last 4 digits of the msqa
     char msqa[128] = { '\0' };
     strftime(msqa, sizeof(msqa), "%Y.%m.0202", std::localtime(&now));
 
