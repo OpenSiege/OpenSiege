@@ -6,6 +6,7 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include "cfg/WritableConfig.hpp"
 #include "Platform.hpp"
+#include "Game.hpp"
 
 // TODO: move to a new Report class
 void registerSiegeLogger(const std::string& path, const std::string& name);
@@ -34,7 +35,9 @@ int main(int argc, char * argv[])
     registerSiegeLogger(config.getString("logs_path", ""), "scene");
     registerSiegeLogger(config.getString("logs_path", ""), "world");
 
-    return 0;
+    osg::ref_ptr<Game> game = new Game(config);
+
+    return game->exec();
 }
 
 void registerSiegeLogger(const std::string& path, const std::string& name)
