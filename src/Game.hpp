@@ -1,9 +1,11 @@
 
 #pragma once
 
-#include <osgGA/GUIEventHandler>
 #include "state/IGameStateProvider.hpp"
 #include "state/GameStateMgr.hpp"
+
+#include <osgGA/GUIEventHandler>
+#include <osgViewer/Viewer>
 
 namespace ehb
 {
@@ -31,5 +33,7 @@ namespace ehb
 
         IConfig& config;
         GameStateMgr gameStateMgr;
+
+        osgViewer::Viewer viewer;
     };
 }
