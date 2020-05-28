@@ -34,13 +34,13 @@ add_subdirectory(minIni)
 set(EXTERN_INCLUDE_PATHS
     "${FETCHCONTENT_BASE_DIR}/whereami-src/src"
     "${FETCHCONTENT_BASE_DIR}/valvefilevdf-src"
-    "${FETCHCONTENT_BASE_DIR}/minIni-src/dev"
+    "${FETCHCONTENT_BASE_DIR}/minini-src/dev"
     PARENT_SCOPE
 )
 
 # the below don't have a cmake build system so we will just manually include them
 set(EXTERN_SOURCE_FILES
     "${FETCHCONTENT_BASE_DIR}/whereami-src/src/whereami.c"
-    "${FETCHCONTENT_BASE_DIR}/minIni-src/dev/minIni.c"
+    "${FETCHCONTENT_BASE_DIR}/minini-src/dev/minIni.c"
     PARENT_SCOPE
 )
