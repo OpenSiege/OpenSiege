@@ -9,20 +9,21 @@ namespace fs = std::filesystem;
 
 namespace ehb
 {
+    // TODO: remove this class when we swap to the tank file system which can include functionality to read from the local file system
     class LocalFileSys : public IFileSys
     {
     public:
 
-        LocalFileSys();
+        LocalFileSys() = default;
 
         virtual ~LocalFileSys() = default;
+
+        virtual bool init(IConfig& config) override;
 
         virtual InputStream createInputStream(const std::string & filename) override;
 
         virtual FileList getFiles() const override;
         virtual FileList getDirectoryContents(const std::string & directory) const override;
-
-        void setRootDir(const fs::path & directory);
 
     private:
 
@@ -30,14 +31,4 @@ namespace ehb
 
         std::shared_ptr<spdlog::logger> log;
     };
-
-    inline LocalFileSys::LocalFileSys()
-    {
-        log = spdlog::get("filesystem");
-    }
-
-    inline void LocalFileSys::setRootDir(const fs::path & directory)
-    {
-        rootDir = directory;
-    }
 }

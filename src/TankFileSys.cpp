@@ -20,7 +20,9 @@ namespace ehb
         return result;
     }
 
-    void TankFileSys::init(IConfig & config)
+    bool TankFileSys::init(IConfig & config)
     {
+        // not implemented so just fail out
+        return false;
     }
 }

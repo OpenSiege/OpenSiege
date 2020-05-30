@@ -3,13 +3,15 @@
 
 #include <spdlog/spdlog.h>
 
+#include "LocalFileSys.hpp"
+
 namespace ehb
 {
     void InitState::enter()
     {
         spdlog::get("log")->info("InitState::enter()");
 
-        // TODO: init filesystem
+        fileSys.init(config);
 
         // TODO: process NNK files
 

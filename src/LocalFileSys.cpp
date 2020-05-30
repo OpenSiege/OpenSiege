@@ -4,8 +4,24 @@
 #include <fstream>
 #include <osgDB/FileNameUtils>
 
+#include "cfg/IConfig.hpp"
+
 namespace ehb
 {
+    bool LocalFileSys::init(IConfig& config)
+    {
+        log = spdlog::get("filesystem");
+
+        rootDir = config.getString("bits");
+
+        // no bits passed, fail out of init
+        if (rootDir.empty()) return false;
+
+        log->info("LocalFileSys has started and is primed with path [{}]", rootDir.string());
+
+        return true;
+    }
+
     InputStream LocalFileSys::createInputStream(const std::string & filename_)
     {
         std::string filename = osgDB::convertToLowerCase(filename_);
