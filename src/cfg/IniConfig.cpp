@@ -30,6 +30,8 @@ namespace ehb
 
             { // parse all string values from user configuration file
 
+                // TODO: this should be removed when we swap to the tank system
+                // this should only be active in DSMOD mode
                 config.setString("bits", ini.gets("OpenSiege", "bits", ""));
             }
         }
