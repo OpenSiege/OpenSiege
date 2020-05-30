@@ -19,23 +19,25 @@ namespace ehb
         // load configuration in the specified order
 
         userConfig(*this);
+        iniConfig(*this);
         steamConfig(*this);
         registryConfig(*this);
-        iniConfig(*this);
     }
 
     WritableConfig::WritableConfig(int argc, char * argv[])
     {
-        // args config should be first since we want to respect anything the user manuallypasses to OpenSiege
-        argsConfig(*this, argc, argv);
-
-        // this must be second to ensure we can find the ini from previous launches
+        // make sure all of our local pathing is good to go first
         userConfig(*this);
+
+        // read in any of the setting from the previous game session
+        iniConfig(*this);
 
         // remaining configs
         steamConfig(*this);
         registryConfig(*this);
-        iniConfig(*this);
+
+        // override any of the above with our command line
+        argsConfig(*this, argc, argv);
     }
 
     bool WritableConfig::getBool(const std::string & key, bool defaultValue) const

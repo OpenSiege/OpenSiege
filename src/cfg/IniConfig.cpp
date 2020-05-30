@@ -30,9 +30,7 @@ namespace ehb
 
             { // parse all string values from user configuration file
 
-                // bits can be a bit weird. for now we are going to let the command line take
-                // priority if its been set. the ini should just be a fall back if the command line is empty
-                if (config.getString("bits", "").empty()) config.setString("bits", ini.gets("OpenSiege", "bits", ""));
+                config.setString("bits", ini.gets("OpenSiege", "bits", ""));
             }
         }
     }
