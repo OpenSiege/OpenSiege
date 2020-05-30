@@ -17,10 +17,11 @@ These instructions will get you a copy of the project up and running on your loc
 
 ```
 1. Checkout repository with: git clone https://github.com/OpenSiege/OpenSiege
-2. Run cmake
-3. Build
-4. Re-run cmake to pick up built dependencies
-3. Compile
+2. Create a build folder
+3. Run cmake from the build folder
+4. Build
+5. Re-run cmake to pick up built dependencies
+6. Compile
 ```
 
 ## Built With
