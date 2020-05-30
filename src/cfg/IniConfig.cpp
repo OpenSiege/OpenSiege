@@ -3,6 +3,8 @@
 #include <filesystem>
 #include "WritableConfig.hpp"
 
+#include <spdlog/spdlog.h>
+
 namespace fs = std::filesystem;
 
 namespace ehb
@@ -24,6 +26,13 @@ namespace ehb
                 if ((value = ini.geti("", "width", -1)) != -1) config.setInt("width", value);
                 if ((value = ini.geti("", "height", -1)) != -1) config.setInt("height", value);
                 if ((value = ini.geti("", "bpp", -1)) != -1) config.setInt("bpp", value);
+            }
+
+            { // parse all string values from user configuration file
+
+                // TODO: this should be removed when we swap to the tank system
+                // this should only be active in DSMOD mode
+                config.setString("bits", ini.gets("OpenSiege", "bits", ""));
             }
         }
     }

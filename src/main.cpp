@@ -34,6 +34,14 @@ int main(int argc, char * argv[])
     if (!hasBits) log->warn("No Bits directory detected.");
     if (!hasPath) log->warn("No DS Install path detected.");
 
+    // TOOD: remove this when the tank system is in place
+    if (!hasBits)
+    {
+        log->error("No Bits directory detected and OpenSiege currently requires it. Please pass the bits path with --bits");
+
+        return 0;
+    }
+
     // we can survive just on bits or just on the path 
     // but if we don't have either then there are no assets to load
     if (!hasBits && !hasPath)

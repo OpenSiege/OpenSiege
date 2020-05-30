@@ -17,19 +17,26 @@ namespace ehb
     WritableConfig::WritableConfig()
     {
         // load configuration in the specified order
+
+        userConfig(*this);
+        iniConfig(*this);
         steamConfig(*this);
         registryConfig(*this);
-        iniConfig(*this);
-        userConfig(*this);
     }
 
     WritableConfig::WritableConfig(int argc, char * argv[])
     {
-        // load configuration in the specified order
+        // make sure all of our local pathing is good to go first
+        userConfig(*this);
+
+        // read in any of the setting from the previous game session
+        iniConfig(*this);
+
+        // remaining configs
         steamConfig(*this);
         registryConfig(*this);
-        iniConfig(*this);
-        userConfig(*this);
+
+        // override any of the above with our command line
         argsConfig(*this, argc, argv);
     }
 

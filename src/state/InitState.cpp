@@ -3,13 +3,18 @@
 
 #include <spdlog/spdlog.h>
 
+#include "LocalFileSys.hpp"
+
 namespace ehb
 {
     void InitState::enter()
     {
         spdlog::get("log")->info("InitState::enter()");
 
-        // TODO: init filesystem
+        if (!fileSys.init(config))
+        {
+            // TODO: shut down the engine
+        }
 
         // TODO: process NNK files
 

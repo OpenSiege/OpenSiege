@@ -3,6 +3,7 @@
 
 #include "state/IGameStateProvider.hpp"
 #include "state/GameStateMgr.hpp"
+#include "LocalFileSys.hpp"
 
 #include <osgGA/GUIEventHandler>
 #include <osgViewer/Viewer>
@@ -33,6 +34,7 @@ namespace ehb
 
         IConfig& config;
         GameStateMgr gameStateMgr;
+        LocalFileSys fileSys; // TODO: remove local file system in favor of tank file system
 
         osgViewer::Viewer viewer;
     };

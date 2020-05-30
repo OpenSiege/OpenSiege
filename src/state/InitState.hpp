@@ -6,11 +6,12 @@
 namespace ehb
 {
     class IConfig;
+    class IFileSys;
     class InitState : public IGameState
     {
     public:
 
-        InitState(IGameStateMgr & gameStateMgr, IConfig & config);
+        InitState(IGameStateMgr & gameStateMgr, IConfig & config, IFileSys & fileSys);
 
         virtual ~InitState() = default;
 
@@ -23,9 +24,10 @@ namespace ehb
 
         IGameStateMgr & gameStateMgr;
         IConfig & config;
+        IFileSys& fileSys;
     };
 
-    inline InitState::InitState(IGameStateMgr& gameStateMgr, IConfig& config) : gameStateMgr(gameStateMgr), config(config)
+    inline InitState::InitState(IGameStateMgr& gameStateMgr, IConfig& config, IFileSys& fileSys) : gameStateMgr(gameStateMgr), config(config), fileSys(fileSys)
     {
     }
 }

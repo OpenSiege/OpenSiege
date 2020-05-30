@@ -1,6 +1,8 @@
 
 #include "Game.hpp"
 
+#include <minIni.h>
+
 #include "cfg/IConfig.hpp"
 #include "state/InitState.hpp"
 
@@ -93,7 +95,10 @@ namespace ehb
             viewer.removeEventHandler(this);
         }
 
-        // TODO: write out config values which belong in the ini file
+        const fs::path iniFileName = fs::path(config.getString("config-dir", ".")) / "OpenSiege.ini";
+        minIni ini(iniFileName.string());
+
+        if (!config.getString("bits", "").empty()) ini.put("OpenSiege", "bits", config.getString("bits", ""));
 
         return 0;
     }
@@ -103,7 +108,7 @@ namespace ehb
     {
         if (gameStateType == "InitState")
         {
-            return new InitState(gameStateMgr, config);
+            return new InitState(gameStateMgr, config, fileSys);
         }
 
         return nullptr;
