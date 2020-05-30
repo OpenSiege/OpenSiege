@@ -11,7 +11,10 @@ namespace ehb
     {
         spdlog::get("log")->info("InitState::enter()");
 
-        fileSys.init(config);
+        if (!fileSys.init(config))
+        {
+            // TODO: shut down the engine
+        }
 
         // TODO: process NNK files
 
