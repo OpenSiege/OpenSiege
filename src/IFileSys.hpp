@@ -2,6 +2,7 @@
 #pragma once
 
 #include <istream>
+#include <memory>
 #include <set>
 #include <string>
 

@@ -30,6 +30,9 @@ set(SIEGE_SOURCES
     "src/state/InitState.cpp"
     "src/state/TestState.cpp"
 
+    "src/LocalFileSys.cpp"
+    "src/TankFileSys.cpp"
+
     "src/Platform.cpp"
     "src/Game.cpp"
     "src/main.cpp"
