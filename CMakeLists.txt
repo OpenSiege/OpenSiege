@@ -25,7 +25,13 @@ set(SIEGE_SOURCES
     "src/cfg/SteamConfig.cpp"
     "src/cfg/UserConfig.cpp"
     "src/cfg/WritableConfig.cpp"
+
+    "src/state/GameStateMgr.cpp"
+    "src/state/InitState.cpp"
+    "src/state/TestState.cpp"
+
     "src/Platform.cpp"
+    "src/Game.cpp"
     "src/main.cpp"
 )
 

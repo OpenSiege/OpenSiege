@@ -6,6 +6,7 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include "cfg/WritableConfig.hpp"
 #include "Platform.hpp"
+#include "Game.hpp"
 
 // TODO: move to a new Report class
 void registerSiegeLogger(const std::string& path, const std::string& name);
@@ -28,13 +29,29 @@ int main(int argc, char * argv[])
     WritableConfig config(argc, argv);
     config.dump();
 
+    bool hasBits = !config.getString("bits", "").empty();
+    bool hasPath = !config.getString("ds-install-path", "").empty();
+    if (!hasBits) log->warn("No Bits directory detected.");
+    if (!hasPath) log->warn("No DS Install path detected.");
+
+    // we can survive just on bits or just on the path 
+    // but if we don't have either then there are no assets to load
+    if (!hasBits && !hasPath)
+    {
+        log->error("No Bits or DS Install Path detected. Please check you have the proper registry keys / steam / WINE configuration. You can also use the command line flag --ds-install path for manual setup.");
+
+        return 0;
+    }
+
     // all loggers should be registered here before the Game class gets instantiated
     registerSiegeLogger(config.getString("logs_path", ""), "filesystem");
     registerSiegeLogger(config.getString("logs_path", ""), "game");
     registerSiegeLogger(config.getString("logs_path", ""), "scene");
     registerSiegeLogger(config.getString("logs_path", ""), "world");
 
-    return 0;
+    osg::ref_ptr<Game> game = new Game(config);
+
+    return game->exec();
 }
 
 void registerSiegeLogger(const std::string& path, const std::string& name)
