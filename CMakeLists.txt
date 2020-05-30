@@ -28,6 +28,7 @@ set(SIEGE_SOURCES
 
     "src/state/GameStateMgr.cpp"
     "src/state/InitState.cpp"
+    "src/state/TestState.cpp"
 
     "src/Platform.cpp"
     "src/Game.cpp"
