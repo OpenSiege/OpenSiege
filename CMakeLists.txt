@@ -51,6 +51,8 @@ if(MSVC)
     if(DISABLE_MSVC_DEBUG_ITERATOR)
         target_compile_definitions(OpenSiege PRIVATE "_ITERATOR_DEBUG_LEVEL=0")
     endif()
+
+    target_compile_options(OpenSiege PRIVATE "/MP")
 endif()
 
 install(TARGETS OpenSiege RUNTIME DESTINATION bin)
