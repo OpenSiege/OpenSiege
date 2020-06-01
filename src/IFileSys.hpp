@@ -6,6 +6,11 @@
 #include <set>
 #include <string>
 
+#include <spdlog/spdlog.h>
+#include <osgDB/FileNameUtils>
+
+#include "gas/Fuel.hpp"
+
 namespace ehb
 {
     typedef std::set<std::string> FileList;
@@ -24,5 +29,37 @@ namespace ehb
 
         virtual FileList getFiles() const = 0;
         virtual FileList getDirectoryContents(const std::string & directory) const = 0;
+
+        void eachGasFile(const std::string& directory, std::function<void(const std::string&, std::unique_ptr<Fuel>)> func);
     };
+
+    inline void IFileSys::eachGasFile(const std::string& directory, std::function<void(const std::string&, std::unique_ptr<Fuel>)> func)
+    {
+        auto log = spdlog::get("log");
+
+        for (const auto& filename : getFiles())
+        {
+            if (osgDB::getLowerCaseFileExtension(filename) == "gas")
+            {
+                if (filename.find(directory) == 0)
+                {
+                    if (auto stream = createInputStream(filename))
+                    {
+                        if (auto doc = std::make_unique<Fuel>(); doc->load(*stream))
+                        {
+                            func(filename, std::move(doc));
+                        }
+                        else
+                        {
+                            log->error("{}: could not parse", filename);
+                        }
+                    }
+                    else
+                    {
+                        log->error("{}: could not create input stream", filename);
+                    }
+                }
+            }
+        }
+    }
 }
