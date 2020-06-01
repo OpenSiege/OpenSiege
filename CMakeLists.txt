@@ -6,8 +6,6 @@ if (UNIX)
     pkg_check_modules(XDGBASEDIR REQUIRED libxdg-basedir)
 endif(UNIX)
 
-set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-
 # windows specific - DO NOT ENABLE UNLESS ABSOLUTELY NECESSARY
 option(DISABLE_MSVC_DEBUG_ITERATOR "Disable the debug iterator for MSVC. All libraries must be built with the same option" OFF)
 
@@ -51,6 +49,26 @@ if(MSVC)
     if(DISABLE_MSVC_DEBUG_ITERATOR)
         target_compile_definitions(OpenSiege PRIVATE "_ITERATOR_DEBUG_LEVEL=0")
     endif()
+
+    target_compile_options(OpenSiege PRIVATE "/MP")
+
+    # place header and source files into group folders to help IDE's present the files in a logical manner
+    function(ASSIGN_SOURCE_GROUPS GROUP_NAME ROOT_FOLDER)
+        foreach(FILE IN ITEMS ${ARGN})
+            if (IS_ABSOLUTE "${FILE}")
+                file(RELATIVE_PATH RELATIVE_SOURCE "${ROOT_FOLDER}" "${FILE}")
+            else()
+                set(RELATIVE_SOURCE "${FILE}")
+            endif()
+            get_filename_component(SOURCE_PATH "${RELATIVE_SOURCE}" PATH)
+            string(REPLACE "/" "\\" SOURCE_PATH_MSVC "${SOURCE_PATH}")
+            source_group("${GROUP_NAME}\\${SOURCE_PATH_MSVC}" FILES "${FILE}")
+        endforeach()
+    endfunction(ASSIGN_SOURCE_GROUPS)
+
+    # enable folders for MSVC
+    set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+    ASSIGN_SOURCE_GROUPS("Source Files" "${CMAKE_CURRENT_SOURCE_DIR}" ${SIEGE_SOURCES})
 endif()
 
 install(TARGETS OpenSiege RUNTIME DESTINATION bin)
