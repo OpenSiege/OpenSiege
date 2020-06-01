@@ -4,6 +4,8 @@
 #include <spdlog/spdlog.h>
 
 #include "LocalFileSys.hpp"
+#include "cfg/IConfig.hpp"
+#include "state/GameStateMgr.hpp"
 
 namespace ehb
 {
@@ -44,6 +46,12 @@ namespace ehb
         // TODO: any other up front init (gui?) that needs to be done
 
         // TODO: go to the next state
+        if (const std::string state = config.getString("state"); !state.empty())
+        {
+            gameStateMgr.request(state);
+
+            return;
+        }
     }
 
     void InitState::leave()
