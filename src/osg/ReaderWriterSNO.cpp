@@ -22,7 +22,7 @@ namespace ehb
 
     const char * ReaderWriterSNO::className() const {
 
-        return "Dungeon Siege Aspect Mesh Reader";
+        return "Dungeon Siege Siege Node Reader";
     }
 
     bool ReaderWriterSNO::acceptsExtension(const std::string & extension) const

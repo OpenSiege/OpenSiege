@@ -18,8 +18,6 @@ namespace ehb
 
         static const std::string meshName = "t_grs01_houses_generic-a-log.sno";
 
-
-
         auto mesh = dynamic_cast<SiegeNodeMesh*>(osgDB::readNodeFile(meshName));
         if (mesh != nullptr)
         {
