@@ -36,12 +36,14 @@ set(SIEGE_SOURCES
     "src/state/InitState.cpp"
     "src/state/TestState.cpp"
     "src/state/test/GasTestState.cpp"
+    "src/state/test/SiegeNodeTestState.cpp"
 
     ${BISON_FuelParser_OUTPUTS}
     ${CMAKE_CURRENT_BINARY_DIR}/FuelScanner.cpp
     "src/gas/Fuel.cpp"
 
     "src/osg/FileNameMap.cpp"
+    "src/osg/ReaderWriterSNO.cpp"
 
     "src/LocalFileSys.cpp"
     "src/TankFileSys.cpp"
