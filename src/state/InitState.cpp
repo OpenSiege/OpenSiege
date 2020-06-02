@@ -2,10 +2,12 @@
 #include "InitState.hpp"
 
 #include <spdlog/spdlog.h>
+#include <osgDB/Registry>
 
 #include "LocalFileSys.hpp"
 #include "cfg/IConfig.hpp"
 #include "state/GameStateMgr.hpp"
+#include "osg/FileNameMap.hpp"
 
 namespace ehb
 {
@@ -20,7 +22,9 @@ namespace ehb
             // TODO: shut down the engine
         }
 
-        // TODO: process NNK files
+        // setup the NNK system and register it with OSG
+        auto callback = new FileNameMap(fileSys);
+        osgDB::Registry::instance()->setFindFileCallback(callback);
 
         // TODO: setup contentdb, world data, and other sub systems
 

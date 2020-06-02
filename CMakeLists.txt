@@ -41,6 +41,8 @@ set(SIEGE_SOURCES
     ${CMAKE_CURRENT_BINARY_DIR}/FuelScanner.cpp
     "src/gas/Fuel.cpp"
 
+    "src/osg/FileNameMap.cpp"
+
     "src/LocalFileSys.cpp"
     "src/TankFileSys.cpp"
 
