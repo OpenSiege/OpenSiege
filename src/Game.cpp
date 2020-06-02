@@ -2,6 +2,7 @@
 #include "Game.hpp"
 
 #include <minIni.h>
+#include <osg/MatrixTransform>
 
 #include "cfg/IConfig.hpp"
 #include "state/InitState.hpp"
@@ -58,6 +59,8 @@ namespace ehb
         { // hook into the osg event system
             viewer.addEventHandler(this);
         }
+
+        setupScene();
 
         gameStateMgr.request("InitState");
 
@@ -129,4 +132,24 @@ namespace ehb
         return gameStateMgr.handle(event, action);
     }
 
+    void Game::setupScene()
+    {
+        // create the absolute root of our graph - don't manually attach anything to this
+        osg::Group* root = new osg::Group;
+
+        // this should never need to touched
+        viewer.setSceneData(root);
+
+        if (auto rotation = new osg::MatrixTransform)
+        {
+            // create our 90 degree rotation, im still not totally sure this is correct
+            rotation->setMatrix(osg::Matrix::rotate(osg::DegreesToRadians(90.f), osg::Vec3(1, 0, 0)));
+
+            // create the 3d graph - this is where all 3d elements should be attached
+            rotation->addChild(scene3d);
+
+            // our rotation should be directly under the root and is a sibling to the gui camera
+            root->addChild(rotation);
+        }
+    }
 }

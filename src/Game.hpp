@@ -37,5 +37,7 @@ namespace ehb
         LocalFileSys fileSys; // TODO: remove local file system in favor of tank file system
 
         osgViewer::Viewer viewer;
+
+        osg::ref_ptr<osg::Group> scene3d;
     };
 }
