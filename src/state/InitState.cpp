@@ -8,6 +8,7 @@
 #include "cfg/IConfig.hpp"
 #include "state/GameStateMgr.hpp"
 #include "osg/FileNameMap.hpp"
+#include "osg/ReaderWriterSNO.hpp"
 
 namespace ehb
 {
@@ -29,6 +30,9 @@ namespace ehb
         // TODO: setup contentdb, world data, and other sub systems
 
         // TODO: setup osg reader writers
+        {
+            osgDB::Registry::instance()->addReaderWriter(new ReaderWriterSNO(fileSys));
+        }
 
         // TODO: any asset and engine preloading from gas files
         if (auto stream = fileSys.createInputStream("/ui/config/preload_textures/preload_textures.gas"))
