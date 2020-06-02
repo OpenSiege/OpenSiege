@@ -5,6 +5,7 @@
 
 #include "cfg/IConfig.hpp"
 #include "state/InitState.hpp"
+#include "state/test/GasTestState.hpp"
 
 namespace ehb
 {
@@ -43,7 +44,7 @@ namespace ehb
         // set the title and disable the mouse cursor for the window
         osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits(*viewer.getCamera()->getGraphicsContext()->getTraits());
         traits->windowName = "Open Siege - Dev";
-        traits->useCursor = false;
+        // traits->useCursor = false;
         osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits);
         osg::ref_ptr<osg::Camera> cam = new osg::Camera(*viewer.getCamera());
         cam->setGraphicsContext(gc);
@@ -109,6 +110,10 @@ namespace ehb
         if (gameStateType == "InitState")
         {
             return new InitState(gameStateMgr, config, fileSys);
+        }
+        else if (gameStateType == "GasTestState")
+        {
+            return new GasTestState(gameStateMgr, config, fileSys);
         }
 
         return nullptr;

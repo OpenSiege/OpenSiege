@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.11)
 project(OpenSiege)
 
+# add custom cmake modules
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+
 if (UNIX)
     find_package(PkgConfig)
     pkg_check_modules(XDGBASEDIR REQUIRED libxdg-basedir)
@@ -15,6 +18,11 @@ add_subdirectory(extern)
 find_package(OpenSceneGraph REQUIRED COMPONENTS osg osgDB osgViewer osgGA osgAnimation osgUtil osgText)
 find_package(Threads REQUIRED)
 find_package(spdlog CONFIG QUIET)
+find_package(BISON REQUIRED)
+find_package(RE2C REQUIRED)
+
+bison_target(FuelParser "${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelParser.y" "${CMAKE_CURRENT_BINARY_DIR}/FuelParser.cpp" COMPILE_FLAGS "${YACC_FLAGS} --defines=${CMAKE_CURRENT_BINARY_DIR}/FuelParser.hpp")
+re2c_target("${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelScanner.r2c" "${CMAKE_CURRENT_BINARY_DIR}/FuelScanner.cpp")
 
 set(SIEGE_SOURCES
     "src/cfg/ArgsConfig.cpp"
@@ -27,6 +35,13 @@ set(SIEGE_SOURCES
     "src/state/GameStateMgr.cpp"
     "src/state/InitState.cpp"
     "src/state/TestState.cpp"
+    "src/state/test/GasTestState.cpp"
+
+    ${BISON_FuelParser_OUTPUTS}
+    ${CMAKE_CURRENT_BINARY_DIR}/FuelScanner.cpp
+    "src/gas/Fuel.cpp"
+
+    "src/osg/FileNameMap.cpp"
 
     "src/LocalFileSys.cpp"
     "src/TankFileSys.cpp"
@@ -42,7 +57,7 @@ add_executable(OpenSiege ${EXTERN_SOURCE_FILES} ${SIEGE_SOURCES})
 # force C++17
 set_target_properties(OpenSiege PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
 
-target_include_directories(OpenSiege PUBLIC src ${OPENSCENEGRAPH_INCLUDE_DIRS} ${EXTERN_INCLUDE_PATHS})
+target_include_directories(OpenSiege PUBLIC src ${OPENSCENEGRAPH_INCLUDE_DIRS} ${EXTERN_INCLUDE_PATHS} ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(OpenSiege PRIVATE ${OPENSCENEGRAPH_LIBRARIES} Threads::Threads "$<$<CXX_COMPILER_ID:GNU>:stdc++fs;${XDGBASEDIR_LIBRARIES}>" spdlog::spdlog)
 
 if(MSVC)
