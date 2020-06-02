@@ -2,7 +2,7 @@
 #pragma once
 
 #include <vector>
-#include <osg/Geode>
+#include <osg/Group>
 #include <osgDB/ReaderWriter>
 
 #include <algorithm>
