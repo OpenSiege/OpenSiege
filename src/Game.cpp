@@ -6,6 +6,7 @@
 #include "cfg/IConfig.hpp"
 #include "state/InitState.hpp"
 #include "state/test/GasTestState.hpp"
+#include "state/test/SiegeNodeTestState.hpp"
 
 namespace ehb
 {
@@ -114,6 +115,10 @@ namespace ehb
         else if (gameStateType == "GasTestState")
         {
             return new GasTestState(gameStateMgr, config, fileSys);
+        }
+        else if (gameStateType == "SiegeNodeTestState")
+        {
+            return new SiegeNodeTestState(gameStateMgr, config, fileSys);
         }
 
         return nullptr;
