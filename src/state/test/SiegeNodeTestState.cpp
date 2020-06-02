@@ -3,25 +3,36 @@
 
 #include <sstream>
 
+#include <osgDB/ReadFile>
+#include <osg/MatrixTransform>
+#include <osg/Group>
 #include <spdlog/spdlog.h>
 
-#include "IFileSys.hpp"
-#include "gas/Fuel.hpp"
+#include "osg/ReaderWriterSNO.hpp"
 
 namespace ehb
 {
     void SiegeNodeTestState::enter()
     {
-        auto log = spdlog::get("log");
-        log->info("SiegeNodeTestState::enter()");
+        auto log = spdlog::get("game");
 
-        auto stream = std::make_unique<std::stringstream>();
-        *stream << "[t:template,n:actor]{doc=\"Generic brained objects\";}";
+        static const std::string meshName = "t_grs01_houses_generic-a-log.sno";
 
-        if (Fuel doc; doc.load(*stream))
+
+
+        auto mesh = dynamic_cast<SiegeNodeMesh*>(osgDB::readNodeFile(meshName));
+        if (mesh != nullptr)
         {
-            assert(doc.child("actor")->name() == "actor");
-            assert(doc.child("actor")->type() == "template");
+            log->info("Loaded {}", meshName);
+
+            auto transform = new osg::MatrixTransform;
+            transform->addChild(mesh);
+
+            scene.addChild(transform);
+        }
+        else
+        {
+            log->error("Failed to load {}", meshName);
         }
     }
 

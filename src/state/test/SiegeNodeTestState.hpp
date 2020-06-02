@@ -11,7 +11,7 @@ namespace ehb
     {
     public:
 
-        SiegeNodeTestState(IGameStateMgr & gameStateMgr, IConfig & config, IFileSys& fileSys);
+        SiegeNodeTestState(IGameStateMgr & gameStateMgr, IConfig & config, IFileSys& fileSys, osg::Group& scene);
 
         virtual ~SiegeNodeTestState() = default;
 
@@ -25,9 +25,11 @@ namespace ehb
         IGameStateMgr & gameStateMgr;
         IConfig & config;
         IFileSys& fileSys;
+
+        osg::Group& scene;
     };
 
-    inline SiegeNodeTestState::SiegeNodeTestState(IGameStateMgr& gameStateMgr, IConfig& config, IFileSys& fileSys) : gameStateMgr(gameStateMgr), config(config), fileSys(fileSys)
+    inline SiegeNodeTestState::SiegeNodeTestState(IGameStateMgr& gameStateMgr, IConfig& config, IFileSys& fileSys, osg::Group& scene) : gameStateMgr(gameStateMgr), config(config), fileSys(fileSys), scene(scene)
     {
     }
 }

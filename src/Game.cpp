@@ -3,6 +3,7 @@
 
 #include <minIni.h>
 #include <osg/MatrixTransform>
+#include <osgGA/TrackballManipulator>
 
 #include "cfg/IConfig.hpp"
 #include "state/InitState.hpp"
@@ -11,7 +12,7 @@
 
 namespace ehb
 {
-    Game::Game(IConfig & config) : config(config), gameStateMgr(this)
+    Game::Game(IConfig & config) : config(config), gameStateMgr(this), scene3d(new osg::Group)
     {
     }
 
@@ -61,6 +62,9 @@ namespace ehb
         }
 
         setupScene();
+
+        // TODO: move this when we get our camera manipulator implemented
+        viewer.setCameraManipulator(new osgGA::TrackballManipulator());
 
         gameStateMgr.request("InitState");
 
@@ -121,7 +125,7 @@ namespace ehb
         }
         else if (gameStateType == "SiegeNodeTestState")
         {
-            return new SiegeNodeTestState(gameStateMgr, config, fileSys);
+            return new SiegeNodeTestState(gameStateMgr, config, fileSys, *scene3d);
         }
 
         return nullptr;
