@@ -15,7 +15,7 @@ option(DISABLE_MSVC_DEBUG_ITERATOR "Disable the debug iterator for MSVC. All lib
 add_subdirectory(extern)
 
 # required packages for minimal build should go here
-find_package(OpenSceneGraph REQUIRED COMPONENTS osg osgDB osgViewer osgGA osgAnimation osgUtil osgText)
+find_package(OpenSceneGraph REQUIRED COMPONENTS osg osgDB osgViewer osgGA)
 find_package(Threads REQUIRED)
 find_package(spdlog CONFIG QUIET)
 find_package(BISON REQUIRED)
@@ -36,12 +36,14 @@ set(SIEGE_SOURCES
     "src/state/InitState.cpp"
     "src/state/TestState.cpp"
     "src/state/test/GasTestState.cpp"
+    "src/state/test/SiegeNodeTestState.cpp"
 
     ${BISON_FuelParser_OUTPUTS}
     ${CMAKE_CURRENT_BINARY_DIR}/FuelScanner.cpp
     "src/gas/Fuel.cpp"
 
     "src/osg/FileNameMap.cpp"
+    "src/osg/ReaderWriterSNO.cpp"
 
     "src/LocalFileSys.cpp"
     "src/TankFileSys.cpp"

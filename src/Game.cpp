@@ -2,14 +2,17 @@
 #include "Game.hpp"
 
 #include <minIni.h>
+#include <osg/MatrixTransform>
+#include <osgGA/TrackballManipulator>
 
 #include "cfg/IConfig.hpp"
 #include "state/InitState.hpp"
 #include "state/test/GasTestState.hpp"
+#include "state/test/SiegeNodeTestState.hpp"
 
 namespace ehb
 {
-    Game::Game(IConfig & config) : config(config), gameStateMgr(this)
+    Game::Game(IConfig & config) : config(config), gameStateMgr(this), scene3d(new osg::Group)
     {
     }
 
@@ -54,9 +57,16 @@ namespace ehb
         viewer.realize();
         viewer.init();
 
+        // viewer.setLightingMode(osg::View::NO_LIGHT);
+
         { // hook into the osg event system
             viewer.addEventHandler(this);
         }
+
+        setupScene();
+
+        // TODO: move this when we get our camera manipulator implemented
+        viewer.setCameraManipulator(new osgGA::TrackballManipulator());
 
         gameStateMgr.request("InitState");
 
@@ -101,6 +111,8 @@ namespace ehb
 
         if (!config.getString("bits", "").empty()) ini.put("OpenSiege", "bits", config.getString("bits", ""));
 
+        spdlog::get("filesystem")->info("Finished writing INI to {}", iniFileName.string());
+
         return 0;
     }
 
@@ -115,6 +127,10 @@ namespace ehb
         {
             return new GasTestState(gameStateMgr, config, fileSys);
         }
+        else if (gameStateType == "SiegeNodeTestState")
+        {
+            return new SiegeNodeTestState(gameStateMgr, config, fileSys, viewer, *scene3d);
+        }
 
         return nullptr;
     }
@@ -124,4 +140,24 @@ namespace ehb
         return gameStateMgr.handle(event, action);
     }
 
+    void Game::setupScene()
+    {
+        // create the absolute root of our graph - don't manually attach anything to this
+        osg::Group* root = new osg::Group;
+
+        // this should never need to touched
+        viewer.setSceneData(root);
+
+        if (auto rotation = new osg::MatrixTransform)
+        {
+            // create our 90 degree rotation, im still not totally sure this is correct
+            rotation->setMatrix(osg::Matrix::rotate(osg::DegreesToRadians(90.f), osg::Vec3(1, 0, 0)));
+
+            // create the 3d graph - this is where all 3d elements should be attached
+            rotation->addChild(scene3d);
+
+            // our rotation should be directly under the root and is a sibling to the gui camera
+            root->addChild(rotation);
+        }
+    }
 }
