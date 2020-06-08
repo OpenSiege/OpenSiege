@@ -111,6 +111,8 @@ namespace ehb
 
         if (!config.getString("bits", "").empty()) ini.put("OpenSiege", "bits", config.getString("bits", ""));
 
+        spdlog::get("filesystem")->info("Finished writing INI to {}", iniFileName.string());
+
         return 0;
     }
 
