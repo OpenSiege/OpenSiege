@@ -3,6 +3,11 @@
 
 #include "state/IGameState.hpp"
 
+namespace osgViewer
+{
+    class Viewer;
+}
+
 namespace ehb
 {
     class IConfig;
@@ -11,7 +16,7 @@ namespace ehb
     {
     public:
 
-        SiegeNodeTestState(IGameStateMgr & gameStateMgr, IConfig & config, IFileSys& fileSys, osg::Group& scene);
+        SiegeNodeTestState(IGameStateMgr & gameStateMgr, IConfig & config, IFileSys& fileSys, osgViewer::Viewer& viewer, osg::Group& scene);
 
         virtual ~SiegeNodeTestState() = default;
 
@@ -26,10 +31,11 @@ namespace ehb
         IConfig & config;
         IFileSys& fileSys;
 
+        osgViewer::Viewer& viewer;
         osg::Group& scene;
     };
 
-    inline SiegeNodeTestState::SiegeNodeTestState(IGameStateMgr& gameStateMgr, IConfig& config, IFileSys& fileSys, osg::Group& scene) : gameStateMgr(gameStateMgr), config(config), fileSys(fileSys), scene(scene)
+    inline SiegeNodeTestState::SiegeNodeTestState(IGameStateMgr& gameStateMgr, IConfig& config, IFileSys& fileSys, osgViewer::Viewer& viewer, osg::Group& scene) : gameStateMgr(gameStateMgr), config(config), fileSys(fileSys), scene(scene), viewer(viewer)
     {
     }
 }

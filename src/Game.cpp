@@ -57,6 +57,8 @@ namespace ehb
         viewer.realize();
         viewer.init();
 
+        // viewer.setLightingMode(osg::View::NO_LIGHT);
+
         { // hook into the osg event system
             viewer.addEventHandler(this);
         }
@@ -125,7 +127,7 @@ namespace ehb
         }
         else if (gameStateType == "SiegeNodeTestState")
         {
-            return new SiegeNodeTestState(gameStateMgr, config, fileSys, *scene3d);
+            return new SiegeNodeTestState(gameStateMgr, config, fileSys, viewer, *scene3d);
         }
 
         return nullptr;

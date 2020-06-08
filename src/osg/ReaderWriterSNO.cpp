@@ -65,6 +65,9 @@ namespace ehb
 
         if (magic != 0x444F4E53) return ReadResult::FILE_NOT_HANDLED;
 
+        // construct the actual mesh node
+        osg::ref_ptr<SiegeNodeMesh> node = new SiegeNodeMesh;
+
         uint32_t doorCount, spotCount, cornerCount, faceCount, textureCount;
         float minX, minY, minZ, maxX, maxY, maxZ;
         float unk2, unk3, unk4;
@@ -90,6 +93,8 @@ namespace ehb
         stream.read((char *)&unk7, sizeof(uint32_t));
         stream.read((char *)&unk8, sizeof(uint32_t));
         stream.read((char *)&checksum, sizeof(float));
+
+        
 
         if (bSwap)
         {
@@ -121,9 +126,6 @@ namespace ehb
             "\ndoorCount: " << doorCount <<
             "\nspotCount: " << spotCount <<
             "\ncornerCount: " << cornerCount << std::endl;
-
-        // construct the actual mesh node
-        osg::ref_ptr<SiegeNodeMesh> node = new SiegeNodeMesh;
 
         // osg::ref_ptr<SiegeNodeDoorData> doorData = new SiegeNodeDoorData;
 
