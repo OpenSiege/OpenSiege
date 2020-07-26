@@ -8,6 +8,7 @@
 #include "cfg/IConfig.hpp"
 #include "state/GameStateMgr.hpp"
 #include "osg/FileNameMap.hpp"
+#include "osg/ReaderWriterRAW.hpp"
 #include "osg/ReaderWriterSNO.hpp"
 
 namespace ehb
@@ -31,6 +32,7 @@ namespace ehb
 
         // TODO: setup osg reader writers
         {
+            osgDB::Registry::instance()->addReaderWriter(new ReaderWriterRAW(fileSys));
             osgDB::Registry::instance()->addReaderWriter(new ReaderWriterSNO(fileSys));
         }
 
