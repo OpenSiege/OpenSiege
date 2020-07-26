@@ -322,7 +322,7 @@ namespace ehb
 
             if (stateSet == nullptr)
             {
-                log->debug("{}.gas not found falling back to {}.raw", textureFileName, textureFileName);
+                log->warn("{}.gas not found falling back to {}.raw", textureFileName, textureFileName);
 
                 if (osg::Image* image = osgDB::readImageFile(textureFileName + ".raw"))
                 {
