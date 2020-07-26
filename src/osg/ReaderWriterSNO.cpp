@@ -286,9 +286,11 @@ namespace ehb
 
             osg::Geometry * geometry = new osg::Geometry;
 
+            std::string texSetAbbr;
+
             if (options != nullptr)
             {
-                const std::string texSetAbbr = options->getPluginStringData("texsetabbr");
+                texSetAbbr = options->getPluginStringData("texsetabbr");
 
                 if (!texSetAbbr.empty())
                 {
@@ -297,39 +299,39 @@ namespace ehb
                         textureFileName.replace(itr + 1, 3, texSetAbbr);
                     }
                 }
+            }
 
-                textureFileName = osgDB::convertToLowerCase(textureFileName);
-                const std::string tsdFileName = osgDB::findDataFile(textureFileName + ".gas");
+            textureFileName = osgDB::convertToLowerCase(textureFileName);
+            const std::string tsdFileName = osgDB::findDataFile(textureFileName + ".gas");
 
-                auto log = spdlog::get("log");
+            auto log = spdlog::get("log");
 
-                osg::StateSet* stateSet = nullptr;
+            osg::StateSet* stateSet = nullptr;
 
-                if (auto stream = fileSys.createInputStream(tsdFileName))
+            if (auto stream = fileSys.createInputStream(tsdFileName))
+            {
+                // read the corresponding TSD file
+                if (Fuel doc; doc.load(*stream))
                 {
-                    // read the corresponding TSD file
-                    if (Fuel doc; doc.load(*stream))
+                    if (auto tsd = doc.child(textureFileName))
                     {
-                        if (auto tsd = doc.child(textureFileName))
-                        {
-                            // TODO: create OSG state sets
-                        }
+                        // TODO: create OSG state sets
                     }
                 }
+            }
 
-                if (stateSet == nullptr)
+            if (stateSet == nullptr)
+            {
+                log->debug("{}.gas not found falling back to {}.raw", textureFileName, textureFileName);
+
+                if (osg::Image* image = osgDB::readImageFile(textureFileName + ".raw"))
                 {
-                    log->debug("{}.gas not found falling back to {}.raw", textureFileName, textureFileName);
+                    auto texture = new osg::Texture2D(image);
 
-                    if (osg::Image* image = osgDB::readImageFile(textureFileName + ".raw"))
-                    {
-                        auto texture = new osg::Texture2D(image);
+                    texture->setWrap(osg::Texture::WRAP_S, osg::Texture::REPEAT);
+                    texture->setWrap(osg::Texture::WRAP_T, osg::Texture::REPEAT);
 
-                        texture->setWrap(osg::Texture::WRAP_S, osg::Texture::REPEAT);
-                        texture->setWrap(osg::Texture::WRAP_T, osg::Texture::REPEAT);
-
-                        geometry->getOrCreateStateSet()->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
-                    }
+                    geometry->getOrCreateStateSet()->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
                 }
             }
 
