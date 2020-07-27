@@ -43,6 +43,7 @@ set(SIEGE_SOURCES
     "src/gas/Fuel.cpp"
 
     "src/osg/FileNameMap.cpp"
+    "src/osg/ReaderWriterRAW.cpp"
     "src/osg/ReaderWriterSNO.cpp"
 
     "src/LocalFileSys.cpp"
