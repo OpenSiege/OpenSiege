@@ -57,7 +57,7 @@ namespace ehb
         viewer.realize();
         viewer.init();
 
-        // viewer.setLightingMode(osg::View::NO_LIGHT);
+        viewer.setLightingMode(osg::View::NO_LIGHT);
 
         { // hook into the osg event system
             viewer.addEventHandler(this);
