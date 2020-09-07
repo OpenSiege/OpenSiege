@@ -9,6 +9,7 @@
 #include <osg/PolygonMode>
 #include <osg/ComputeBoundsVisitor>
 #include <osgViewer/Viewer>
+#include <osgText/Text>
 #include <spdlog/spdlog.h>
 
 #include "osg/ReaderWriterSNO.hpp"
@@ -41,6 +42,26 @@ namespace ehb
         group->getOrCreateStateSet()->setAttribute(new osg::PolygonMode(osg::PolygonMode::FRONT_AND_BACK, osg::PolygonMode::LINE));
         group->getOrCreateStateSet()->setMode(GL_LIGHTING, osg::StateAttribute::OFF);
         return group.release();
+    }
+
+    static osg::MatrixTransform* drawLabelForDoor(SiegeNodeMesh* mesh, uint32_t doorId)
+    {
+        assert (mesh != nullptr);
+        assert (doorId > 0);
+
+        auto text = new osgText::Text;
+        text->setAxisAlignment(osgText::Text::SCREEN);
+        text->setFontResolution(64, 64);
+        text->setCharacterSize(1);
+        text->setText(std::to_string(doorId));
+
+        auto doorXform = mesh->getMatrixForDoorId(doorId);
+
+        auto doorMatTransform = new osg::MatrixTransform(doorXform);
+
+        doorMatTransform->addChild(text);
+
+        return doorMatTransform;
     }
 
     static osg::Group* createBoxForDebug(float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
@@ -80,6 +101,17 @@ namespace ehb
                 manipulator->setHomePosition(sphere.center() + osg::Vec3d(0.0, dist, 7.0f), sphere.center(), osg::Vec3d(0.0f, 0.0f, 1.0f));
                 manipulator->home(1);
             }
+
+            transform->addChild(drawLabelForDoor(mesh, 1));
+            transform->addChild(drawLabelForDoor(mesh, 2));
+            transform->addChild(drawLabelForDoor(mesh, 3));
+            transform->addChild(drawLabelForDoor(mesh, 4));
+            transform->addChild(drawLabelForDoor(mesh, 5));
+            transform->addChild(drawLabelForDoor(mesh, 6));
+            transform->addChild(drawLabelForDoor(mesh, 7));
+            transform->addChild(drawLabelForDoor(mesh, 8));
+            transform->addChild(drawLabelForDoor(mesh, 9));
+            transform->addChild(drawLabelForDoor(mesh, 10));
 
             scene.addChild(transform);
         }

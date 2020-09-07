@@ -41,6 +41,15 @@ namespace ehb
 
         // void SRequestNodeConnection( SiegeId targetNode, DWORD targetDoor, SiegeId connectNode, DWORD connectDoor, bool bConnect, bool bForceComplete )
 
+        const osg::Matrix getMatrixForDoorId(const uint32_t id)
+        {
+            for (const auto& entry : doorXform)
+            {
+                if (entry.first == id)
+                    return entry.second;
+            }            
+        }
+
     protected:
 
         virtual ~SiegeNodeMesh() = default;

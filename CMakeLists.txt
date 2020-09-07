@@ -15,7 +15,7 @@ option(DISABLE_MSVC_DEBUG_ITERATOR "Disable the debug iterator for MSVC. All lib
 add_subdirectory(extern)
 
 # required packages for minimal build should go here
-find_package(OpenSceneGraph REQUIRED COMPONENTS osg osgDB osgViewer osgGA)
+find_package(OpenSceneGraph REQUIRED COMPONENTS osg osgDB osgViewer osgGA osgText)
 find_package(Threads REQUIRED)
 find_package(spdlog CONFIG QUIET)
 find_package(BISON REQUIRED)
