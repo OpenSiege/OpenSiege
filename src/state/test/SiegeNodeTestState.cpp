@@ -51,9 +51,9 @@ namespace ehb
 
         auto text = new osgText::Text;
         text->setAxisAlignment(osgText::Text::SCREEN);
-        text->setFontResolution(64, 64);
         text->setCharacterSize(1);
         text->setText(std::to_string(doorId));
+        text->getOrCreateStateSet()->setMode(GL_DEPTH_TEST, osg::StateAttribute::OFF);
 
         auto doorXform = mesh->getMatrixForDoorId(doorId);
 
