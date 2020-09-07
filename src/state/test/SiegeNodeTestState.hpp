@@ -12,6 +12,7 @@ namespace ehb
 {
     class IConfig;
     class IFileSys;
+    class SiegeNodeMesh;
     class SiegeNodeTestState : public IGameState
     {
     public:
@@ -33,6 +34,9 @@ namespace ehb
 
         osgViewer::Viewer& viewer;
         osg::Group& scene;
+
+        bool drawDoorLabels = true;
+        SiegeNodeMesh * mesh = nullptr;
     };
 
     inline SiegeNodeTestState::SiegeNodeTestState(IGameStateMgr& gameStateMgr, IConfig& config, IFileSys& fileSys, osgViewer::Viewer& viewer, osg::Group& scene) : gameStateMgr(gameStateMgr), config(config), fileSys(fileSys), scene(scene), viewer(viewer)

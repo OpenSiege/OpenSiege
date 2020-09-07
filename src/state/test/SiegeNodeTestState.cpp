@@ -9,7 +9,6 @@
 #include <osg/PolygonMode>
 #include <osg/ComputeBoundsVisitor>
 #include <osgViewer/Viewer>
-#include <osgText/Text>
 #include <spdlog/spdlog.h>
 
 #include "osg/ReaderWriterSNO.hpp"
@@ -44,26 +43,6 @@ namespace ehb
         return group.release();
     }
 
-    static osg::MatrixTransform* drawLabelForDoor(SiegeNodeMesh* mesh, uint32_t doorId)
-    {
-        assert (mesh != nullptr);
-        assert (doorId > 0);
-
-        auto text = new osgText::Text;
-        text->setAxisAlignment(osgText::Text::SCREEN);
-        text->setCharacterSize(1);
-        text->setText(std::to_string(doorId));
-        text->getOrCreateStateSet()->setMode(GL_DEPTH_TEST, osg::StateAttribute::OFF);
-
-        auto doorXform = mesh->getMatrixForDoorId(doorId);
-
-        auto doorMatTransform = new osg::MatrixTransform(doorXform);
-
-        doorMatTransform->addChild(text);
-
-        return doorMatTransform;
-    }
-
     static osg::Group* createBoxForDebug(float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
     {
         return createBoxForDebug(osg::Vec3(minX, minY, minZ), osg::Vec3(maxX, maxY, maxY));
@@ -75,7 +54,7 @@ namespace ehb
 
         static const std::string meshName = "t_grs01_houses_generic-a-log.sno";
 
-        auto mesh = dynamic_cast<SiegeNodeMesh*>(osgDB::readNodeFile(meshName));
+        mesh = dynamic_cast<SiegeNodeMesh*>(osgDB::readNodeFile(meshName));
         if (mesh != nullptr)
         {
             log->info("Loaded {}", meshName);
@@ -100,18 +79,7 @@ namespace ehb
 
                 manipulator->setHomePosition(sphere.center() + osg::Vec3d(0.0, dist, 7.0f), sphere.center(), osg::Vec3d(0.0f, 0.0f, 1.0f));
                 manipulator->home(1);
-            }
-
-            transform->addChild(drawLabelForDoor(mesh, 1));
-            transform->addChild(drawLabelForDoor(mesh, 2));
-            transform->addChild(drawLabelForDoor(mesh, 3));
-            transform->addChild(drawLabelForDoor(mesh, 4));
-            transform->addChild(drawLabelForDoor(mesh, 5));
-            transform->addChild(drawLabelForDoor(mesh, 6));
-            transform->addChild(drawLabelForDoor(mesh, 7));
-            transform->addChild(drawLabelForDoor(mesh, 8));
-            transform->addChild(drawLabelForDoor(mesh, 9));
-            transform->addChild(drawLabelForDoor(mesh, 10));
+            }            
 
             scene.addChild(transform);
         }
@@ -132,6 +100,28 @@ namespace ehb
 
     bool SiegeNodeTestState::handle(const osgGA::GUIEventAdapter & event, osgGA::GUIActionAdapter & action)
     {
+        switch (event.getEventType())
+        {
+            case (osgGA::GUIEventAdapter::KEYUP):
+            {
+                if (event.getKey() == '1')
+                {
+                    if (drawDoorLabels)
+                    {
+                        drawDoorLabels = false;
+                        mesh->drawAllDoorLabels(false);
+
+                        return true;
+                    }
+                    else
+                    {
+                        drawDoorLabels = true;
+                        mesh->drawAllDoorLabels(true);
+                    }
+                }
+            }
+        }
+
         return false;
     }
 }

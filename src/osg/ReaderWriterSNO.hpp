@@ -4,6 +4,8 @@
 #include <vector>
 #include <osg/Group>
 #include <osgDB/ReaderWriter>
+#include <osg/MatrixTransform>
+#include <osgText/Text>
 
 #include <algorithm>
 
@@ -41,6 +43,52 @@ namespace ehb
 
         // void SRequestNodeConnection( SiegeId targetNode, DWORD targetDoor, SiegeId connectNode, DWORD connectDoor, bool bConnect, bool bForceComplete )
 
+        void drawAllDoorLabels(bool on)
+        {
+            if (on)
+            {
+                if (doorLabelsGroup == nullptr)
+                {
+                    doorLabelsGroup = new osg::Group;
+
+                    for (const auto& entry : doorXform)
+                    {
+
+                        auto text = new osgText::Text;
+                        text->setAxisAlignment(osgText::Text::SCREEN);
+                        text->setCharacterSize(1);
+                        text->setText(std::to_string(entry.first));
+                        text->getOrCreateStateSet()->setMode(GL_DEPTH_TEST, osg::StateAttribute::OFF);
+
+                        auto doorXform = getMatrixForDoorId(entry.first);
+
+                        auto doorMatTransform = new osg::MatrixTransform(doorXform);
+                        doorMatTransform->addChild(text);
+
+                        doorLabelsGroup->addChild(doorMatTransform);
+                    }
+                }
+
+                addChild(doorLabelsGroup);
+
+                return;
+            }
+
+            if (!on)
+            {
+                if (doorLabelsGroup != nullptr)
+                    removeChild(doorLabelsGroup);
+
+                return;
+            }
+        }
+
+    protected:
+
+        virtual ~SiegeNodeMesh() = default;
+
+    private:
+
         const osg::Matrix getMatrixForDoorId(const uint32_t id)
         {
             for (const auto& entry : doorXform)
@@ -52,12 +100,7 @@ namespace ehb
             return osg::Matrix::identity();
         }
 
-    protected:
-
-        virtual ~SiegeNodeMesh() = default;
-
-    private:
-
         std::vector<std::pair<unsigned int, osg::Matrix>> doorXform;
+        osg::ref_ptr<osg::Group> doorLabelsGroup;
     };
 }
