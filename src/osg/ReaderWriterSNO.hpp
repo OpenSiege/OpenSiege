@@ -47,7 +47,9 @@ namespace ehb
             {
                 if (entry.first == id)
                     return entry.second;
-            }            
+            }
+
+            return osg::Matrix::identity();
         }
 
     protected:
