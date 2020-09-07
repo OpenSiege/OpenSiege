@@ -117,6 +117,8 @@ namespace ehb
                     {
                         drawDoorLabels = true;
                         mesh->drawAllDoorLabels(true);
+
+                        return true;
                     }
                 }
             }

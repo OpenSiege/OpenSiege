@@ -94,8 +94,6 @@ namespace ehb
         stream.read((char *)&unk8, sizeof(uint32_t));
         stream.read((char *)&checksum, sizeof(float));
 
-        
-
         if (bSwap)
         {
             osg::swapBytes4((char *)&doorCount);
@@ -119,19 +117,9 @@ namespace ehb
             osg::swapBytes4((char *)&checksum);
         }
 
-        osg::notify(osg::DEBUG_INFO) << "SNO File loaded with the following details:" <<
-            "\nmagic: " << magic <<
-            "\nversion: " << version <<
-            "\nunk1: " << unk1 <<
-            "\ndoorCount: " << doorCount <<
-            "\nspotCount: " << spotCount <<
-            "\ncornerCount: " << cornerCount << std::endl;
-
-        // osg::ref_ptr<SiegeNodeDoorData> doorData = new SiegeNodeDoorData;
-
         for (uint32_t index = 0; index < doorCount; index++)
         {
-            int id, count;
+            int32_t id, count;
             float a00, a01, a02, a10, a11, a12, a20, a21, a22, x, y, z;
 
             stream.read((char *)&id, sizeof(uint32_t));
@@ -267,7 +255,7 @@ namespace ehb
             }
 
             // create our unsigned short index data, as per the mesh format
-            osg::ref_ptr<osg::DrawElementsUShort> elements = new osg::DrawElementsUShort(GL_TRIANGLES, static_cast<unsigned int>(count));
+            osg::ref_ptr<osg::DrawElementsUShort> elements = new osg::DrawElementsUShort(GL_TRIANGLES, static_cast<uint32_t>(count));
 
             // read in each index value and adjust for the global vertex list
             for (uint32_t j = 0; j < count; ++j)

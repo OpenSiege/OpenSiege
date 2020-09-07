@@ -53,7 +53,6 @@ namespace ehb
 
                     for (const auto& entry : doorXform)
                     {
-
                         auto text = new osgText::Text;
                         text->setAxisAlignment(osgText::Text::SCREEN);
                         text->setCharacterSize(1);
@@ -100,7 +99,7 @@ namespace ehb
             return osg::Matrix::identity();
         }
 
-        std::vector<std::pair<unsigned int, osg::Matrix>> doorXform;
+        std::vector<std::pair<uint32_t, osg::Matrix>> doorXform;
         osg::ref_ptr<osg::Group> doorLabelsGroup;
     };
 }
