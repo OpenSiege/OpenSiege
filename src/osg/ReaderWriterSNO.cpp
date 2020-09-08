@@ -340,4 +340,64 @@ namespace ehb
 
         return node.release();
     }
+
+    void SiegeNodeMesh::connect(osg::MatrixTransform* targetNode, uint32_t targetDoor, osg::MatrixTransform* connectNode, uint32_t connectDoor)
+    {
+        auto log = spdlog::get("log");
+
+        // const auto targetMesh = dynamic_cast<SiegeNodeMesh *>(targetNode->getParent(0));
+        // const auto connectMesh = dynamic_cast<SiegeNodeMesh *>(connectNode->getParent(0));
+
+        const auto targetMesh = dynamic_cast<SiegeNodeMesh*>(targetNode->getChild(0));
+        const auto connectMesh = dynamic_cast<SiegeNodeMesh*>(connectNode->getChild(0));
+
+        if (!targetMesh) { log->error("SiegeNode::connect - targetNode has no SiegeNode parent"); return; }
+        if (!connectMesh) { log->error("SiegeNode::connect - connectNode has no SiegeNode parent"); return; }
+
+        const osg::Matrix* m1 = nullptr, * m2 = nullptr;
+
+        for (const auto& entry : targetMesh->doorXform)
+        {
+            if (entry.first == targetDoor)
+            {
+                m1 = &entry.second;
+                break;
+            }
+        }
+
+        if (!m1) { log->error("couldn't find targetDoor {}", targetDoor); return; }
+
+        for (const auto& entry : connectMesh->doorXform)
+        {
+            if (entry.first == connectDoor)
+            {
+                m2 = &entry.second;
+                break;
+            }
+        }
+
+        if (!m2) { log->error("couldn't find connectDoor {}", connectDoor); return; }
+
+        osg::Matrix xform;
+
+        /*
+         * lets start at the location of the destination door
+         * we want to use an inverse here to account for the fact that
+         * we're currently placing the center of connectNode at the location
+         * of its door and will be connecting this to door 1
+         */
+        xform = osg::Matrix::inverse(*m2);
+
+        // account for flipping from door 1 to door 2
+        xform.postMultRotate(osg::Quat(osg::DegreesToRadians(180.0), osg::Vec3(0, 1, 0)));
+
+        // now transform by the first door...
+        xform.postMult(*m1);
+
+        // and adjust for the node we're connecting to
+        xform.postMult(targetNode->getMatrix());
+
+        // "Hold on to your butts." - Ray Arnold
+        connectNode->setMatrix(xform);
+    }
 }

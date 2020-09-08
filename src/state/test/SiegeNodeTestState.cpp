@@ -59,8 +59,8 @@ namespace ehb
         {
             log->info("Loaded {}", meshName);
 
-            auto transform = new osg::MatrixTransform;
-            transform->addChild(mesh);
+            auto t1 = new osg::MatrixTransform;
+            t1->addChild(mesh);
 
             // TODO: is there a better way to do this?
             // re-position the camera based on the size of node and orient it up a little bit get a birds eye-view
@@ -69,7 +69,7 @@ namespace ehb
                 osg::ComputeBoundsVisitor cbv;
                 mesh->accept(cbv);
 
-                transform->addChild(createBoxForDebug(cbv.getBoundingBox()._min, cbv.getBoundingBox()._max));
+                t1->addChild(createBoxForDebug(cbv.getBoundingBox()._min, cbv.getBoundingBox()._max));
 
                 osg::BoundingSphere sphere;
                 sphere.expandBy(cbv.getBoundingBox());
@@ -79,9 +79,15 @@ namespace ehb
 
                 manipulator->setHomePosition(sphere.center() + osg::Vec3d(0.0, dist, 7.0f), sphere.center(), osg::Vec3d(0.0f, 0.0f, 1.0f));
                 manipulator->home(1);
-            }            
+            }
 
-            scene.addChild(transform);
+            auto t2 = new osg::MatrixTransform;
+            t2->addChild(mesh);
+
+            SiegeNodeMesh::connect(t1, 4, t2, 8);
+
+            scene.addChild(t1);
+            scene.addChild(t2);
         }
         else
         {

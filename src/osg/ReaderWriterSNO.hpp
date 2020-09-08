@@ -43,6 +43,8 @@ namespace ehb
 
         // void SRequestNodeConnection( SiegeId targetNode, DWORD targetDoor, SiegeId connectNode, DWORD connectDoor, bool bConnect, bool bForceComplete )
 
+        static void connect(osg::MatrixTransform* targetNode, uint32_t targetDoor, osg::MatrixTransform* connectNode, uint32_t connectDoor);
+
         void drawAllDoorLabels(bool on)
         {
             if (on)
@@ -93,7 +95,10 @@ namespace ehb
             for (const auto& entry : doorXform)
             {
                 if (entry.first == id)
+                {
                     return entry.second;
+                    break;
+                }
             }
 
             return osg::Matrix::identity();
