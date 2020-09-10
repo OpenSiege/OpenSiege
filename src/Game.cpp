@@ -3,6 +3,7 @@
 
 #include <minIni.h>
 #include <osg/MatrixTransform>
+#include <osg/ClipControl>
 #include <osgGA/TrackballManipulator>
 
 #include "cfg/IConfig.hpp"
@@ -12,7 +13,7 @@
 
 namespace ehb
 {
-    Game::Game(IConfig & config) : config(config), gameStateMgr(this), scene3d(new osg::Group)
+    Game::Game(IConfig & config) : config(config), gameStateMgr(this), scene3d(new osg::Group), scene2d(new osg::Group)
     {
     }
 
@@ -158,6 +159,27 @@ namespace ehb
 
             // our rotation should be directly under the root and is a sibling to the gui camera
             root->addChild(rotation);
+        }
+
+        if (auto camera = new osg::Camera)
+        {
+            // create our 2d camera and attach the gui scene
+            camera->setProjectionMatrix(osg::Matrix::ortho2D(0, config.getInt("width", 800), 0, config.getInt("height", 600)));
+            camera->setViewport(0, 0, config.getInt("width", 800), config.getInt("height", 600));
+            camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
+            camera->setViewMatrix(osg::Matrix::identity());
+            camera->setClearMask(GL_DEPTH_BUFFER_BIT);
+            camera->setRenderOrder(osg::Camera::POST_RENDER);
+            camera->setAllowEventFocus(false);
+            camera->addChild(scene2d);
+
+            // turn off lighting for the gui camera and small screen culling
+            camera->getOrCreateStateSet()->setMode(GL_LIGHTING, false);
+            camera->getOrCreateStateSet()->setAttribute(new osg::ClipControl(osg::ClipControl::UPPER_LEFT), osg::StateAttribute::OVERRIDE);
+            camera->setCullingMode(camera->getCullingMode() & ~osg::CullSettings::SMALL_FEATURE_CULLING);
+
+            // attach the 2d camera to the graph
+            root->addChild(camera);
         }
     }
 }

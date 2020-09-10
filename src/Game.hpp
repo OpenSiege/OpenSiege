@@ -39,5 +39,6 @@ namespace ehb
         osgViewer::Viewer viewer;
 
         osg::ref_ptr<osg::Group> scene3d;
+        osg::ref_ptr<osg::Group> scene2d;
     };
 }
