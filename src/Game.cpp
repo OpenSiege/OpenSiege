@@ -135,7 +135,7 @@ namespace ehb
         }
         else if (gameStateType == "UITestState")
         {
-            return new UITestState(gameStateMgr, fileSys, *scene2d);
+            return new UITestState(gameStateMgr, viewer, fileSys, *scene2d);
         }
 
         return nullptr;

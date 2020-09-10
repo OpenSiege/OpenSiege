@@ -3,6 +3,11 @@
 
 #include "state/IGameState.hpp"
 
+namespace osgViewer
+{
+    class Viewer;
+}
+
 namespace ehb
 {
     class IConfig;
@@ -11,7 +16,7 @@ namespace ehb
     {
     public:
 
-        UITestState(IGameStateMgr & gameStateMgr, IFileSys& fileSys, osg::Group& scene);
+        UITestState(IGameStateMgr & gameStateMgr, osgViewer::Viewer& viewer, IFileSys& fileSys, osg::Group& scene);
 
         virtual ~UITestState() = default;
 
@@ -23,13 +28,13 @@ namespace ehb
     private:
 
         IGameStateMgr & gameStateMgr;
-        IConfig & config;
         IFileSys& fileSys;
+        osgViewer::Viewer& viewer;
 
         osg::Group& scene;
     };
 
-    inline UITestState::UITestState(IGameStateMgr& gameStateMgr, IFileSys& fileSys, osg::Group& scene) : gameStateMgr(gameStateMgr), config(config), fileSys(fileSys), scene(scene)
+    inline UITestState::UITestState(IGameStateMgr& gameStateMgr, osgViewer::Viewer &viewer, IFileSys& fileSys, osg::Group& scene) : gameStateMgr(gameStateMgr), viewer(viewer), fileSys(fileSys), scene(scene)
     {
     }
 }

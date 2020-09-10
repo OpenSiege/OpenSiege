@@ -46,9 +46,12 @@ set(SIEGE_SOURCES
     "src/osg/FileNameMap.cpp"
     "src/osg/ReaderWriterRAW.cpp"
     "src/osg/ReaderWriterSNO.cpp"
+    "src/osg/ReaderWriterFont.cpp"
 
     "src/LocalFileSys.cpp"
     "src/TankFileSys.cpp"
+
+    "src/ui/ImageFont.cpp"
 
     "src/Platform.cpp"
     "src/Game.cpp"
