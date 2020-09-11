@@ -82,8 +82,6 @@ namespace ehb
         {
             if (inputLine->text != ">")
             {
-                spdlog::get("log")->info("Adding history to console @ {}", currentHistoryLine);
-
                 auto line = std::make_unique<TextLine>(*this);
                 line->text = inputLine->text.substr(1, inputLine->text.size()); // chop the leading >
                 line->build(*font);
@@ -104,6 +102,23 @@ namespace ehb
             {
                 inputLine->text.erase(inputLine->text.length() - 1, 1);
                 inputLine->build(*font);
+            }
+        }
+
+        bool active()
+        {
+            return getNodeMask() != 0;
+        }
+
+        void toggle()
+        {
+            if (!active())
+            {
+                setNodeMask(~0);
+            }
+            else
+            {
+                setNodeMask(0);
             }
         }
     };
@@ -172,20 +187,30 @@ namespace ehb
             case(osgGA::GUIEventAdapter::KEYDOWN):
             {
                 int32_t key = event.getKey();
-                if (key > 0 && key < 256)
+                if (key == osgGA::GUIEventAdapter::KEY_Backquote)
                 {
-                    console->handleCharacter(event.getKey());
-                }
-                else if (key == osgGA::GUIEventAdapter::KEY_Return)
-                {
-                    console->addLineToHistory();
-                }
-                else if (key == osgGA::GUIEventAdapter::KEY_BackSpace)
-                {
-                    console->removeLastCharacterFromInputLine();
+                    console->toggle();
+
+                    return true;
                 }
 
-                return true;
+                if (console->active())
+                {
+                    if (key > 0 && key < 256)
+                    {
+                        console->handleCharacter(event.getKey());
+                    }
+                    else if (key == osgGA::GUIEventAdapter::KEY_Return)
+                    {
+                        console->addLineToHistory();
+                    }
+                    else if (key == osgGA::GUIEventAdapter::KEY_BackSpace)
+                    {
+                        console->removeLastCharacterFromInputLine();
+                    }
+
+                    return true;
+                }
             }
         }
         return false;
