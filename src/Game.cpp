@@ -28,8 +28,8 @@ namespace ehb
         {
             int defaultX = 0, defaultY = 0;
 
-            int actualWidth = config.getInt("width", 800);
-            int actualHeight = config.getInt("height", 600);
+            int actualWidth = config.getInt("width", 640);
+            int actualHeight = config.getInt("height", 480);
 
             // calculate the coordinates which would put the window at the center of the screen
             if (osg::GraphicsContext::WindowingSystemInterface* wsi = osg::GraphicsContext::getWindowingSystemInterface())
@@ -143,6 +143,18 @@ namespace ehb
 
     bool Game::handle(const osgGA::GUIEventAdapter& event, osgGA::GUIActionAdapter& action, osg::Object*, osg::NodeVisitor*)
     {
+        if (event.getEventType() == osgGA::GUIEventAdapter::RESIZE)
+        {
+            // resize cameras, etc...
+            if (scene2d && scene2d->getNumParents() != 0)
+            {
+                if (auto camera = scene2d->getParent(0)->asCamera())
+                {
+                    camera->setProjectionMatrix(osg::Matrix::ortho2D(0, event.getWindowWidth(), 0, event.getWindowHeight()));
+                }
+            }
+        }
+
         return gameStateMgr.handle(event, action);
     }
 
@@ -169,8 +181,8 @@ namespace ehb
         if (auto camera = new osg::Camera)
         {
             // create our 2d camera and attach the gui scene
-            camera->setProjectionMatrix(osg::Matrix::ortho2D(0, config.getInt("width", 800), 0, config.getInt("height", 600)));
-            camera->setViewport(0, 0, config.getInt("width", 800), config.getInt("height", 600));
+            camera->setProjectionMatrix(osg::Matrix::ortho2D(0, config.getInt("width", 640), 0, config.getInt("height", 480)));
+            camera->setViewport(0, 0, config.getInt("width", 640), config.getInt("height", 480));
             camera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
             camera->setViewMatrix(osg::Matrix::identity());
             camera->setClearMask(GL_DEPTH_BUFFER_BIT);

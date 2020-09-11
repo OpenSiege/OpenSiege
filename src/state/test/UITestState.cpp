@@ -7,6 +7,8 @@
 #include <ui/ImageFont.hpp>
 #include <osg/PositionAttitudeTransform>
 
+#include "ui/Widget.hpp"
+
 #include <spdlog/spdlog.h>
 
 namespace ehb
@@ -63,6 +65,12 @@ namespace ehb
         {
             spdlog::get("log")->error("failed to load {}", font);
         }
+
+        auto widget = new Widget;
+        widget->setRect(0, 449, 640, 480);
+        widget->addDebugData();
+
+        scene.addChild(widget);
     }
 
     void UITestState::leave()
