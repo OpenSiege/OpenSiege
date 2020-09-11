@@ -14,7 +14,7 @@
 
 namespace ehb
 {
-    Game::Game(IConfig & config) : config(config), gameStateMgr(this), scene3d(new osg::Group), scene2d(new osg::Group)
+    Game::Game(IConfig & config) : config(config), gameStateMgr(this), scene3d(new osg::Group), scene2d(new osg::Group), console(new Console(gameStateMgr))
     {
     }
 
@@ -123,7 +123,7 @@ namespace ehb
     {
         if (gameStateType == "InitState")
         {
-            return new InitState(gameStateMgr, config, fileSys);
+            return new InitState(gameStateMgr, config, fileSys, *console);
         }
         else if (gameStateType == "GasTestState")
         {
@@ -153,6 +153,23 @@ namespace ehb
                     camera->setProjectionMatrix(osg::Matrix::ortho2D(0, event.getWindowWidth(), 0, event.getWindowHeight()));
                 }
             }
+        }
+
+        // this feels a bit hacky
+        if (event.getEventType() == osgGA::GUIEventAdapter::KEYDOWN)
+        {
+            if (event.getKey() == osgGA::GUIEventAdapter::KEY_Backquote)
+            {
+                console->toggle();
+
+                return true;
+            }
+        }
+
+        // this essentially causes the console to be modal when it is displayed
+        if (console->active())
+        {
+            return console->handle(event, action);
         }
 
         return gameStateMgr.handle(event, action);
@@ -197,6 +214,9 @@ namespace ehb
 
             // attach the 2d camera to the graph
             root->addChild(camera);
+
+            // the console is special as its not managed by the shell, it is essentially global
+            camera->addChild(console);
         }
     }
 }

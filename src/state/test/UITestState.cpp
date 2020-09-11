@@ -29,10 +29,10 @@ namespace ehb
 
         std::string font = "b_gui_fnt_12p_copperplate-light";
 
+#if 0
         auto options = new osgDB::Options(std::string("font=") + font);
         osg::ref_ptr<ImageFont> imageFont = osgDB::readRefFile<ImageFont>("/ui/fonts/fonts.gas", options);
 
-        #if 0
         if (imageFont != nullptr)
         {
             TextLine * line = new TextLine(scene);
@@ -58,15 +58,13 @@ namespace ehb
         hp_button->setUVRect(0.000000, 0.000000, 0.687500, 1.000000);
         //hp_button->addDebugData();
 
-        console = new Console(imageFont, gameStateMgr);
-
         scene.addChild(data_bar);
         scene.addChild(hp_button);
-        scene.addChild(console);
     }
 
     void UITestState::leave()
     {
+        scene.removeChildren(0, scene.getNumChildren());
     }
 
     void UITestState::update(double deltaTime)
@@ -75,39 +73,6 @@ namespace ehb
 
     bool UITestState::handle(const osgGA::GUIEventAdapter & event, osgGA::GUIActionAdapter & action)
     {
-        switch (event.getEventType())
-        {
-            case(osgGA::GUIEventAdapter::KEYDOWN):
-            {
-                int32_t key = event.getKey();
-                if (key == osgGA::GUIEventAdapter::KEY_Backquote)
-                {
-                    console->toggle();
-
-                    return true;
-                }
-
-                if (console->active())
-                {
-                    if (key > 0 && key < 256)
-                    {
-                        console->handleCharacter(event.getKey());
-                    }
-                    else if (key == osgGA::GUIEventAdapter::KEY_Return)
-                    {
-                        console->addLineToHistory();
-                    }
-                    else if (key == osgGA::GUIEventAdapter::KEY_BackSpace)
-                    {
-                        console->removeLastCharacterFromInputLine();
-                    }
-
-                    return true;
-                }
-
-                spdlog::get("log")->info("console isn't active, letting action fall through");
-            }
-        }
         return false;
     }
 }

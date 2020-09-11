@@ -3,6 +3,7 @@
 
 #include <spdlog/spdlog.h>
 #include <osgDB/Registry>
+#include <osgDB/ReadFile>
 
 #include "LocalFileSys.hpp"
 #include "cfg/IConfig.hpp"
@@ -11,6 +12,9 @@
 #include "osg/ReaderWriterRAW.hpp"
 #include "osg/ReaderWriterSNO.hpp"
 #include "osg/ReaderWriterFont.hpp"
+
+#include "ui/ImageFont.hpp"
+#include "console/Console.hpp"
 
 namespace ehb
 {
@@ -56,6 +60,10 @@ namespace ehb
         }
 
         // TODO: any other up front init (gui?) that needs to be done
+        auto options = new osgDB::Options(std::string("font=b_gui_fnt_12p_copperplate-light"));
+        osg::ref_ptr<ImageFont> imageFont = osgDB::readRefFile<ImageFont>("/ui/fonts/fonts.gas", options);
+        console.font = imageFont;
+        console.resetCaret();
 
         // TODO: go to the next state
         if (const std::string state = config.getString("state"); !state.empty())

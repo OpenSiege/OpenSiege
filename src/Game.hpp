@@ -5,6 +5,8 @@
 #include "state/GameStateMgr.hpp"
 #include "LocalFileSys.hpp"
 
+#include "console/Console.hpp"
+
 #include <osgGA/GUIEventHandler>
 #include <osgViewer/Viewer>
 
@@ -40,5 +42,8 @@ namespace ehb
 
         osg::ref_ptr<osg::Group> scene3d;
         osg::ref_ptr<osg::Group> scene2d;
+
+        // console needs to be last to ensure all systems are booted
+        osg::ref_ptr<Console> console;
     };
 }

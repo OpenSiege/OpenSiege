@@ -7,8 +7,11 @@
 
 namespace ehb
 {
-    Console::Console(ImageFont* imageFont, IGameStateMgr& gameStateMgr) : Widget(), font(imageFont), gameStateMgr(gameStateMgr)
+    Console::Console(IGameStateMgr& gameStateMgr) : Widget(), gameStateMgr(gameStateMgr)
     {
+        getOrCreateStateSet()->setMode(GL_DEPTH_TEST, false);
+        getOrCreateStateSet()->setMode(GL_BLEND, true);
+
         inputLine = std::make_unique<TextLine>(*this);
 
         // slightly offset from full size of the window so we can see the outline
@@ -18,7 +21,33 @@ namespace ehb
         addDebugData();
 
         inputLine->transform->setPosition(osg::Vec3(4, effectiveRect().bottom - characterSize, 0));
-        resetCaret();
+    }
+
+    bool Console::handle(const osgGA::GUIEventAdapter& event, osgGA::GUIActionAdapter& action)
+    {
+        switch (event.getEventType())
+        {
+            case(osgGA::GUIEventAdapter::KEYDOWN):
+            {
+                int32_t key = event.getKey();
+
+                if (key > 0 && key < 256)
+                {
+                    handleCharacter(event.getKey());
+                }
+                else if (key == osgGA::GUIEventAdapter::KEY_Return)
+                {
+                    addLineToHistory();
+                }
+                else if (key == osgGA::GUIEventAdapter::KEY_BackSpace)
+                {
+                    removeLastCharacterFromInputLine();
+                }
+
+                return true;
+            }
+        }
+        return false;
     }
 
     void Console::resetCaret()

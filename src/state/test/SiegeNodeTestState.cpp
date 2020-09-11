@@ -91,6 +91,7 @@ namespace ehb
 
     void SiegeNodeTestState::leave()
     {
+        scene.removeChildren(0, scene.getNumChildren());
     }
 
     void SiegeNodeTestState::update(double deltaTime)

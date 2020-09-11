@@ -12,7 +12,6 @@ namespace ehb
 {
     class IConfig;
     class IFileSys;
-    class Console;
     class UITestState : public IGameState
     {
     public:
@@ -33,8 +32,6 @@ namespace ehb
         osgViewer::Viewer& viewer;
 
         osg::Group& scene;
-
-        Console* console = nullptr;
     };
 
     inline UITestState::UITestState(IGameStateMgr& gameStateMgr, osgViewer::Viewer &viewer, IFileSys& fileSys, osg::Group& scene) : gameStateMgr(gameStateMgr), viewer(viewer), fileSys(fileSys), scene(scene)

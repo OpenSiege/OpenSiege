@@ -1,13 +1,14 @@
 
 #pragma once
 
-#include <string>
+#include "ConsoleSignatureScanner.hpp"
 
+#include <string>
 #include <ui/Widget.hpp>
 #include <ui/TextLine.hpp>
 #include <ui/ImageFont.hpp>
-
-#include "ConsoleSignatureScanner.hpp"
+#include <osgGA/GUIEventAdapter>
+#include <osgGA/GUIActionAdapter>
 
 namespace ehb
 {
@@ -27,7 +28,10 @@ namespace ehb
 
         osg::ref_ptr<ImageFont> font = nullptr;
 
-        Console(ImageFont* imageFont, IGameStateMgr& gameStateMgr);
+        Console(IGameStateMgr& gameStateMgr);
+
+        // this is a fake handler
+        bool handle(const osgGA::GUIEventAdapter& event, osgGA::GUIActionAdapter& action);
 
         virtual ~Console() = default;
 
