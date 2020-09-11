@@ -112,7 +112,7 @@ namespace ehb
                     
                     if (param == "world")
                     {
-                        scene3d.removeChildren(0, scene2d.getNumChildren());
+                        scene3d.removeChildren(0, scene3d.getNumChildren());
                     }
                     else if (param == "gui")
                     {
