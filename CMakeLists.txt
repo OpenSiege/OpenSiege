@@ -61,6 +61,7 @@ set(SIEGE_SOURCES
     "src/console/ConsoleSignatureScanner.cpp"
     "src/console/Console.cpp"
 
+    "src/StringTool.cpp"
     "src/Platform.cpp"
     "src/Game.cpp"
     "src/main.cpp"

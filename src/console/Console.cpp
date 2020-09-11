@@ -3,6 +3,7 @@
 
 #include <sstream>
 #include "state/IGameStateMgr.hpp"
+#include "StringTool.hpp"
 
 #include <spdlog/spdlog.h>
 
@@ -78,17 +79,21 @@ namespace ehb
             {
                 std::stringstream ss;
 
-                ss << "setstate <stateName>";
+                ss << "setstate <stateName>\nclearscene <world/gui>";
 
-                auto helpLine = std::make_unique<TextLine>(*this);
-                helpLine->text = ss.str();
-                helpLine->build(*font);
+                for (const auto& line : StringTool::split(ss.str(), '\n'))
+                {
+                    auto helpLine = std::make_unique<TextLine>(*this);
+                    helpLine->text = line;
+                    helpLine->build(*font);
 
-                helpLine->transform->setPosition(osg::Vec3(4, characterSize * currentHistoryLine, 0));
+                    helpLine->transform->setPosition(osg::Vec3(4, characterSize * currentHistoryLine, 0));
 
-                history.emplace_back(std::move(helpLine));
+                    history.emplace_back(std::move(helpLine));
 
-                currentHistoryLine++;
+                    currentHistoryLine++;
+                }
+
             }
             else if (scanner.accept("setstate"))
             {
