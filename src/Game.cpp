@@ -14,7 +14,7 @@
 
 namespace ehb
 {
-    Game::Game(IConfig & config) : config(config), gameStateMgr(this), scene3d(new osg::Group), scene2d(new osg::Group), console(new Console(gameStateMgr))
+    Game::Game(IConfig & config) : config(config), gameStateMgr(this), scene3d(new osg::Group), scene2d(new osg::Group), console(new Console(gameStateMgr, *scene3d, *scene2d))
     {
     }
 

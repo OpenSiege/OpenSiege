@@ -18,6 +18,8 @@ namespace ehb
     public:
 
         IGameStateMgr& gameStateMgr;
+        osg::Group& scene3d;
+        osg::Group& scene2d;
 
         int32_t width = 640, height = 480, characterSize = 12;
         int32_t maxLines = (height / characterSize);
@@ -28,7 +30,7 @@ namespace ehb
 
         osg::ref_ptr<ImageFont> font = nullptr;
 
-        Console(IGameStateMgr& gameStateMgr);
+        Console(IGameStateMgr& gameStateMgr, osg::Group& scene3d, osg::Group& scene2d);
 
         // this is a fake handler
         bool handle(const osgGA::GUIEventAdapter& event, osgGA::GUIActionAdapter& action);
