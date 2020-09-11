@@ -2,6 +2,8 @@
 #include "Widget.hpp"
 
 #include <osg/Geometry>
+#include <osgDB/ReadFile>
+#include <osg/Texture2D>
 
 #include <spdlog/spdlog.h>
 
@@ -13,6 +15,56 @@ namespace ehb
         rect.left = left;
         rect.right = right;
         rect.bottom = bottom;
+    }
+
+    void Widget::loadTexture(const std::string& textureFileName, bool resizeWidget)
+    {
+        // TODO: if common control do nothing?
+
+        if (auto image = osgDB::readRefImageFile(textureFileName + ".raw"))
+        {
+            if (resizeWidget)
+            {
+                // TODO
+            }
+
+            if (baseComponent == nullptr)
+            {
+                baseComponent = new CenterComponent(image);
+                addChild(baseComponent);
+            }
+            else
+            {
+                auto texture = new osg::Texture2D(image);
+                auto geometry = static_cast<osg::Geometry*>(baseComponent->getChild(0));
+                geometry->getOrCreateStateSet()->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
+            }
+
+            baseComponent->resizeToWidget(*this);
+        }
+    }
+
+    void Widget::setUVRect(float left, float top, float right, float bottom)
+    {
+        uv.left = left;
+        uv.right = right;
+        uv.top = top;
+        uv.bottom = bottom;
+
+        if (baseComponent)
+        {
+            if (auto data = dynamic_cast<osg::Vec2Array*>(baseComponent->getChild(0)->asGeometry()->getTexCoordArray(0)))
+            {
+                (*data)[0].set(left, bottom);
+                (*data)[1].set(left, top);
+                (*data)[2].set(right, top);
+                (*data)[3].set(right, bottom);
+            }
+        }
+        else
+        {
+            spdlog::get("log")->error("you tried to set the rect on a widget before setting the texture");
+        }
     }
 
     void Widget::addDebugData()
