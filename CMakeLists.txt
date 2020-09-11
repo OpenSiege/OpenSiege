@@ -52,6 +52,8 @@ set(SIEGE_SOURCES
     "src/TankFileSys.cpp"
 
     "src/ui/ImageFont.cpp"
+    "src/ui/Rect.cpp"
+    "src/ui/Widget.cpp"
 
     "src/Platform.cpp"
     "src/Game.cpp"
