@@ -55,12 +55,12 @@ namespace ehb
             inputLine = std::make_unique<TextLine>(*this);
 
             // slightly offset from full size of the window so we can see the outline
-            setRect(2, 2, 638, 478);
+            setRect(2, 2, width - 2, height - 2);
 
             // hack in an outline
             addDebugData();
 
-            inputLine->transform->setPosition(osg::Vec3(4, effectiveRect().bottom - (characterSize * 2), 0));
+            inputLine->transform->setPosition(osg::Vec3(4, effectiveRect().bottom - characterSize, 0));
             resetCaret();
         }
 
