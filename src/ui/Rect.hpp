@@ -51,12 +51,12 @@ namespace ehb
 
     inline uint32_t Rect::width() const
     {
-        return top > left ? top - left : 0;
+        return right > left ? right - left : 0;
     }
 
     inline uint32_t Rect::height() const
     {
-        return bottom > right ? bottom - right : 0;
+        return bottom > top ? bottom - top : 0;
     }
 
     inline void Rect::resize(uint32_t w, uint32_t h)
