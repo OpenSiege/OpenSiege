@@ -56,6 +56,7 @@ set(SIEGE_SOURCES
     "src/ui/NormalizedRect.cpp"
     "src/ui/WidgetComponent.cpp"
     "src/ui/Widget.cpp"
+    "src/ui/TextLine.cpp"
 
     "src/Platform.cpp"
     "src/Game.cpp"

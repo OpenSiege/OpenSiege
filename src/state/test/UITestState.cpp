@@ -8,36 +8,13 @@
 #include <osg/PositionAttitudeTransform>
 #include <state/GameStateMgr.hpp>
 
+#include "ui/TextLine.hpp"
 #include "ui/Widget.hpp"
 
 #include <spdlog/spdlog.h>
 
 namespace ehb
 {
-    struct TextLine
-    {
-        std::string text;
-        osg::Vec4 color = {1.f, 1.f, 1.f, 1.f };
-        osg::ref_ptr<osg::PositionAttitudeTransform> transform = new osg::PositionAttitudeTransform;
-        osg::ref_ptr<osg::Drawable> drawable = nullptr;
-
-        TextLine(osg::Group& parent)
-        {
-            parent.addChild(transform);
-        }
-
-        void build(const Font& font)
-        {
-            if (drawable != nullptr)
-            {
-                transform->removeChild(drawable);
-            }
-
-            drawable = font.createText(text, color);
-            transform->addChild(drawable);
-        }
-    };
-
     class ConsoleSignatureScanner
     {
     public:
