@@ -58,6 +58,9 @@ set(SIEGE_SOURCES
     "src/ui/Widget.cpp"
     "src/ui/TextLine.cpp"
 
+    "src/console/ConsoleSignatureScanner.cpp"
+    "src/console/Console.cpp"
+
     "src/Platform.cpp"
     "src/Game.cpp"
     "src/main.cpp"
