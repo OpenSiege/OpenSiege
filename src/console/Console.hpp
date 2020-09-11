@@ -12,16 +12,18 @@
 
 namespace ehb
 {
+    class IConfig;
     class IGameStateMgr;
     class Console : public Widget
     {
     public:
 
+        IConfig& config;
         IGameStateMgr& gameStateMgr;
         osg::Group& scene3d;
         osg::Group& scene2d;
 
-        int32_t width = 640, height = 480, characterSize = 12;
+        int32_t characterSize = 12;
         int32_t maxLines = (height / characterSize);
         int32_t currentHistoryLine = 0;
 
@@ -30,7 +32,7 @@ namespace ehb
 
         osg::ref_ptr<ImageFont> font = nullptr;
 
-        Console(IGameStateMgr& gameStateMgr, osg::Group& scene3d, osg::Group& scene2d);
+        Console(IConfig& config, IGameStateMgr& gameStateMgr, osg::Group& scene3d, osg::Group& scene2d);
 
         // this is a fake handler
         bool handle(const osgGA::GUIEventAdapter& event, osgGA::GUIActionAdapter& action);
@@ -48,5 +50,9 @@ namespace ehb
         bool active();
 
         void toggle();
+        
+    private:
+    
+        int32_t width, height;
     };
 }

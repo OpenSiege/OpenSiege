@@ -3,18 +3,22 @@
 
 #include <sstream>
 #include "state/IGameStateMgr.hpp"
+#include "cfg/IConfig.hpp"
 #include "StringTool.hpp"
 
 #include <spdlog/spdlog.h>
 
 namespace ehb
 {
-    Console::Console(IGameStateMgr& gameStateMgr, osg::Group& scene3d, osg::Group& scene2d) : Widget(), gameStateMgr(gameStateMgr), scene3d(scene3d), scene2d(scene2d)
+    Console::Console(IConfig& config, IGameStateMgr& gameStateMgr, osg::Group& scene3d, osg::Group& scene2d) : Widget(), config(config), gameStateMgr(gameStateMgr), scene3d(scene3d), scene2d(scene2d)
     {
         getOrCreateStateSet()->setMode(GL_DEPTH_TEST, false);
         getOrCreateStateSet()->setMode(GL_BLEND, true);
 
         inputLine = std::make_unique<TextLine>(*this);
+
+        width = config.getInt("width", 640);
+        height = config.getInt("height", 480);
 
         // slightly offset from full size of the window so we can see the outline
         setRect(2, 2, width - 2, height - 2);
