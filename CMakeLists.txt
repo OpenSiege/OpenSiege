@@ -53,6 +53,8 @@ set(SIEGE_SOURCES
 
     "src/ui/ImageFont.cpp"
     "src/ui/Rect.cpp"
+    "src/ui/NormalizedRect.cpp"
+    "src/ui/WidgetComponent.cpp"
     "src/ui/Widget.cpp"
 
     "src/Platform.cpp"
