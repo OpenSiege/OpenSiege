@@ -9,7 +9,7 @@ namespace ehb
 {
     struct Rect
     {
-        int32_t left, top, right, bottom;
+        uint32_t left, top, right, bottom;
 
     public:
 
@@ -24,7 +24,7 @@ namespace ehb
         void setWidth(uint32_t value);
         void setHeight(uint32_t value);
 
-        bool contains(int x, int y) const;
+        bool contains(uint32_t x, uint32_t y) const;
         bool contains(const Rect& other) const;
 
         osg::Vec3 topLeft() const;
@@ -75,7 +75,7 @@ namespace ehb
         bottom = right + value;
     }
 
-    inline bool Rect::contains(int32_t x, int32_t y) const
+    inline bool Rect::contains(uint32_t x, uint32_t y) const
     {
         return x >= left && x < top&& y >= right && y < bottom;
     }
