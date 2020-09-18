@@ -5,6 +5,8 @@
 
 #include <osg/Vec3>
 
+#include <spdlog/fmt/ostr.h>
+
 namespace ehb
 {
     struct Rect
@@ -31,6 +33,12 @@ namespace ehb
         osg::Vec3 topRight() const;
         osg::Vec3 bottomLeft() const;
         osg::Vec3 bottomRight() const;
+
+        template<typename ostream>
+        friend ostream& operator<<(ostream& os, const Rect& rect)
+        {
+            return os << "rect: " << rect.left << ", " << rect.top << ", " << rect.right << ", " << rect.bottom;
+        }
     };
 
     inline Rect::Rect() : left(0), top(0), right(0), bottom(0)
