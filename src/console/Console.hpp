@@ -18,6 +18,32 @@ namespace ehb
     {
     public:
 
+        // the console shouldn't rely on the filesystem and should use a system font
+        // TODO: disconnect the console from ImageFonts
+        osg::ref_ptr<ImageFont> font = nullptr;
+
+        Console(IConfig& config, IGameStateMgr& gameStateMgr, osg::Group& scene3d, osg::Group& scene2d);
+
+        virtual ~Console() = default;
+
+        bool handle(const osgGA::GUIEventAdapter& event, osgGA::GUIActionAdapter& action);
+
+        bool active();
+
+        void toggle();
+
+        void resetCaret();
+
+    private:
+
+        void handleCharacter(uint8_t character);
+
+        void addLineToHistory();
+
+        void removeLastCharacterFromInputLine();
+        
+    private:
+
         IConfig& config;
         IGameStateMgr& gameStateMgr;
         osg::Group& scene3d;
@@ -26,33 +52,9 @@ namespace ehb
         int32_t characterSize = 12;
         int32_t maxLines = (height / characterSize);
         int32_t currentHistoryLine = 0;
+        int32_t width, height;
 
         std::unique_ptr<TextLine> inputLine;
         std::vector<std::unique_ptr<TextLine>> history;
-
-        osg::ref_ptr<ImageFont> font = nullptr;
-
-        Console(IConfig& config, IGameStateMgr& gameStateMgr, osg::Group& scene3d, osg::Group& scene2d);
-
-        // this is a fake handler
-        bool handle(const osgGA::GUIEventAdapter& event, osgGA::GUIActionAdapter& action);
-
-        virtual ~Console() = default;
-
-        void resetCaret();
-
-        void handleCharacter(uint8_t character);
-
-        void addLineToHistory();
-
-        void removeLastCharacterFromInputLine();
-
-        bool active();
-
-        void toggle();
-        
-    private:
-    
-        int32_t width, height;
     };
 }
