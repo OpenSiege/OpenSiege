@@ -52,6 +52,10 @@ namespace ehb
                 {
                     removeLastCharacterFromInputLine();
                 }
+                else if (key == osgGA::GUIEventAdapter::KEY_Up)
+                {
+                    restorePreviousHistoryLineToConsole();
+                }
 
                 return true;
             }
@@ -228,6 +232,9 @@ namespace ehb
 
             currentHistoryLine++;
 
+            // reset our cycle history line to make sure our up arrow works as intended
+            cycleHistoryLine = history.size() - 1;
+
             resetCaret();
         }
     }
@@ -239,6 +246,24 @@ namespace ehb
             inputLine->text.erase(inputLine->text.length() - 1, 1);
             inputLine->build(*font);
         }
+    }
+
+    void Console::restorePreviousHistoryLineToConsole()
+    {
+        // if there is no history then we should just bail out
+        if (history.size() == 0)
+            return;
+
+        // prevent the history from cycling below 0
+        if (cycleHistoryLine < 0) cycleHistoryLine = 0;
+
+        if (auto& lineOfHistory = history.at(cycleHistoryLine); lineOfHistory != nullptr)
+        {
+            inputLine->text = ">" + lineOfHistory->text;
+            inputLine->build(*font);
+        }
+
+        cycleHistoryLine--;
     }
 
     bool Console::active()

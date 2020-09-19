@@ -43,6 +43,8 @@ namespace ehb
 
         void removeLastCharacterFromInputLine();
 
+        void restorePreviousHistoryLineToConsole();
+
     private:
 
         struct ConsoleContext
@@ -60,6 +62,7 @@ namespace ehb
         int32_t characterSize = 12;
         int32_t maxLines = (height / characterSize);
         int32_t currentHistoryLine = 0;
+        int32_t cycleHistoryLine = 0;
         int32_t width, height;
 
         std::unique_ptr<TextLine> inputLine;
