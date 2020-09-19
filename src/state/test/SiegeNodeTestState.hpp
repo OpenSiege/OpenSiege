@@ -35,7 +35,6 @@ namespace ehb
         osgViewer::Viewer& viewer;
         osg::Group& scene;
 
-        bool drawDoorLabels = false;
         SiegeNodeMesh * mesh = nullptr;
     };
 

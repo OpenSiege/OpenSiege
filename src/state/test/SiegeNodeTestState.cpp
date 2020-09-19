@@ -112,20 +112,7 @@ namespace ehb
             {
                 if (event.getKey() == '1')
                 {
-                    if (drawDoorLabels)
-                    {
-                        drawDoorLabels = false;
-                        mesh->drawAllDoorLabels(false);
-
-                        return true;
-                    }
-                    else
-                    {
-                        drawDoorLabels = true;
-                        mesh->drawAllDoorLabels(true);
-
-                        return true;
-                    }
+                    mesh->toggleAllDoorLabels();
                 }
             }
         }

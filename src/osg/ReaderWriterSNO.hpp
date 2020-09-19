@@ -45,9 +45,9 @@ namespace ehb
 
         static void connect(osg::MatrixTransform* targetNode, uint32_t targetDoor, osg::MatrixTransform* connectNode, uint32_t connectDoor);
 
-        void drawAllDoorLabels(bool on)
+        void toggleAllDoorLabels()
         {
-            if (on)
+            if (!drawingDoorLabels)
             {
                 if (doorLabelsGroup == nullptr)
                 {
@@ -72,13 +72,17 @@ namespace ehb
 
                 addChild(doorLabelsGroup);
 
+                drawingDoorLabels = true;
+
                 return;
             }
 
-            if (!on)
+            if (drawingDoorLabels)
             {
                 if (doorLabelsGroup != nullptr)
                     removeChild(doorLabelsGroup);
+
+                drawingDoorLabels = false;
 
                 return;
             }
@@ -106,5 +110,7 @@ namespace ehb
 
         std::vector<std::pair<uint32_t, osg::Matrix>> doorXform;
         osg::ref_ptr<osg::Group> doorLabelsGroup;
+
+        bool drawingDoorLabels = false;
     };
 }
