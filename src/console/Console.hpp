@@ -4,6 +4,7 @@
 #include "ConsoleSignatureScanner.hpp"
 
 #include <string>
+#include <any>
 #include <ui/Widget.hpp>
 #include <ui/TextLine.hpp>
 #include <ui/ImageFont.hpp>
@@ -41,6 +42,13 @@ namespace ehb
         void addLineToHistory();
 
         void removeLastCharacterFromInputLine();
+
+    private:
+
+        struct ConsoleContext
+        {
+            std::any activeVariable;
+        };
         
     private:
 
@@ -56,5 +64,7 @@ namespace ehb
 
         std::unique_ptr<TextLine> inputLine;
         std::vector<std::unique_ptr<TextLine>> history;
+
+        ConsoleContext context;
     };
 }

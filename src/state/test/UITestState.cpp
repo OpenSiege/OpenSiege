@@ -53,6 +53,7 @@ namespace ehb
         //data_bar->addDebugData();
 
         auto hp_button = new Widget;
+        hp_button->setName("hp_button");
         hp_button->setRect(45, 439, 67, 471);
         hp_button->loadTexture("b_gui_ig_mnu_icon_health_up", false);
         hp_button->setUVRect(0.000000, 0.000000, 0.687500, 1.000000);

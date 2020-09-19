@@ -5,6 +5,7 @@
 #include "state/IGameStateMgr.hpp"
 #include "cfg/IConfig.hpp"
 #include "StringTool.hpp"
+#include "osg/ReaderWriterSNO.hpp"
 
 #include <spdlog/spdlog.h>
 
@@ -27,6 +28,8 @@ namespace ehb
         addDebugData();
 
         inputLine->transform->setPosition(osg::Vec3(4, effectiveRect().bottom - characterSize, 0));
+
+        context.activeVariable.reset();
     }
 
     bool Console::handle(const osgGA::GUIEventAdapter& event, osgGA::GUIActionAdapter& action)
@@ -98,6 +101,96 @@ namespace ehb
                     currentHistoryLine++;
                 }
 
+            }
+            else if (scanner.accept("setactive"))
+            {
+                if (scanner.token(first, last))
+                {
+                    auto param = input.substr(first, last - first);
+
+                    if (param == "widget")
+                    {
+                        if (scanner.token(first, last))
+                        {
+                            auto param2 = input.substr(first, last - first);
+
+                            for (uint32_t i = 0; i < scene2d.getNumChildren(); ++i)
+                            {
+                                if (auto node = scene2d.getChild(i); node != nullptr)
+                                {
+                                    if (node->getName() == param2)
+                                    {
+                                        if (auto widget = dynamic_cast<Widget*>(node); widget != nullptr)
+                                        {
+                                            context.activeVariable = widget;
+                                        }
+
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else if (param == "siegenode")
+                    {
+                        if (scanner.token(first, last))
+                        {
+                            auto param2 = input.substr(first, last - first);
+
+                            for (uint32_t i = 0; i < scene3d.getNumChildren(); ++i)
+                            {
+                                if (auto node = scene3d.getChild(i); node != nullptr)
+                                {
+                                    if (node->getName() == param2)
+                                    {
+                                        if (auto mesh = dynamic_cast<SiegeNodeMesh*>(node); mesh != nullptr)
+                                        {
+                                            context.activeVariable = mesh;
+                                        }
+
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    std::string error = ">error: setactive requires 3 parameters 'setactive <widget/siegenode> <name>'";
+                    inputLine->text = error;
+                    spdlog::get("log")->error("{}", error);
+
+                    addLineToHistory();
+                }
+            }
+            else if (scanner.accept("hideactive"))
+            {
+                if (context.activeVariable.has_value())
+                {
+                    if (auto node = std::any_cast<Widget*>(context.activeVariable); node != nullptr)
+                    {
+                        node->setNodeMask(0);
+                    }
+                    else if (auto node = std::any_cast<SiegeNodeMesh*>(context.activeVariable); node != nullptr)
+                    {
+                        node->setNodeMask(0);
+                    }
+                }
+            }
+            else if (scanner.accept("showactive"))
+            {
+                if (context.activeVariable.has_value())
+                {
+                    if (auto node = std::any_cast<Widget*>(context.activeVariable); node != nullptr)
+                    {
+                        node->setNodeMask(~0);
+                    }
+                    else if (auto node = std::any_cast<SiegeNodeMesh*>(context.activeVariable); node != nullptr)
+                    {
+                        node->setNodeMask(~0);
+                    }
+                }
             }
             else if (scanner.accept("setstate"))
             {
