@@ -11,6 +11,7 @@
 #include "state/test/GasTestState.hpp"
 #include "state/test/SiegeNodeTestState.hpp"
 #include "state/test/UITestState.hpp"
+#include "state/test/RegionTestState.HPP"
 
 namespace ehb
 {
@@ -136,6 +137,10 @@ namespace ehb
         else if (gameStateType == "UITestState")
         {
             return new UITestState(gameStateMgr, viewer, fileSys, *scene2d);
+        }
+        else if (gameStateType == "RegionTestState")
+        {
+            return new RegionTestState(gameStateMgr, config, fileSys, viewer, *scene3d);
         }
 
         return nullptr;

@@ -38,6 +38,7 @@ set(SIEGE_SOURCES
     "src/state/test/GasTestState.cpp"
     "src/state/test/SiegeNodeTestState.cpp"
     "src/state/test/UITestState.cpp"
+    "src/state/test/RegionTestState.cpp"
 
     ${BISON_FuelParser_OUTPUTS}
     ${CMAKE_CURRENT_BINARY_DIR}/FuelScanner.cpp
