@@ -39,6 +39,8 @@ namespace ehb
         // filename=t_cry01_cave-1c; guid=0xa2010103
         std::unordered_map<std::string, std::string> meshFileNameToGuidKeyMap;
 
+        uint32_t targetGuid = 0;
+
     private:
 
         const std::string& resolveFileName(const std::string& filename) const;

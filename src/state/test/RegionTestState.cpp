@@ -10,6 +10,8 @@
 #include <osg/Group>
 #include <osg/MatrixTransform>
 #include <osgDB/Options>
+#include <osg/ComputeBoundsVisitor>
+#include <osgViewer/Viewer>
 
 #include <spdlog/spdlog.h>
 
@@ -95,6 +97,9 @@ namespace ehb
 
         log->debug("attempting to load nodesDotGas @ path {}", nodesDotGas);
 
+        // holds a mapping from the guid to the final matrix transform of the placed nodes
+        std::unordered_map<uint32_t, osg::ref_ptr<osg::MatrixTransform>> nodeMap;
+
         // nodes.gas
         if (auto stream = fileSys.createInputStream(nodesDotGas))
         {
@@ -119,7 +124,6 @@ namespace ehb
                 };
 
                 std::unordered_multimap<uint32_t, DoorEntry> doorMap;
-                std::unordered_map<uint32_t, osg::ref_ptr<osg::MatrixTransform>> nodeMap;
                 std::set<uint32_t> completeSet;
 
                 for (const auto node : doc.eachChildOf("siege_node_list"))
@@ -166,7 +170,7 @@ namespace ehb
                 }
 
                 // now position the entire region
-                const uint32_t targetGuid = doc.valueAsUInt("siege_node_list:targetnode");
+                targetGuid = doc.valueAsUInt("siege_node_list:targetnode");
 
                 // recursive function to place every node in the region
                 std::function<void(const uint32_t)> func = [&func, &doorMap, &nodeMap, &completeSet, log](const uint32_t guid)
@@ -199,6 +203,33 @@ namespace ehb
         else
         {
             log->error("failed to load nodesDotGas @ {}", nodesDotGas);
+        }
+
+        // TODO: is there a better way to do this?
+        // re-position the camera based on the size of node and orient it up a little bit get a birds eye-view
+        if (auto manipulator = viewer.getCameraManipulator())
+        {
+            if (auto targetNodeGuidMatrixXform = nodeMap.at(targetGuid))
+            {
+                if (SiegeNodeMesh * mesh = static_cast<SiegeNodeMesh*>(targetNodeGuidMatrixXform->getChild(0)))
+                {
+                    osg::ComputeBoundsVisitor cbv;
+                    mesh->accept(cbv);
+
+                    osg::BoundingSphere sphere;
+                    sphere.expandBy(cbv.getBoundingBox());
+
+                    double radius = osg::maximum(double(sphere.radius()), 1e-6);
+                    double dist = 7.f * radius;
+
+                    manipulator->setHomePosition(sphere.center() + osg::Vec3d(0.0, -dist, 15.0f), sphere.center(), osg::Vec3d(0.0f, 0.0f, 1.0f));
+                    manipulator->home(1);
+                }
+                else
+                {
+                    log->error("failed to find siegenodemesh attached to transform with guid: {}", targetGuid);
+                }
+            }
         }
     }
 
