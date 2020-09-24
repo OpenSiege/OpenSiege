@@ -3,7 +3,7 @@
 
 #include "state/IGameState.hpp"
 
-#include <unordered_map>
+#include <spdlog/spdlog.h>
 
 namespace osgViewer
 {
@@ -35,12 +35,8 @@ namespace ehb
 
         osgViewer::Viewer& viewer;
         osg::Group& scene;
-
-        uint32_t targetGuid = 0;
-
-    private:
-
-        const std::string& resolveFileName(const std::string& filename) const;
+        
+        std::shared_ptr<spdlog::logger> log;
     };
 
     inline RegionTestState::RegionTestState(IGameStateMgr& gameStateMgr, IConfig& config, IFileSys& fileSys, osgViewer::Viewer& viewer, osg::Group& scene) : gameStateMgr(gameStateMgr), config(config), fileSys(fileSys), scene(scene), viewer(viewer)

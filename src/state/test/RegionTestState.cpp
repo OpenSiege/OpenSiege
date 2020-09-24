@@ -13,13 +13,11 @@
 #include <osg/ComputeBoundsVisitor>
 #include <osgViewer/Viewer>
 
-#include <spdlog/spdlog.h>
-
 namespace ehb
 {
     void RegionTestState::enter()
     {
-        auto log = spdlog::get("log");
+        log = spdlog::get("log");
         log->set_level(spdlog::level::debug);
 
         log->info("RegionTestState::enter()");
@@ -49,7 +47,7 @@ namespace ehb
             }
             else
             {
-                log->error("failed to find siegenodemesh attached to transform with guid: {}", targetGuid);
+                log->error("failed to find siegenodemesh attached to transform with guid: {}", targetNodeGuid);
             }
         }
 
@@ -126,6 +124,38 @@ namespace ehb
 
     bool RegionTestState::handle(const osgGA::GUIEventAdapter& event, osgGA::GUIActionAdapter& action)
     {
+        if (event.getEventType() == osgGA::GUIEventAdapter::PUSH)
+        {
+            if (osgViewer::View* viewer = static_cast<osgViewer::View*> (&action))
+            {
+                // viewer always has a valid camera no need for a check
+                osg::Camera* camera = viewer->getCamera();
+
+                osg::ref_ptr<osgUtil::LineSegmentIntersector> intersector = new osgUtil::LineSegmentIntersector(osgUtil::Intersector::WINDOW, event.getX(), event.getY());
+                osgUtil::IntersectionVisitor visitor(intersector);
+                camera->accept(visitor);
+
+                if (intersector->containsIntersections())
+                {
+                    for (auto&& intersection : intersector->getIntersections())
+                    {
+                        for (auto node : intersection.nodePath)
+                        {
+                            if (uint32_t nodeGuid; node->getUserValue("guid", nodeGuid))
+                            {
+                                if (auto xform = dynamic_cast<osg::MatrixTransform*> (node))
+                                {
+                                    log->info("node you clicked was: 0x{:x}", nodeGuid);
+
+                                    static_cast<SiegeNodeMesh*>(xform->getChild(0))->toggleBoundingBox();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         return false;
     }
 }
