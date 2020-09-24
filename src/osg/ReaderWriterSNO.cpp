@@ -12,6 +12,7 @@
 #include <osg/MatrixTransform>
 #include <osg/Notify>
 #include <osg/Matrix>
+#include <osg/ComputeBoundsVisitor>
 
 namespace ehb
 {
@@ -337,6 +338,12 @@ namespace ehb
 
             node->addChild(geometry);
         }
+
+        osg::ComputeBoundsVisitor cbv;
+        node->accept(cbv);
+
+        node->boundingBox = cbv.getBoundingBox();
+        node->boundingSphere.expandBy(cbv.getBoundingBox());
 
         return node.release();
     }

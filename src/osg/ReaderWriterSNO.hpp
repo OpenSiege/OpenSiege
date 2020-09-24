@@ -7,7 +7,6 @@
 #include <osg/MatrixTransform>
 #include <osgText/Text>
 #include <osg/PolygonMode>
-#include <osg/ComputeBoundsVisitor>
 
 #include <algorithm>
 
@@ -83,6 +82,10 @@ namespace ehb
 
         static void connect(osg::MatrixTransform* targetNode, uint32_t targetDoor, osg::MatrixTransform* connectNode, uint32_t connectDoor);
 
+        // TODO: is OSG taking care of this for us?
+        const osg::BoundingBoxd& siegeBoundingBox() { return boundingBox; }
+        const osg::BoundingSphered& siegeBoundingSphere() { return boundingSphere; }
+
         void toggleAllDoorLabels()
         {
             if (!drawingDoorLabels)
@@ -134,13 +137,7 @@ namespace ehb
                 {
                     debugDrawingGroups[1] = new osg::Group;
 
-                    osg::ComputeBoundsVisitor cbv;
-                    accept(cbv);
-
-                    osg::BoundingSphere sphere;
-                    sphere.expandBy(cbv.getBoundingBox());
-
-                    debugDrawingGroups[1]->addChild(createBoxForDebug(cbv.getBoundingBox()._min, cbv.getBoundingBox()._max));
+                    debugDrawingGroups[1]->addChild(createBoxForDebug(boundingBox._min, boundingBox._max));
                 }
 
                 addChild(debugDrawingGroups[1]);
@@ -182,6 +179,9 @@ namespace ehb
         }
 
         std::vector<std::pair<uint32_t, osg::Matrix>> doorXform;
+
+        osg::BoundingBoxd boundingBox;
+        osg::BoundingSphered boundingSphere;
         
         /*
          * 0 = doors
