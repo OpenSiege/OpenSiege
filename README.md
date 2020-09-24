@@ -39,6 +39,20 @@ choco install winflexbison
 4. Compile
 ```
 
+#### OpenSiege Command Line Params
+When launching OpenSiege will attempt to resolve your bits path automatically. If it cannot be resolved use the ```bits``` command line to pass the directory. This only needs to be done once as that path is written to the user config file.
+
+If you **do not** pass a state to OpenSiege you will get a purple viewport with an outline for the console by default. It's recommended to pass ```--state "RegionTestState"```for a complete map load of ```town_center```.
+
+##### Complete list of Command Line paramaters
+```
+--bits = <path>
+--fullscreen = <true/false>
+--state = <GasTestState/SiegeNodeTestState/RegionTestState/UITestState>
+--width = <int>
+--height = <int>
+```
+
 ## Built With
 
 * [OpenSceneGraph](http://www.openscenegraph.org/)
