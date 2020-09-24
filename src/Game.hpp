@@ -4,6 +4,7 @@
 #include "state/IGameStateProvider.hpp"
 #include "state/GameStateMgr.hpp"
 #include "LocalFileSys.hpp"
+#include "world/WorldMap.hpp"
 
 #include "console/Console.hpp"
 
@@ -37,6 +38,8 @@ namespace ehb
         IConfig& config;
         GameStateMgr gameStateMgr;
         LocalFileSys fileSys; // TODO: remove local file system in favor of tank file system
+
+        WorldMap worldMap;
 
         osgViewer::Viewer viewer;
 

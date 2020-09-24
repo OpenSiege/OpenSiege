@@ -140,7 +140,7 @@ namespace ehb
         }
         else if (gameStateType == "RegionTestState")
         {
-            return new RegionTestState(gameStateMgr, config, fileSys, viewer, *scene3d);
+            return new RegionTestState(gameStateMgr, config, fileSys, viewer, *scene3d, worldMap);
         }
 
         return nullptr;
