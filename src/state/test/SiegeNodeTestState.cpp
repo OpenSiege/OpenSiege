@@ -31,12 +31,12 @@ namespace ehb
             // re-position the camera based on the size of node and orient it up a little bit get a birds eye-view
             if (auto manipulator = viewer.getCameraManipulator())
             {
-                osg::BoundingSphered sphere = mesh->siegeBoundingSphere();
+                // osg::BoundingSphered sphere = mesh->siegeBoundingSphere();
 
-                double radius = osg::maximum(double(sphere.radius()), 1e-6);
+                double radius = osg::maximum(double(mesh->getBound().radius()), 1e-6);
                 double dist = 3.5f * radius;
 
-                manipulator->setHomePosition(sphere.center() + osg::Vec3d(0.0, dist, 7.0f), sphere.center(), osg::Vec3d(0.0f, 0.0f, 1.0f));
+                manipulator->setHomePosition(mesh->getBound().center() + osg::Vec3d(0.0, dist, 7.0f), mesh->getBound().center(), osg::Vec3d(0.0f, 0.0f, 1.0f));
                 manipulator->home(1);
             }
 
