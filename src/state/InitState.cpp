@@ -12,6 +12,7 @@
 #include "osg/ReaderWriterRAW.hpp"
 #include "osg/ReaderWriterSNO.hpp"
 #include "osg/ReaderWriterFont.hpp"
+#include "osg/ReaderWriterSiegeNodeList.hpp"
 
 #include "ui/ImageFont.hpp"
 #include "console/Console.hpp"
@@ -40,6 +41,8 @@ namespace ehb
             osgDB::Registry::instance()->addReaderWriter(new ReaderWriterRAW(fileSys));
             osgDB::Registry::instance()->addReaderWriter(new ReaderWriterSNO(fileSys));
             osgDB::Registry::instance()->addReaderWriter(new ReaderWriterFont(fileSys));
+            osgDB::Registry::instance()->addReaderWriter(new ReaderWriterSiegeNodeList(fileSys));
+            
         }
 
         // TODO: any asset and engine preloading from gas files

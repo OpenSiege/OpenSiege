@@ -48,6 +48,7 @@ set(SIEGE_SOURCES
     "src/osg/ReaderWriterRAW.cpp"
     "src/osg/ReaderWriterSNO.cpp"
     "src/osg/ReaderWriterFont.cpp"
+    "src/osg/ReaderWriterSiegeNodeList.cpp"
 
     "src/LocalFileSys.cpp"
     "src/TankFileSys.cpp"
