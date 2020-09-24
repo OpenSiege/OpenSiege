@@ -1,7 +1,6 @@
 
 #include "ReaderWriterSNO.hpp"
 
-#include <spdlog/spdlog.h>
 #include <osg/Texture2D>
 #include <osgDB/FileNameUtils>
 #include <osgDB/FileUtils>
@@ -18,6 +17,8 @@ namespace ehb
     ReaderWriterSNO::ReaderWriterSNO(IFileSys & fileSys) : fileSys(fileSys)
     {
         supportsExtension("sno", "Dungeon Siege SNO Mesh");
+
+        log = spdlog::get("log");
     }
 
     const char * ReaderWriterSNO::className() const {
@@ -291,8 +292,6 @@ namespace ehb
 
             textureFileName = osgDB::convertToLowerCase(textureFileName);
             const std::string tsdFileName = osgDB::findDataFile(textureFileName + ".gas");
-
-            auto log = spdlog::get("log");
 
             osg::StateSet* stateSet = nullptr;
 

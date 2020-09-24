@@ -22,10 +22,10 @@ namespace ehb
 
         log->info("RegionTestState::enter()");
 
-        auto node = osgDB::readNodeFile("/world/maps/multiplayer_world/regions/town_center/terrain_nodes/nodes.gas");
-        uint32_t targetNodeGuid = 0; node->getUserValue("targetnode", targetNodeGuid);
+        auto region = osgDB::readNodeFile("/world/maps/multiplayer_world/regions/town_center/terrain_nodes/nodes.gas");
+        uint32_t targetNodeGuid = 0; region->getUserValue("targetnode", targetNodeGuid);
 
-        osg::MatrixTransform* targetNodeXform = dynamic_cast<osg::MatrixTransform *>(node->getOrCreateUserDataContainer()->getUserObject(8));
+        osg::MatrixTransform* targetNodeXform = dynamic_cast<osg::MatrixTransform *>(region->getOrCreateUserDataContainer()->getUserObject(8));
 
         // TODO: is there a better way to do this?
         // re-position the camera based on the size of node and orient it up a little bit get a birds eye-view
@@ -33,16 +33,10 @@ namespace ehb
         {
             if (SiegeNodeMesh* mesh = static_cast<SiegeNodeMesh*>(targetNodeXform->getChild(0)))
             {
-                osg::ComputeBoundsVisitor cbv;
-                mesh->accept(cbv);
-
-                osg::BoundingSphere sphere;
-                sphere.expandBy(cbv.getBoundingBox());
-
-                double radius = osg::maximum(double(sphere.radius()), 1e-6);
+                double radius = osg::maximum(double(mesh->getBound().radius()), 1e-6);
                 double dist = 7.f * radius;
 
-                manipulator->setHomePosition(sphere.center() + osg::Vec3d(0.0, -dist, 15.0f), sphere.center(), osg::Vec3d(0.0f, 0.0f, 1.0f));
+                manipulator->setHomePosition(mesh->getBound().center() + osg::Vec3d(0.0, -dist, 15.0f), mesh->getBound().center(), osg::Vec3d(0.0f, 0.0f, 1.0f));
                 manipulator->home(1);
             }
             else
@@ -51,7 +45,7 @@ namespace ehb
             }
         }
 
-        scene.addChild(node);
+        scene.addChild(region);
 
         #if 0
         // use std::filesystem?

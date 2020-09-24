@@ -2,6 +2,8 @@
 #pragma once
 
 #include <vector>
+#include <algorithm>
+
 #include <osg/Group>
 #include <osgDB/ReaderWriter>
 #include <osg/MatrixTransform>
@@ -9,7 +11,7 @@
 #include <osg/PolygonMode>
 #include <osg/ComputeBoundsVisitor>
 
-#include <algorithm>
+#include <spdlog/spdlog.h>
 
 namespace ehb
 {
@@ -33,6 +35,8 @@ namespace ehb
     private:
 
         IFileSys & fileSys;
+
+        std::shared_ptr<spdlog::logger> log;
     };
 
     // https://github.com/xarray/osgRecipes/blob/master/cookbook/chapter8/ch08_07/OctreeBuilder.cpp

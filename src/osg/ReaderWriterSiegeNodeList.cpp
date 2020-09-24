@@ -104,6 +104,7 @@ namespace ehb
             {
                 const uint32_t nodeGuid = node->valueAsUInt("guid");
                 const std::string meshGuid = osgDB::convertToLowerCase(node->valueOf("mesh_guid"));
+                const std::string texSetAbbr = node->valueOf("texsetabbr");
 
                 log->debug("dealing with nodeGuid: {} with meshGuid: {}", nodeGuid, meshGuid);
 
@@ -121,7 +122,10 @@ namespace ehb
 
                 if (const std::string meshFileName = resolveFileName(meshGuid); meshFileName != meshGuid)
                 {
-                    if (auto mesh = dynamic_cast<SiegeNodeMesh*>(osgDB::readNodeFile(meshFileName + ".sno", new osgDB::Options)))
+                    osg::ref_ptr<osgDB::ReaderWriter::Options> localOptions = options ? options->cloneOptions() : new osgDB::ReaderWriter::Options;
+                    localOptions->setOptionString("texsetabbr=" + texSetAbbr);
+
+                    if (auto mesh = dynamic_cast<SiegeNodeMesh*>(osgDB::readNodeFile(meshFileName + ".sno", localOptions.get())))
                     {
                         // log->debug("handling mesh: {}", meshFileName);
 
