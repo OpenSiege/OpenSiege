@@ -46,11 +46,11 @@ If you **do not** pass a state to OpenSiege you will get a purple viewport with 
 
 ##### Complete list of Command Line paramaters
 ```
---bits = <path>
---fullscreen = <true/false>
---state = <GasTestState/SiegeNodeTestState/RegionTestState/UITestState>
---width = <int>
---height = <int>
+--bits <path>
+--fullscreen <true/false>
+--state <GasTestState/SiegeNodeTestState/RegionTestState/UITestState>
+--width <int>
+--height <int>
 ```
 
 ## Built With
