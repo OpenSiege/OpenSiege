@@ -4,6 +4,8 @@
 #include <vector>
 #include <osgDB/ReaderWriter>
 
+#include <spdlog/spdlog.h>
+
 namespace ehb
 {
     class IFileSys;
@@ -25,6 +27,22 @@ namespace ehb
 
     private:
 
+        const std::string& resolveFileName(const std::string& filename) const;
+
+    private:
+
         IFileSys& fileSys;
+
+        // guid=0xa2010103, filename=t_cry01_cave-1c;
+        std::unordered_map<std::string, std::string> meshFileNameToGuidKeyMap;
+
+        std::shared_ptr<spdlog::logger> log;
     };
+
+    inline const std::string& ReaderWriterSiegeNodeList::resolveFileName(const std::string& filename) const
+    {
+        const auto itr = meshFileNameToGuidKeyMap.find(filename);
+
+        return itr != meshFileNameToGuidKeyMap.end() ? itr->second : filename;
+    }
 }
