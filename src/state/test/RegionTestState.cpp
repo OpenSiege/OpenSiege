@@ -14,6 +14,7 @@
 #include <osgViewer/Viewer>
 
 #include <osgUtil/Optimizer>
+#include "world/WorldMap.hpp"
 
 namespace ehb
 {
@@ -57,7 +58,10 @@ namespace ehb
 
         log->info("RegionTestState::enter()");
 
-        region = static_cast<osg::MatrixTransform*> (osgDB::readNodeFile("/world/maps/multiplayer_world/regions/town_center/terrain_nodes/nodes.gas"));
+        worldMap.init(fileSys, "multiplayer_world", "town_center");
+        worldMap.set(scene);
+
+        auto region = worldMap.activeRegion;
         uint32_t targetNodeGuid = 0; region->getUserValue("targetnode", targetNodeGuid);
 
         osg::MatrixTransform* targetNodeXform = dynamic_cast<osg::MatrixTransform *>(region->getOrCreateUserDataContainer()->getUserObject(8));

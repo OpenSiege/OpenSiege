@@ -6,12 +6,13 @@
 #include <unordered_map>
 #include <optional>
 
+#include <osg/MatrixTransform>
+
 #include <spdlog/spdlog.h>
 
 namespace osg
 {
     class Group;
-    class MatrixTransform;
 }
 
 namespace ehb
@@ -24,11 +25,14 @@ namespace ehb
         WorldMap();
         ~WorldMap() = default;
 
-        bool init(IFileSys& fileSys, const std::string &worldName);
+        bool init(IFileSys& fileSys, const std::string& worldName, const std::string& regionName);
 
-        void set(osg::Group& root, const uint32_t region);
+        void set(osg::Group& root);
 
         void update(double deltaTime);
+
+        //! TEMP to 
+        osg::MatrixTransform *activeRegion;
 
     private:
 
@@ -36,7 +40,7 @@ namespace ehb
         std::unordered_map<uint32_t, osg::MatrixTransform *> loadingQueue;
 
         //! holds the transform that was loaded in via loadingQueue
-        std::unordered_map<uint32_t, osg::MatrixTransform *> eachRegion;
+        std::unordered_map<uint32_t, osg::ref_ptr<osg::MatrixTransform>> eachRegion;
 
         //! holds the transforms of all the nodes currently loaded into the WorldMap
         std::unordered_map<uint32_t, osg::MatrixTransform*> eachNode;
