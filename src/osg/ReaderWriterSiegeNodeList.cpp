@@ -127,6 +127,15 @@ namespace ehb
 
                         osg::ref_ptr<osg::MatrixTransform> xform = new osg::MatrixTransform;
 
+                        xform->setUserValue("bounds_camera", node->valueAsBool("bounds_camera"));
+                        xform->setUserValue("camera_fade", node->valueAsBool("camera_fade"));
+                        xform->setUserValue<uint32_t>("guid", node->valueAsUInt("guid"));
+                        xform->setUserValue<uint32_t>("nodelevel", node->valueAsUInt("nodelevel"));
+                        xform->setUserValue<uint32_t>("nodeobject", node->valueAsUInt("nodeobject"));
+                        xform->setUserValue<uint32_t>("nodesection", node->valueAsUInt("nodesection"));
+                        xform->setUserValue("occludes_camera", node->valueAsBool("occludes_camera"));
+                        xform->setUserValue("occludes_light", node->valueAsBool("occludes_light"));
+
                         regionGroup->addChild(xform);
                         xform->addChild(mesh);
 
