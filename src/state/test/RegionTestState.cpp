@@ -27,7 +27,7 @@ namespace ehb
         auto node = osgDB::readNodeFile("/world/maps/multiplayer_world/regions/town_center/terrain_nodes/nodes.gas");
         uint32_t targetNodeGuid = 0; node->getUserValue("targetnode", targetNodeGuid);
 
-        osg::MatrixTransform* targetNodeXform = dynamic_cast<osg::MatrixTransform *>(node->getOrCreateUserDataContainer()->getUserObject(1));
+        osg::MatrixTransform* targetNodeXform = dynamic_cast<osg::MatrixTransform *>(node->getOrCreateUserDataContainer()->getUserObject(8));
 
         // TODO: is there a better way to do this?
         // re-position the camera based on the size of node and orient it up a little bit get a birds eye-view

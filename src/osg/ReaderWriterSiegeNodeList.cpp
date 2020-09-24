@@ -89,14 +89,16 @@ namespace ehb
             osg::ref_ptr<osg::Group> regionGroup = new osg::Group;
 
             // region properties
-            std::string actor_ambient_color = doc.valueOf("siege_node_list:actor_ambient_color");
-            std::string actor_ambient_intensity = doc.valueOf("siege_node_list:actor_ambient_intensity");
-            std::string ambient_color = doc.valueOf("siege_node_list:ambient_color");
-            std::string ambient_intensity = doc.valueOf("siege_node_list:ambient_intesity");
-            std::string environment_map = doc.valueOf("siege_node_list:environment_map");
-            std::string object_ambient_color = doc.valueOf("siege_node_list:object_ambient_color");
-            std::string object_ambient_intensity = doc.valueOf("siege_node_list:object_ambient_intensity");
-            std::string targetnode = doc.valueOf("siege_node_list:targetnode");
+            regionGroup->setUserValue<uint32_t>("actor_ambient_color", doc.valueAsUInt("siege_node_list:actor_ambient_color"));
+            regionGroup->setUserValue<float>("actor_ambient_intensity", doc.valueAsFloat("siege_node_list:actor_ambient_intensity"));
+            regionGroup->setUserValue<uint32_t>("ambient_color", doc.valueAsUInt("siege_node_list:ambient_color"));
+            regionGroup->setUserValue<float>("ambient_intensity", doc.valueAsFloat("siege_node_list:ambient_intesity"));
+            regionGroup->setUserValue<std::string>("environment_map",  doc.valueOf("siege_node_list:environment_map"));
+            regionGroup->setUserValue<uint32_t>("object_ambient_color", doc.valueAsUInt("siege_node_list:object_ambient_color"));
+            regionGroup->setUserValue<float>("object_ambient_intensity", doc.valueAsFloat("siege_node_list:object_ambient_intensity"));
+
+            const uint32_t targetnode = doc.valueAsUInt("siege_node_list:targetnode");
+            regionGroup->setUserValue<uint32_t>("targetnode", targetnode);
 
             for (const auto node : doc.eachChildOf("siege_node_list"))
             {
@@ -141,12 +143,9 @@ namespace ehb
                 }
             }
 
-            // now position the entire region
-            const uint32_t targetNodeGuid = doc.valueAsUInt("siege_node_list:targetnode");
-
             // easy access to targetGuid later on. though this is only valid when the region is initially loaded. not sure if
             // it will remain valid in future frames (pathfinding?)
-            regionGroup->setUserValue("targetnode", targetNodeGuid);
+            regionGroup->setUserValue("targetnode", targetnode);
 
             // recursive function to place every node in the region
             std::function<void(const uint32_t)> func = [&func, &doorMap, &nodeMap, &completeSet](const uint32_t guid)
@@ -171,10 +170,10 @@ namespace ehb
                 }
             };
 
-            func(targetNodeGuid);
+            func(targetnode);
 
-            // index 1 of the user data container will contain our target node xform for now
-            if (osg::MatrixTransform* targetNodeXform = nodeMap.at(targetNodeGuid))
+            // index 8 of the user data container will contain our target node xform for now
+            if (osg::MatrixTransform* targetNodeXform = nodeMap.at(targetnode))
             {
                 regionGroup->getOrCreateUserDataContainer()->addUserObject(targetNodeXform);
             }
@@ -185,7 +184,7 @@ namespace ehb
                 return osgDB::ReaderWriter::ReadResult::ERROR_IN_READING_FILE;
             }
 
-            log->debug("region loaded with {} nodes, targetGuid: 0x{:x}", regionGroup->getNumChildren(), targetNodeGuid);
+            log->debug("region loaded with {} nodes, targetGuid: 0x{:x}", regionGroup->getNumChildren(), targetnode);
 
             return regionGroup.release();
         }
