@@ -31,8 +31,6 @@ namespace ehb
             // re-position the camera based on the size of node and orient it up a little bit get a birds eye-view
             if (auto manipulator = viewer.getCameraManipulator())
             {
-                // osg::BoundingSphered sphere = mesh->siegeBoundingSphere();
-
                 double radius = osg::maximum(double(mesh->getBound().radius()), 1e-6);
                 double dist = 3.5f * radius;
 

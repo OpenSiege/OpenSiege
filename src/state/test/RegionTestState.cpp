@@ -18,7 +18,7 @@ namespace ehb
     void RegionTestState::enter()
     {
         log = spdlog::get("log");
-        log->set_level(spdlog::level::debug);
+        // log->set_level(spdlog::level::debug);
 
         log->info("RegionTestState::enter()");
 
@@ -46,66 +46,6 @@ namespace ehb
         }
 
         scene.addChild(region);
-
-        #if 0
-        // use std::filesystem?
-        static const std::string mapsFolder = "/world/maps/";
-        static const std::string worldName = "multiplayer_world";
-        static const std::string regionName = "town_center";
-
-        static const std::string fullRegionPath = mapsFolder + worldName + "/regions/" + regionName;
-        static const std::string mainDotGas = fullRegionPath + "/main.gas";
-        static const std::string nodesDotGas = fullRegionPath + "/terrain_nodes/nodes.gas";
-
-        log->debug("attempting to load region @ path {}", mainDotGas);
-
-        osg::ref_ptr<osg::Group> regionGroup = new osg::Group;
-
-        scene.addChild(regionGroup);
-
-        // main.gas
-        if (auto stream = fileSys.createInputStream(mainDotGas))
-        {
-            if (Fuel doc; doc.load(*stream))
-            {
-                // this is mandatory but i'm not sure all the fields under it are required
-                if (auto child = doc.child("region"))
-                {
-                    std::string created = child->valueOf("created");
-                    std::string description = child->valueOf("description");
-                    std::string guid = child->valueOf("guid");
-                    std::string lastmodified = child->valueOf("lastmodified");
-                    std::string notes = child->valueOf("notes");
-                    std::string scid_range = child->valueOf("scid_range");
-                    std::string se_version = child->valueOf("se_version");
-
-                    // hold onto our region guid for lookup in the future
-                    regionGroup->setName(guid);
-                }
-            }
-        }
-        else
-        {
-            log->error("failed to load region @ {}", mainDotGas);
-
-            return;
-        }
-
-        log->debug("attempting to load nodesDotGas @ path {}", nodesDotGas);
-
-
-
-        // nodes.gas
-        if (auto stream = fileSys.createInputStream(nodesDotGas))
-        {
-
-        }
-        else
-        {
-            log->error("failed to load nodesDotGas @ {}", nodesDotGas);
-        }
-
-        #endif
     }
 
     void RegionTestState::leave()
