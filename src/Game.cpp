@@ -11,7 +11,7 @@
 #include "state/test/GasTestState.hpp"
 #include "state/test/SiegeNodeTestState.hpp"
 #include "state/test/UITestState.hpp"
-#include "state/test/RegionTestState.HPP"
+#include "state/test/RegionTestState.hpp"
 
 namespace ehb
 {
