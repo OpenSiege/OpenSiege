@@ -4,8 +4,9 @@
 #include "IFileSys.hpp"
 #include "gas/Fuel.hpp"
 
-#include "ReaderWriterSNO.hpp"
+#include "osg/SiegeNodeMesh.hpp"
 
+#include <osg/MatrixTransform>
 #include <osgDB/ReadFile>
 #include <osgDB/FileUtils>
 

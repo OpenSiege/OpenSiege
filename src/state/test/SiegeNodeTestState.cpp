@@ -9,7 +9,7 @@
 #include <osgViewer/Viewer>
 #include <spdlog/spdlog.h>
 
-#include "osg/ReaderWriterSNO.hpp"
+#include "osg/SiegeNodeMesh.hpp"
 
 namespace ehb
 {

@@ -3,7 +3,7 @@
 
 #include "IFileSys.hpp"
 #include "gas/Fuel.hpp"
-#include "osgPlugins/ReaderWriterSNO.hpp"
+#include "osg/SiegeNodeMesh.hpp"
 
 #include <set>
 #include <osgDB/ReadFile>

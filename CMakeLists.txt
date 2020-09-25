@@ -45,6 +45,8 @@ set(SIEGE_SOURCES
     "src/gas/Fuel.cpp"
 
     "src/osg/FileNameMap.cpp"
+    "src/osg/SiegeNodeMesh.cpp"
+
     "src/osgPlugins/ReaderWriterRAW.cpp"
     "src/osgPlugins/ReaderWriterSNO.cpp"
     "src/osgPlugins/ReaderWriterFont.cpp"
