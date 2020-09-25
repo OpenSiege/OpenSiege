@@ -3,7 +3,7 @@
 
 #include "IFileSys.hpp"
 #include "gas/Fuel.hpp"
-#include "osg/ReaderWriterSNO.hpp"
+#include "osgPlugins/ReaderWriterSNO.hpp"
 
 #include <set>
 #include <osgDB/ReadFile>

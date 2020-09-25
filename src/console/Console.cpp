@@ -5,7 +5,7 @@
 #include "state/IGameStateMgr.hpp"
 #include "cfg/IConfig.hpp"
 #include "StringTool.hpp"
-#include "osg/ReaderWriterSNO.hpp"
+#include "osgPlugins/ReaderWriterSNO.hpp"
 
 #include <spdlog/spdlog.h>
 
