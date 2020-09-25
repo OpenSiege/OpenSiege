@@ -72,6 +72,10 @@ namespace ehb
                     mesh->toggleAllDoorLabels();
                     mesh->toggleBoundingBox();
                 }
+                else if (event.getKey() == '2')
+                {
+                    mesh->toggleLogicalNodeFlags();
+                }
             }
         }
 

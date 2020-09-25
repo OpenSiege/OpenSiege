@@ -339,6 +339,87 @@ namespace ehb
             node->addChild(geometry);
         }
 
+        uint32_t logicalGroupingCount; stream.read((char*)&logicalGroupingCount, sizeof(uint32_t));
+        node->logicalNodeGroupings.resize(logicalGroupingCount);
+
+        for (uint32_t i = 0; i < logicalGroupingCount; i++)
+        {
+            auto& logicalNodeGrouping = node->logicalNodeGroupings.at(i);
+
+            stream.read((char*)&logicalNodeGrouping.id, sizeof(uint8_t));
+
+            stream.read((char*)&logicalNodeGrouping.bbox._min.x(), sizeof(float));
+            stream.read((char*)&logicalNodeGrouping.bbox._min.y(), sizeof(float));
+            stream.read((char*)&logicalNodeGrouping.bbox._min.z(), sizeof(float));
+
+            stream.read((char*)&logicalNodeGrouping.bbox._max.x(), sizeof(float));
+            stream.read((char*)&logicalNodeGrouping.bbox._max.y(), sizeof(float));
+            stream.read((char*)&logicalNodeGrouping.bbox._max.z(), sizeof(float));
+
+            stream.read((char*)&logicalNodeGrouping.flag, sizeof(uint32_t));
+
+            // no idea what this is yet
+            uint32_t unkCount1; stream.read((char*)&unkCount1, sizeof(uint32_t));
+            for (uint32_t j = 0; j < unkCount1; ++j)
+            {
+                uint16_t index; stream.read((char*)&index, sizeof(uint16_t));
+
+                float unkRotation[9]; stream.read((char*)&unkRotation, sizeof(float) * 9);
+
+                uint16_t unkShortArrayCount1; stream.read((char*)&unkShortArrayCount1, sizeof(uint16_t));
+                stream.ignore(sizeof(uint16_t) * unkShortArrayCount1);
+
+                uint32_t unkShortArrayCount2; stream.read((char*)&unkShortArrayCount2, sizeof(uint32_t));
+                stream.ignore(sizeof(uint16_t) * unkShortArrayCount2);
+            }
+
+            uint32_t unkShortPairSectionCount; stream.read((char*)&unkShortPairSectionCount, sizeof(uint32_t));
+            for (uint32_t j = 0; j < unkShortPairSectionCount; ++j)
+            {
+                uint8_t unkByte; stream.read((char*)&unkByte, sizeof(uint8_t));
+
+                uint32_t unkCount2; stream.read((char*)&unkCount2, sizeof(uint32_t));
+
+                stream.ignore((sizeof(uint16_t) * unkCount2) * 2);
+            }
+
+            uint32_t triangleCount; stream.read((char*)&triangleCount, sizeof(uint32_t));
+            logicalNodeGrouping.logicalNodeFaces.resize(triangleCount);
+            for (uint32_t j = 0; j < triangleCount; ++j)
+            {
+                SiegeNodeMesh::Face& face = logicalNodeGrouping.logicalNodeFaces.at(j);
+
+                stream.read((char*)&face.a, sizeof(float) * 3);
+                stream.read((char*)&face.b, sizeof(float) * 3);
+                stream.read((char*)&face.c, sizeof(float) * 3);
+
+                stream.read((char*)&face.normal, sizeof(float) * 3);
+            }
+
+            recurse_unknown_section(stream);
+        }
+
         return node.release();
+    }
+
+    void ReaderWriterSNO::recurse_unknown_section(std::istream& stream) const
+    {
+        float unkbBox[6]; stream.read((char*)&unkbBox, sizeof(float) * 6);
+
+        uint8_t unkByte1; stream.read((char*)&unkByte1, sizeof(uint8_t));
+
+        uint16_t unkCount3; stream.read((char*)&unkCount3, sizeof(uint16_t));
+        std::vector<uint16_t> unkArrayOfShorts;
+        for (uint32_t i = 0; i < unkCount3; i++)
+        {
+            uint16_t value; stream.read((char*)&value, sizeof(uint16_t));
+            unkArrayOfShorts.push_back(value);
+        }
+
+        uint8_t unkByte2; stream.read((char*)&unkByte2, sizeof(uint8_t));
+        for (uint8_t i = 0; i < unkByte2; i++)
+        {
+            recurse_unknown_section(stream);
+        }
     }
 }

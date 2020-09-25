@@ -37,6 +37,8 @@ namespace ehb
         IFileSys & fileSys;
 
         std::shared_ptr<spdlog::logger> log;
+
+        void recurse_unknown_section(std::istream& stream) const;
     };
 
     // https://github.com/xarray/osgRecipes/blob/master/cookbook/chapter8/ch08_07/OctreeBuilder.cpp

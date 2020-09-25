@@ -5,6 +5,11 @@
 
 #include <spdlog/spdlog.h>
 
+namespace osg
+{
+    class MatrixTransform;
+}
+
 namespace osgViewer
 {
     class Viewer;
@@ -35,6 +40,8 @@ namespace ehb
 
         osgViewer::Viewer& viewer;
         osg::Group& scene;
+
+        osg::MatrixTransform* region;
         
         std::shared_ptr<spdlog::logger> log;
     };

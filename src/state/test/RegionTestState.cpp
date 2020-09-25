@@ -15,6 +15,39 @@
 
 namespace ehb
 {
+    // since we are using software instancing we have to keep track of the guids of handled nodes as to not keep flipping things on and off
+    class ToggleRegionLogicalFlags : public osg::NodeVisitor
+    {
+
+    std::set<uint32_t> unique;
+
+    public:
+
+        ToggleRegionLogicalFlags() : NodeVisitor(NodeVisitor::TRAVERSE_ALL_CHILDREN)
+        {
+
+        }
+
+        virtual void apply(osg::Group& group) override
+        {
+            osg::MatrixTransform* xform = static_cast<osg::MatrixTransform*> (&group);
+            SiegeNodeMesh* mesh = dynamic_cast<SiegeNodeMesh*>(xform->getChild(0));
+
+            if (mesh != nullptr)
+            {
+                uint32_t guid; xform->getUserValue("guid", guid);
+
+                if (unique.insert(guid).second)
+                {
+                    mesh->toggleLogicalNodeFlags();
+                }
+            }
+
+            traverse(group);
+        }
+
+    };
+
     void RegionTestState::enter()
     {
         log = spdlog::get("log");
@@ -22,7 +55,7 @@ namespace ehb
 
         log->info("RegionTestState::enter()");
 
-        auto region = osgDB::readNodeFile("/world/maps/multiplayer_world/regions/town_center/terrain_nodes/nodes.gas");
+        region = static_cast<osg::MatrixTransform*> (osgDB::readNodeFile("/world/maps/multiplayer_world/regions/town_center/terrain_nodes/nodes.gas"));
         uint32_t targetNodeGuid = 0; region->getUserValue("targetnode", targetNodeGuid);
 
         osg::MatrixTransform* targetNodeXform = dynamic_cast<osg::MatrixTransform *>(region->getOrCreateUserDataContainer()->getUserObject(8));
@@ -87,6 +120,14 @@ namespace ehb
                         }
                     }
                 }
+            }
+        }
+        else if (event.getEventType() == osgGA::GUIEventAdapter::KEYUP)
+        {
+            if (event.getKey() == '2')
+            {
+                ToggleRegionLogicalFlags visitor;
+                region->accept(visitor);
             }
         }
 
