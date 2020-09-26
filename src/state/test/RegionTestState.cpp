@@ -13,6 +13,8 @@
 #include <osg/ComputeBoundsVisitor>
 #include <osgViewer/Viewer>
 
+#include <osgUtil/Optimizer>
+
 namespace ehb
 {
     // since we are using software instancing we have to keep track of the guids of handled nodes as to not keep flipping things on and off
@@ -78,6 +80,9 @@ namespace ehb
             }
         }
 
+        osgUtil::Optimizer optimizer;
+        optimizer.optimize(region);
+
         scene.addChild(region);
     }
 
@@ -128,6 +133,9 @@ namespace ehb
             {
                 ToggleRegionLogicalFlags visitor;
                 region->accept(visitor);
+
+                osgUtil::Optimizer optimizer;
+                optimizer.optimize(region);
             }
         }
 
