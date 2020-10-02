@@ -46,7 +46,7 @@ namespace ehb
 
         auto siegePos = region.convertFromSiegePos(pos);
 
-        osg::PositionAttitudeTransform* transform = new osg::PositionAttitudeTransform;
+        osg::ref_ptr<osg::PositionAttitudeTransform> transform = new osg::PositionAttitudeTransform;
         transform->setUpdateCallback(new YAxisRotator(transform));
         transform->setPosition(siegePos + offset);
 

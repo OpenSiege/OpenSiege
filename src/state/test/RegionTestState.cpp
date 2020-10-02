@@ -88,7 +88,8 @@ namespace ehb
         // 0x070316b2
         // 0xd2e1b967
 
-        World::drawDebugLine(scene, *region, SiegePos(0, 0, 0, 0x070316b2), SiegePos(0, 0, 0, 0xd2e1b967), osg::Vec4(0, 1, 0, 1), "test");
+        World::drawDebugLine(scene, *region, SiegePos(0, 0, 0, 0x070316b2), SiegePos(0, 0, 0, 0xd2e1b967), osg::Vec4(0, 1, 0, 1), "line");
+        World::drawDebugCircle(scene, *region, SiegePos(0, 0, 0, 0x070316b2), 1, osg::Vec4(1, 0, 0, 1), "circle");
 
         scene.addChild(region);
     }
