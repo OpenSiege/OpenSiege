@@ -55,8 +55,6 @@ namespace ehb
         ByteArray data((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());
         BinaryReader reader(data);
 
-        const bool bSwap = (osg::getCpuByteOrder() == osg::BigEndian);
-
         uint32_t magic = reader.readUInt32();
         uint32_t version = reader.readUInt32();
         uint32_t unk1 = reader.readUInt32();
@@ -147,7 +145,7 @@ namespace ehb
                 (*elements)[j] = start + value;
             }
 
-            osg::Geometry * geometry = new osg::Geometry;
+            osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
 
             std::string texSetAbbr;
 
@@ -167,7 +165,10 @@ namespace ehb
             textureFileName = osgDB::convertToLowerCase(textureFileName);
             const std::string tsdFileName = osgDB::findDataFile(textureFileName + ".gas");
 
-            osg::StateSet* stateSet = nullptr;
+            // set the name of the geometry to the texture filename for debugging and visitor purposes
+            geometry->setName(textureFileName);
+
+            osg::ref_ptr<osg::StateSet> stateSet = nullptr;
 
             if (auto stream = fileSys.createInputStream(tsdFileName))
             {
@@ -185,9 +186,9 @@ namespace ehb
             {
                 log->warn("{}.gas not found falling back to {}.raw", textureFileName, textureFileName);
 
-                if (osg::Image* image = osgDB::readImageFile(textureFileName + ".raw"))
+                if (osg::ref_ptr<osg::Image> image = osgDB::readImageFile(textureFileName + ".raw"))
                 {
-                    auto texture = new osg::Texture2D(image);
+                    osg::ref_ptr<osg::Texture2D> texture = new osg::Texture2D(image);
 
                     texture->setWrap(osg::Texture::WRAP_S, osg::Texture::REPEAT);
                     texture->setWrap(osg::Texture::WRAP_T, osg::Texture::REPEAT);

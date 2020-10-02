@@ -134,8 +134,15 @@ namespace ehb
                 ToggleRegionLogicalFlags visitor;
                 region->accept(visitor);
 
-                osgUtil::Optimizer optimizer;
-                optimizer.optimize(region);
+                static bool runOnce = false;
+
+                if (!runOnce)
+                {
+                    osgUtil::Optimizer optimizer;
+                    optimizer.optimize(region);
+
+                    runOnce = true;
+                }
             }
         }
 
