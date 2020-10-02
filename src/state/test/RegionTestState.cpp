@@ -5,6 +5,7 @@
 #include "gas/Fuel.hpp"
 #include "osg/SiegeNodeMesh.hpp"
 #include "world/Region.hpp"
+#include "world/World.hpp"
 
 #include <set>
 #include <osgDB/ReadFile>
@@ -83,6 +84,11 @@ namespace ehb
 
         osgUtil::Optimizer optimizer;
         optimizer.optimize(region);
+
+        // 0x070316b2
+        // 0xd2e1b967
+
+        World::drawDebugLine(scene, *region, SiegePos(0, 0, 0, 0x070316b2), SiegePos(0, 0, 0, 0xd2e1b967), osg::Vec4(0, 1, 0, 1), "test");
 
         scene.addChild(region);
     }

@@ -56,7 +56,10 @@ set(SIEGE_SOURCES
     "src/LocalFileSys.cpp"
     "src/TankFileSys.cpp"
 
+    "src/world/SiegePos.cpp"
+    "src/world/SiegeRot.cpp"
     "src/world/Region.cpp"
+    "src/world/World.cpp"
 
     "src/ui/ImageFont.cpp"
     "src/ui/Rect.cpp"

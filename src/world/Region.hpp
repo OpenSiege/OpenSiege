@@ -1,6 +1,9 @@
 
 #pragma once
 
+#include "SiegePos.hpp"
+#include "SiegeRot.hpp"
+
 #include <osg/MatrixTransform>
 
 #include <unordered_map>
@@ -19,6 +22,9 @@ namespace ehb
         const uint32_t targetNodeGuid() const;
 
         const osg::MatrixTransform* transformForGuid(const uint32_t guid) const;
+
+        const osg::Vec3 convertFromSiegePos(const SiegePos& siegePos) const;
+        const osg::Quat convertFromSiegeRot(const SiegeRot& siegeRot) const;
 
     protected:
 

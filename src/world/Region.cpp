@@ -34,4 +34,34 @@ namespace ehb
 
         return nullptr;
     }
+
+    const osg::Vec3 Region::convertFromSiegePos(const SiegePos& siegePos) const
+    {
+        if (siegePos.Node == 0) return {};
+
+        if (const osg::MatrixTransform* transform = transformForGuid(siegePos.Node))
+        {
+            osg::Matrix copy = transform->getMatrix();
+            copy.preMultTranslate(siegePos.Pos);
+
+            return copy.getTrans();
+        }
+
+        return {};
+    }
+
+    const osg::Quat Region::convertFromSiegeRot(const SiegeRot& siegeRot) const
+    {
+        if (siegeRot.Node == 0) return {};
+
+        if (const osg::MatrixTransform* transform = transformForGuid(siegeRot.Node))
+        {
+            osg::Matrix copy = transform->getMatrix();
+            copy.preMultRotate(siegeRot.Rot);
+
+            return copy.getRotate();
+        }
+
+        return {};
+    }
 }
