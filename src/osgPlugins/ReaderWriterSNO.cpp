@@ -199,7 +199,7 @@ namespace ehb
 
             // set our geometry pointers
             geometry->setVertexArray(vertices.get());
-            geometry->setColorArray(colors.get());
+            geometry->setColorArray(colors.get(), osg::Array::BIND_PER_VERTEX);
             geometry->setNormalArray(normals.get(), osg::Array::BIND_PER_VERTEX);
 
             // most nodes have 2 layers so we will map 2 units for now
