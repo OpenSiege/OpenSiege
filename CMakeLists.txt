@@ -47,6 +47,7 @@ set(SIEGE_SOURCES
     "src/osg/FileNameMap.cpp"
     "src/osg/SiegeNodeMesh.cpp"
 
+    "src/osgPlugins/BinaryReader.cpp"
     "src/osgPlugins/ReaderWriterRAW.cpp"
     "src/osgPlugins/ReaderWriterSNO.cpp"
     "src/osgPlugins/ReaderWriterFont.cpp"

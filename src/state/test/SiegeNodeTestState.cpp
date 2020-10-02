@@ -17,7 +17,8 @@ namespace ehb
     {
         auto log = spdlog::get("game");
 
-        static const std::string meshName = "t_grs01_houses_generic-a-log.sno";
+        // static const std::string meshName = "t_grs01_houses_generic-a-log.sno";
+        static const std::string meshName = "t_xxx_wal_08-thck.sno";
 
         mesh = dynamic_cast<SiegeNodeMesh*>(osgDB::readNodeFile(meshName));
         if (mesh != nullptr)

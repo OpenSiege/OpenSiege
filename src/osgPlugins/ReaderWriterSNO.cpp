@@ -9,6 +9,7 @@
 #include <osgDB/ReadFile>
 #include "IFileSys.hpp"
 #include "gas/Fuel.hpp"
+#include "BinaryReader.hpp"
 
 #include <osg/MatrixTransform>
 #include <osg/Notify>
@@ -51,113 +52,34 @@ namespace ehb
 
     osgDB::ReaderWriter::ReadResult ReaderWriterSNO::readNode(std::istream & stream, const osgDB::Options * options) const
     {
+        ByteArray data((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());
+        BinaryReader reader(data);
+
         const bool bSwap = (osg::getCpuByteOrder() == osg::BigEndian);
 
-        uint32_t magic, version, unk1;
-
-        stream.read((char *)&magic, sizeof(uint32_t));
-        stream.read((char *)&version, sizeof(uint32_t));
-        stream.read((char *)&unk1, sizeof(uint32_t));
-
-        if (bSwap)
-        {
-            osg::swapBytes4((char *)&magic);
-            osg::swapBytes4((char *)&version);
-            osg::swapBytes4((char *)&unk1);
-        }
+        uint32_t magic = reader.readUInt32();
+        uint32_t version = reader.readUInt32();
+        uint32_t unk1 = reader.readUInt32();
 
         if (magic != 0x444F4E53) return ReadResult::FILE_NOT_HANDLED;
 
         // construct the actual mesh node
         osg::ref_ptr<SiegeNodeMesh> node = new SiegeNodeMesh;
 
-        uint32_t doorCount, spotCount, cornerCount, faceCount, textureCount;
-        float minX, minY, minZ, maxX, maxY, maxZ;
-        float unk2, unk3, unk4;
-        uint32_t unk5, unk6, unk7, unk8;
-        float checksum;
-
-        stream.read((char *)&doorCount, sizeof(uint32_t));
-        stream.read((char *)&spotCount, sizeof(uint32_t));
-        stream.read((char *)&cornerCount, sizeof(uint32_t));
-        stream.read((char *)&faceCount, sizeof(uint32_t));
-        stream.read((char *)&textureCount, sizeof(uint32_t));
-        stream.read((char *)&minX, sizeof(float));
-        stream.read((char *)&minY, sizeof(float));
-        stream.read((char *)&minZ, sizeof(float));
-        stream.read((char *)&maxX, sizeof(float));
-        stream.read((char *)&maxY, sizeof(float));
-        stream.read((char *)&maxZ, sizeof(float));
-        stream.read((char *)&unk2, sizeof(float));
-        stream.read((char *)&unk3, sizeof(float));
-        stream.read((char *)&unk4, sizeof(float));
-        stream.read((char *)&unk5, sizeof(uint32_t));
-        stream.read((char *)&unk6, sizeof(uint32_t));
-        stream.read((char *)&unk7, sizeof(uint32_t));
-        stream.read((char *)&unk8, sizeof(uint32_t));
-        stream.read((char *)&checksum, sizeof(float));
-
-        if (bSwap)
-        {
-            osg::swapBytes4((char *)&doorCount);
-            osg::swapBytes4((char *)&spotCount);
-            osg::swapBytes4((char *)&cornerCount);
-            osg::swapBytes4((char *)&faceCount);
-            osg::swapBytes4((char *)&textureCount);
-            osg::swapBytes4((char *)&minX);
-            osg::swapBytes4((char *)&minY);
-            osg::swapBytes4((char *)&minZ);
-            osg::swapBytes4((char *)&maxX);
-            osg::swapBytes4((char *)&maxY);
-            osg::swapBytes4((char *)&maxZ);
-            osg::swapBytes4((char *)&unk2);
-            osg::swapBytes4((char *)&unk3);
-            osg::swapBytes4((char *)&unk4);
-            osg::swapBytes4((char *)&unk5);
-            osg::swapBytes4((char *)&unk6);
-            osg::swapBytes4((char *)&unk7);
-            osg::swapBytes4((char *)&unk8);
-            osg::swapBytes4((char *)&checksum);
-        }
+        uint32_t doorCount = reader.readUInt32(), spotCount = reader.readUInt32(), cornerCount = reader.readUInt32(), faceCount = reader.readUInt32(), textureCount = reader.readUInt32();
+        float minX = reader.readFloat32(), minY = reader.readFloat32(), minZ = reader.readFloat32(), maxX = reader.readFloat32(), maxY = reader.readFloat32(), maxZ = reader.readFloat32();
+        float unk2 = reader.readFloat32(), unk3 = reader.readFloat32(), unk4 = reader.readFloat32();
+        uint32_t unk5 = reader.readUInt32(), unk6 = reader.readUInt32(), unk7 = reader.readUInt32(), unk8 = reader.readUInt32();
+        float checksum = reader.readFloat32();
 
         for (uint32_t index = 0; index < doorCount; index++)
         {
-            int32_t id, count;
-            float a00, a01, a02, a10, a11, a12, a20, a21, a22, x, y, z;
-
-            stream.read((char *)&id, sizeof(uint32_t));
-            stream.read((char *)&x, sizeof(float));
-            stream.read((char *)&y, sizeof(float));
-            stream.read((char *)&z, sizeof(float));
-            stream.read((char *)&a00, sizeof(float));
-            stream.read((char *)&a01, sizeof(float));
-            stream.read((char *)&a02, sizeof(float));
-            stream.read((char *)&a10, sizeof(float));
-            stream.read((char *)&a11, sizeof(float));
-            stream.read((char *)&a12, sizeof(float));
-            stream.read((char *)&a20, sizeof(float));
-            stream.read((char *)&a21, sizeof(float));
-            stream.read((char *)&a22, sizeof(float));
-            stream.read((char *)&count, sizeof(uint32_t));
-
-            if (bSwap)
-            {
-                osg::swapBytes4((char *)&id);
-                osg::swapBytes4((char *)&x);
-                osg::swapBytes4((char *)&y);
-                osg::swapBytes4((char *)&z);
-                osg::swapBytes4((char *)&a00);
-                osg::swapBytes4((char *)&a01);
-                osg::swapBytes4((char *)&a02);
-                osg::swapBytes4((char *)&a10);
-                osg::swapBytes4((char *)&a11);
-                osg::swapBytes4((char *)&a12);
-                osg::swapBytes4((char *)&a20);
-                osg::swapBytes4((char *)&a21);
-                osg::swapBytes4((char *)&a22);
-                osg::swapBytes4((char *)&count);
-            }
-
+            uint32_t id = reader.readUInt32();
+            float x = reader.readFloat32(), y = reader.readFloat32(), z = reader.readFloat32();
+            float a00 = reader.readFloat32(), a01 = reader.readFloat32(), a02 = reader.readFloat32();
+            float a10 = reader.readFloat32(), a11 = reader.readFloat32(), a12 = reader.readFloat32();
+            float a20 = reader.readFloat32(), a21 = reader.readFloat32(), a22 = reader.readFloat32(); 
+            uint32_t count = reader.readUInt32();
             /*
              * this is pretty straight forward but just documenting that osg and
              * dungeon siege node transformation matrices ARE compatible so no funky
@@ -180,16 +102,14 @@ namespace ehb
 
             node->doorXform.emplace_back(id, std::move(xform));
 
-            stream.seekg(count * 4, std::ios::cur);
+            reader.skipBytes(count * 4);
         }
 
         for (uint32_t index = 0; index < spotCount; index++)
         {
-            std::string tmp;
-
             // rot, pos, string?
-            stream.seekg(44, std::ios_base::cur);
-            std::getline(stream, tmp, '\0');
+            reader.skipBytes(44);
+            std::string tmp = reader.readString();
         }
 
         // create vertex data per entire mesh
@@ -200,39 +120,10 @@ namespace ehb
 
         for (uint32_t index = 0; index < cornerCount; index++)
         {
-            float x, y, z, nX, nY, nZ, tX, tY;
-            uint8_t r, g, b, a;
-
-            stream.read((char *)&x, sizeof(float));
-            stream.read((char *)&y, sizeof(float));
-            stream.read((char *)&z, sizeof(float));
-
-            stream.read((char *)&nX, sizeof(float));
-            stream.read((char *)&nY, sizeof(float));
-            stream.read((char *)&nZ, sizeof(float));
-
-            // this is swizzled
-            stream.read((char *)&r, sizeof(uint8_t));
-            stream.read((char *)&b, sizeof(uint8_t));
-            stream.read((char *)&g, sizeof(uint8_t));
-            stream.read((char *)&a, sizeof(uint8_t));
-
-            stream.read((char *)&tX, sizeof(float));
-            stream.read((char *)&tY, sizeof(float));
-
-            if (bSwap)
-            {
-                osg::swapBytes4((char *)&x);
-                osg::swapBytes4((char *)&y);
-                osg::swapBytes4((char *)&z);
-
-                osg::swapBytes4((char *)&nX);
-                osg::swapBytes4((char *)&nY);
-                osg::swapBytes4((char *)&nZ);
-
-                osg::swapBytes4((char *)&tX);
-                osg::swapBytes4((char *)&tY);
-            }
+            float x = reader.readFloat32(), y = reader.readFloat32(), z = reader.readFloat32();
+            float nX = reader.readFloat32(), nY = reader.readFloat32(), nZ = reader.readFloat32();
+            uint8_t r = reader.readUInt8(), g = reader.readUInt8(), b = reader.readUInt8(), a = reader.readUInt8();
+            float tX = reader.readFloat32(), tY = reader.readFloat32();
 
             (*vertices)[index].set(x, y, z);
             (*normals)[index].set(nX, nY, nZ);
@@ -242,20 +133,8 @@ namespace ehb
 
         for (uint32_t index = 0; index < textureCount; index++)
         {
-            std::string textureFileName;
-            uint32_t start, span, count;
-
-            std::getline(stream, textureFileName, '\0');
-            stream.read((char *)&start, sizeof(uint32_t));
-            stream.read((char *)&span, sizeof(uint32_t));
-            stream.read((char *)&count, sizeof(uint32_t));
-
-            if (bSwap)
-            {
-                osg::swapBytes4((char *)&start);
-                osg::swapBytes4((char *)&span);
-                osg::swapBytes4((char *)&count);
-            }
+            std::string textureFileName = reader.readString();
+            uint32_t start = reader.readUInt32(), span = reader.readUInt32(), count = reader.readUInt32();
 
             // create our unsigned short index data, as per the mesh format
             osg::ref_ptr<osg::DrawElementsUShort> elements = new osg::DrawElementsUShort(GL_TRIANGLES, static_cast<uint32_t>(count));
@@ -263,14 +142,7 @@ namespace ehb
             // read in each index value and adjust for the global vertex list
             for (uint32_t j = 0; j < count; ++j)
             {
-                uint16_t value;
-
-                stream.read((char *)&value, sizeof(uint16_t));
-
-                if (bSwap)
-                {
-                    osg::swapBytes2((char *)&value);
-                }
+                uint16_t value = reader.readUInt16();
 
                 (*elements)[j] = start + value;
             }
@@ -339,87 +211,86 @@ namespace ehb
             node->addChild(geometry);
         }
 
-        uint32_t logicalGroupingCount; stream.read((char*)&logicalGroupingCount, sizeof(uint32_t));
+        uint32_t logicalGroupingCount = reader.readUInt32();
         node->logicalNodeGroupings.resize(logicalGroupingCount);
 
         for (uint32_t i = 0; i < logicalGroupingCount; i++)
         {
             auto& logicalNodeGrouping = node->logicalNodeGroupings.at(i);
 
-            stream.read((char*)&logicalNodeGrouping.id, sizeof(uint8_t));
+            logicalNodeGrouping.id = reader.readUInt8();
 
-            stream.read((char*)&logicalNodeGrouping.bbox._min.x(), sizeof(float));
-            stream.read((char*)&logicalNodeGrouping.bbox._min.y(), sizeof(float));
-            stream.read((char*)&logicalNodeGrouping.bbox._min.z(), sizeof(float));
+            logicalNodeGrouping.bbox._min.x() = reader.readFloat32();
+            logicalNodeGrouping.bbox._min.y() = reader.readFloat32();
+            logicalNodeGrouping.bbox._min.z() = reader.readFloat32();
 
-            stream.read((char*)&logicalNodeGrouping.bbox._max.x(), sizeof(float));
-            stream.read((char*)&logicalNodeGrouping.bbox._max.y(), sizeof(float));
-            stream.read((char*)&logicalNodeGrouping.bbox._max.z(), sizeof(float));
+            logicalNodeGrouping.bbox._max.x() = reader.readFloat32();
+            logicalNodeGrouping.bbox._max.y() = reader.readFloat32();
+            logicalNodeGrouping.bbox._max.z() = reader.readFloat32();
 
-            stream.read((char*)&logicalNodeGrouping.flag, sizeof(uint32_t));
+            logicalNodeGrouping.flag = (SiegeNodeMesh::FloorFlag)reader.readUInt32();
 
             // no idea what this is yet
-            uint32_t unkCount1; stream.read((char*)&unkCount1, sizeof(uint32_t));
+            uint32_t unkCount1 = reader.readUInt32();
             for (uint32_t j = 0; j < unkCount1; ++j)
             {
-                uint16_t index; stream.read((char*)&index, sizeof(uint16_t));
+                uint16_t index = reader.readUInt16();
 
-                float unkRotation[9]; stream.read((char*)&unkRotation, sizeof(float) * 9);
+                float unkRotation[9]; reader.readBytes(&unkRotation, sizeof(float) * 9);
 
-                uint16_t unkShortArrayCount1; stream.read((char*)&unkShortArrayCount1, sizeof(uint16_t));
-                stream.ignore(sizeof(uint16_t) * unkShortArrayCount1);
+                uint16_t unkShortArrayCount1 = reader.readUInt16();
+                reader.skipBytes(sizeof(uint16_t) * unkShortArrayCount1);
 
-                uint32_t unkShortArrayCount2; stream.read((char*)&unkShortArrayCount2, sizeof(uint32_t));
-                stream.ignore(sizeof(uint16_t) * unkShortArrayCount2);
+                uint32_t unkShortArrayCount2 = reader.readUInt32();
+                reader.skipBytes(sizeof(uint16_t) * unkShortArrayCount2);
             }
 
-            uint32_t unkShortPairSectionCount; stream.read((char*)&unkShortPairSectionCount, sizeof(uint32_t));
+            uint32_t unkShortPairSectionCount = reader.readUInt32();
             for (uint32_t j = 0; j < unkShortPairSectionCount; ++j)
             {
-                uint8_t unkByte; stream.read((char*)&unkByte, sizeof(uint8_t));
+                uint8_t unkByte = reader.readUInt8();
 
-                uint32_t unkCount2; stream.read((char*)&unkCount2, sizeof(uint32_t));
+                uint32_t unkCount2 = reader.readUInt32();
 
-                stream.ignore((sizeof(uint16_t) * unkCount2) * 2);
+                reader.skipBytes((sizeof(uint16_t) * unkCount2) * 2);
             }
 
-            uint32_t triangleCount; stream.read((char*)&triangleCount, sizeof(uint32_t));
+            uint32_t triangleCount = reader.readUInt32();
             logicalNodeGrouping.logicalNodeFaces.resize(triangleCount);
             for (uint32_t j = 0; j < triangleCount; ++j)
             {
                 SiegeNodeMesh::Face& face = logicalNodeGrouping.logicalNodeFaces.at(j);
+                face.a = reader.readVec3();
+                face.b = reader.readVec3();
+                face.c = reader.readVec3();
 
-                stream.read((char*)&face.a, sizeof(float) * 3);
-                stream.read((char*)&face.b, sizeof(float) * 3);
-                stream.read((char*)&face.c, sizeof(float) * 3);
-
-                stream.read((char*)&face.normal, sizeof(float) * 3);
+                face.normal = reader.readVec3();
             }
 
-            recurse_unknown_section(stream);
+            recurse_unknown_section(reader);
         }
 
         return node.release();
     }
 
-    void ReaderWriterSNO::recurse_unknown_section(std::istream& stream) const
+    void ReaderWriterSNO::recurse_unknown_section(BinaryReader& reader) const
     {
-        float unkbBox[6]; stream.read((char*)&unkbBox, sizeof(float) * 6);
+        float unkbBox[6]; reader.readBytes(unkbBox, sizeof(float) * 6);
 
-        uint8_t unkByte1; stream.read((char*)&unkByte1, sizeof(uint8_t));
+        uint8_t unkByte1 = reader.readUInt8();
 
-        uint16_t unkCount3; stream.read((char*)&unkCount3, sizeof(uint16_t));
+        uint16_t unkCount3 = reader.readUInt16();
         std::vector<uint16_t> unkArrayOfShorts;
         for (uint32_t i = 0; i < unkCount3; i++)
         {
-            uint16_t value; stream.read((char*)&value, sizeof(uint16_t));
+            uint16_t value = reader.readUInt16();
             unkArrayOfShorts.push_back(value);
         }
 
-        uint8_t unkByte2; stream.read((char*)&unkByte2, sizeof(uint8_t));
+        uint8_t unkByte2 = reader.readUInt8();
         for (uint8_t i = 0; i < unkByte2; i++)
         {
-            recurse_unknown_section(stream);
+            recurse_unknown_section(reader);
         }
     }
 }

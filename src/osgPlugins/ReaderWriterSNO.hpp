@@ -16,6 +16,7 @@
 namespace ehb
 {
     class IFileSys;
+    class BinaryReader;
     class ReaderWriterSNO : public osgDB::ReaderWriter
     {
     public:
@@ -38,7 +39,7 @@ namespace ehb
 
         std::shared_ptr<spdlog::logger> log;
 
-        void recurse_unknown_section(std::istream& stream) const;
+        void recurse_unknown_section(BinaryReader& reader) const;
     };
 
     // https://github.com/xarray/osgRecipes/blob/master/cookbook/chapter8/ch08_07/OctreeBuilder.cpp
