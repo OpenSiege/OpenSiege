@@ -4,6 +4,7 @@
 #include "IFileSys.hpp"
 #include "gas/Fuel.hpp"
 #include "osg/SiegeNodeMesh.hpp"
+#include "world/Region.hpp"
 
 #include <set>
 #include <osgDB/ReadFile>
@@ -57,7 +58,7 @@ namespace ehb
 
         log->info("RegionTestState::enter()");
 
-        region = static_cast<osg::MatrixTransform*> (osgDB::readNodeFile("/world/maps/multiplayer_world/regions/town_center/terrain_nodes/nodes.gas"));
+        region = static_cast<Region*> (osgDB::readNodeFile("/world/maps/multiplayer_world/regions/town_center/terrain_nodes/nodes.gas"));
         uint32_t targetNodeGuid = 0; region->getUserValue("targetnode", targetNodeGuid);
 
         osg::MatrixTransform* targetNodeXform = dynamic_cast<osg::MatrixTransform *>(region->getOrCreateUserDataContainer()->getUserObject(8));

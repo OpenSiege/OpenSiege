@@ -5,6 +5,7 @@
 #include "gas/Fuel.hpp"
 
 #include "osg/SiegeNodeMesh.hpp"
+#include "world/Region.hpp"
 
 #include <osg/MatrixTransform>
 #include <osgDB/ReadFile>
@@ -87,7 +88,7 @@ namespace ehb
 
         if (Fuel doc; doc.load(stream))
         {
-            osg::ref_ptr<osg::Group> regionGroup = new osg::Group;
+            osg::ref_ptr<Region> regionGroup = new Region;
 
             // region properties
             regionGroup->setUserValue<uint32_t>("actor_ambient_color", doc.valueAsUInt("siege_node_list:actor_ambient_color"));
