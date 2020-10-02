@@ -19,6 +19,7 @@ namespace ehb
 {
     class IConfig;
     class IFileSys;
+    class Region;
     class RegionTestState : public IGameState
     {
     public:
@@ -41,7 +42,7 @@ namespace ehb
         osgViewer::Viewer& viewer;
         osg::Group& scene;
 
-        osg::MatrixTransform* region;
+        Region* region;
         
         std::shared_ptr<spdlog::logger> log;
     };

@@ -81,8 +81,6 @@ namespace ehb
             uint64_t farGuid;
         };
 
-        // holds a mapping from the guid to the final matrix transform of the placed nodes
-        std::unordered_map<uint32_t, osg::ref_ptr<osg::MatrixTransform>> nodeMap;
         std::unordered_multimap<uint32_t, DoorEntry> doorMap;
         std::set<uint32_t> completeSet;
 
@@ -145,7 +143,7 @@ namespace ehb
                         regionGroup->addChild(xform);
                         xform->addChild(mesh);
 
-                        nodeMap.emplace(nodeGuid, xform);
+                        regionGroup->nodeMap.emplace(nodeGuid, xform);
                     }
                     else
                     {
@@ -163,17 +161,17 @@ namespace ehb
             regionGroup->setUserValue("targetnode", targetnode);
 
             // recursive function to place every node in the region
-            std::function<void(const uint32_t)> func = [&func, &doorMap, &nodeMap, &completeSet](const uint32_t guid)
+            std::function<void(const uint32_t)> func = [&func, &doorMap, &regionGroup, &completeSet](const uint32_t guid)
             {
                 if (completeSet.insert(guid).second)
                 {
-                    osg::ref_ptr<osg::MatrixTransform> targetNode = nodeMap.at(guid);
+                    osg::ref_ptr<osg::MatrixTransform> targetNode = regionGroup->nodeMap.at(guid);
 
                     const auto range = doorMap.equal_range(guid);
 
                     for (auto entry = range.first; entry != range.second; ++entry)
                     {
-                        osg::ref_ptr<osg::MatrixTransform> connectNode = nodeMap.at(entry->second.farGuid);
+                        osg::ref_ptr<osg::MatrixTransform> connectNode = regionGroup->nodeMap.at(entry->second.farGuid);
 
                         SiegeNodeMesh::connect(targetNode, entry->second.id, connectNode, entry->second.farDoor);
 
@@ -188,7 +186,7 @@ namespace ehb
             func(targetnode);
 
             // index 8 of the user data container will contain our target node xform for now
-            if (osg::MatrixTransform* targetNodeXform = nodeMap.at(targetnode))
+            if (osg::MatrixTransform* targetNodeXform = regionGroup->nodeMap.at(targetnode))
             {
                 regionGroup->getOrCreateUserDataContainer()->addUserObject(targetNodeXform);
             }

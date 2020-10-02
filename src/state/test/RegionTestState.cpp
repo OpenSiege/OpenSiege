@@ -59,15 +59,15 @@ namespace ehb
         log->info("RegionTestState::enter()");
 
         region = static_cast<Region*> (osgDB::readNodeFile("/world/maps/multiplayer_world/regions/town_center/terrain_nodes/nodes.gas"));
-        uint32_t targetNodeGuid = 0; region->getUserValue("targetnode", targetNodeGuid);
 
-        osg::MatrixTransform* targetNodeXform = dynamic_cast<osg::MatrixTransform *>(region->getOrCreateUserDataContainer()->getUserObject(8));
+        const osg::MatrixTransform* targetNodeXform = region->targetNode();
+        uint32_t targetNodeGuid = region->targetNodeGuid();
 
         // TODO: is there a better way to do this?
         // re-position the camera based on the size of node and orient it up a little bit get a birds eye-view
         if (auto manipulator = viewer.getCameraManipulator())
         {
-            if (SiegeNodeMesh* mesh = static_cast<SiegeNodeMesh*>(targetNodeXform->getChild(0)))
+            if (const SiegeNodeMesh* mesh = static_cast<const SiegeNodeMesh*>(targetNodeXform->getChild(0)))
             {
                 double radius = osg::maximum(double(mesh->getBound().radius()), 1e-6);
                 double dist = 7.f * radius;
@@ -116,11 +116,11 @@ namespace ehb
                         {
                             if (uint32_t nodeGuid; node->getUserValue("guid", nodeGuid))
                             {
-                                if (auto xform = dynamic_cast<osg::MatrixTransform*> (node))
+                                if (auto nodeXform = dynamic_cast<osg::MatrixTransform*> (node))
                                 {
                                     log->info("node you clicked was: 0x{:x}", nodeGuid);
 
-                                    static_cast<SiegeNodeMesh*>(xform->getChild(0))->toggleBoundingBox();
+                                    static_cast<SiegeNodeMesh*>(nodeXform->getChild(0))->toggleBoundingBox();
                                 }
                             }
                         }
