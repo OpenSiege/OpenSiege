@@ -146,10 +146,10 @@ namespace ehb
                 geometry->setTexCoordArray(0, texCoords);
                 geometry->setColorArray(colors, osg::Array::BIND_PER_VERTEX);
 
-                for (int cornerCounter = 0; cornerCounter < mesh.cornerCount; ++cornerCounter)
+                for (uint32_t cornerCounter = 0; cornerCounter < mesh.cornerCount; ++cornerCounter)
                 {
-                    auto& c = mesh.corners[cornerCounter];
-                    auto& w = mesh.wCorners[cornerCounter];
+                    const auto& c = mesh.corners[cornerCounter];
+                    const auto& w = mesh.wCorners[cornerCounter];
 
                     vertices->push_back(c.position);
                     texCoords->push_back(c.texCoord);
@@ -306,7 +306,7 @@ namespace ehb
             {
                 bones.push_back(bone);
 
-                for (int i = 0; i < bone->getNumChildren(); ++i)
+                for (uint32_t i = 0; i < bone->getNumChildren(); ++i)
                 {
                     recurse(static_cast<osgAnimation::Bone*>(bone->getChild(i)));
                 }
@@ -326,7 +326,7 @@ namespace ehb
             pseudoRoot = static_cast<osg::MatrixTransform *>(getChild(0));
 
             // rebuild our geometry references
-            for (int i = 0; i < pseudoRoot->getNumChildren(); ++i)
+            for (uint32_t i = 0; i < pseudoRoot->getNumChildren(); ++i)
             {
                 geometryVec.push_back(static_cast<osg::Geometry*>(pseudoRoot->getChild(i)));
             }
