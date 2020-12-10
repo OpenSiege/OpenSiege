@@ -75,6 +75,7 @@ set(SIEGE_SOURCES
     "src/Platform.cpp"
     "src/Game.cpp"
     "src/main.cpp"
+    "src/ContentDb.cpp"
 )
 
 # main open siege target

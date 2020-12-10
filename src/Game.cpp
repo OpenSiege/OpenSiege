@@ -125,7 +125,7 @@ namespace ehb
     {
         if (gameStateType == "InitState")
         {
-            return new InitState(gameStateMgr, config, fileSys, *console);
+            return new InitState(gameStateMgr, config, fileSys, contentDb, *console);
         }
         else if (gameStateType == "GasTestState")
         {
