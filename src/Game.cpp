@@ -12,6 +12,7 @@
 #include "state/test/SiegeNodeTestState.hpp"
 #include "state/test/UITestState.hpp"
 #include "state/test/RegionTestState.hpp"
+#include "state/test/AspectMeshTestState.hpp"
 
 namespace ehb
 {
@@ -141,6 +142,10 @@ namespace ehb
         else if (gameStateType == "RegionTestState")
         {
             return new RegionTestState(gameStateMgr, config, fileSys, viewer, *scene3d);
+        }
+        else if (gameStateType == "AspectMeshTestState")
+        {
+            return new AspectMeshTestState(gameStateMgr, config, fileSys, viewer, *scene3d);
         }
 
         return nullptr;
