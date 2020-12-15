@@ -203,7 +203,7 @@ namespace ehb
         setInitialBound(cb.getBoundingBox());
 
         // setup our root bone
-        osg::ref_ptr<osgAnimation::Bone> root = static_cast<osg::ref_ptr<osgAnimation::Bone>>(skeleton->getChild(0));
+        osg::ref_ptr<osgAnimation::Bone> root = static_cast<osgAnimation::Bone*>(skeleton->getChild(0));
         bones.push_back(root);
 
         // root->addChild(createRefGeometry(pos, 0.25).get());
@@ -308,7 +308,7 @@ namespace ehb
 
                 for (uint32_t i = 0; i < bone->getNumChildren(); ++i)
                 {
-                    recurse(static_cast<osg::ref_ptr<osgAnimation::Bone>>(bone->getChild(i)));
+                    recurse(static_cast<osgAnimation::Bone*>(bone->getChild(i)));
                 }
             };
 
@@ -320,7 +320,7 @@ namespace ehb
             skeleton = static_cast<osgAnimation::Skeleton*>(aspect.skeleton->clone(copyop));
 
             // make sure to update our bone reference vec
-            recurse(static_cast<osg::ref_ptr<osgAnimation::Bone>>(skeleton->getChild(0)));
+            recurse(static_cast<osgAnimation::Bone*>(skeleton->getChild(0)));
 
             // first child is our pseudo bone which we can grab from this group since it's been cloned
             pseudoRoot = static_cast<osg::MatrixTransform *>(getChild(0));
