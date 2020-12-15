@@ -27,7 +27,7 @@ We recommend using [chocolatey](https://chocolatey.org/install) to install the p
 
 ```
 choco install re2c
-choco install winflexbison
+choco install winflexbison3
 ```
 
 #### OpenSiege Build
@@ -48,10 +48,18 @@ If you **do not** pass a state to OpenSiege you will get a purple viewport with 
 ```
 --bits <path>
 --fullscreen <true/false>
---state <GasTestState/SiegeNodeTestState/RegionTestState/UITestState>
+--state <GasTestState/SiegeNodeTestState/RegionTestState/UITestState/AspectMeshTestState>
 --width <int>
 --height <int>
 ```
+
+#### Expected Test State Output
+
+<img src="misc/screenshots/fg-test-1.png" width=50% height=50%>
+<img src="misc/screenshots/sno-test-1.png" width=50% height=50%>
+<img src="misc/screenshots/ui-test-1.png" width=50% height=50%>
+<img src="misc/screenshots/region-test-1.png" width=50% height=50%>
+
 
 ## Built With
 

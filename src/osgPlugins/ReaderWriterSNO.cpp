@@ -17,24 +17,24 @@
 
 namespace ehb
 {
-    ReaderWriterSNO::ReaderWriterSNO(IFileSys & fileSys) : fileSys(fileSys)
+    ReaderWriterSNO::ReaderWriterSNO(IFileSys& fileSys) : fileSys(fileSys)
     {
         supportsExtension("sno", "Dungeon Siege SNO Mesh");
 
         log = spdlog::get("log");
     }
 
-    const char * ReaderWriterSNO::className() const {
+    const char* ReaderWriterSNO::className() const {
 
         return "Dungeon Siege Siege Node Reader";
     }
 
-    bool ReaderWriterSNO::acceptsExtension(const std::string & extension) const
+    bool ReaderWriterSNO::acceptsExtension(const std::string& extension) const
     {
         return osgDB::equalCaseInsensitive(extension, "sno");
     }
 
-    osgDB::ReaderWriter::ReadResult ReaderWriterSNO::readNode(const std::string & filename, const osgDB::Options * options) const
+    osgDB::ReaderWriter::ReadResult ReaderWriterSNO::readNode(const std::string& filename, const osgDB::Options* options) const
     {
         // do an extension check just in case a file reaches a loader it's not supposed to
         const std::string ext = osgDB::getLowerCaseFileExtension(filename);
@@ -50,7 +50,7 @@ namespace ehb
         return readNode(*stream, options);
     }
 
-    osgDB::ReaderWriter::ReadResult ReaderWriterSNO::readNode(std::istream & stream, const osgDB::Options * options) const
+    osgDB::ReaderWriter::ReadResult ReaderWriterSNO::readNode(std::istream& stream, const osgDB::Options* options) const
     {
         ByteArray data((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());
         BinaryReader reader(data);
@@ -65,7 +65,8 @@ namespace ehb
         osg::ref_ptr<SiegeNodeMesh> node = new SiegeNodeMesh;
 
         uint32_t doorCount = reader.readUInt32(), spotCount = reader.readUInt32(), cornerCount = reader.readUInt32(), faceCount = reader.readUInt32(), textureCount = reader.readUInt32();
-        float minX = reader.readFloat32(), minY = reader.readFloat32(), minZ = reader.readFloat32(), maxX = reader.readFloat32(), maxY = reader.readFloat32(), maxZ = reader.readFloat32();
+        auto min = reader.readVec3();
+        auto max = reader.readVec3();
         float unk2 = reader.readFloat32(), unk3 = reader.readFloat32(), unk4 = reader.readFloat32();
         uint32_t unk5 = reader.readUInt32(), unk6 = reader.readUInt32(), unk7 = reader.readUInt32(), unk8 = reader.readUInt32();
         float checksum = reader.readFloat32();
@@ -76,7 +77,7 @@ namespace ehb
             float x = reader.readFloat32(), y = reader.readFloat32(), z = reader.readFloat32();
             float a00 = reader.readFloat32(), a01 = reader.readFloat32(), a02 = reader.readFloat32();
             float a10 = reader.readFloat32(), a11 = reader.readFloat32(), a12 = reader.readFloat32();
-            float a20 = reader.readFloat32(), a21 = reader.readFloat32(), a22 = reader.readFloat32(); 
+            float a20 = reader.readFloat32(), a21 = reader.readFloat32(), a22 = reader.readFloat32();
             uint32_t count = reader.readUInt32();
             /*
              * this is pretty straight forward but just documenting that osg and
@@ -118,15 +119,10 @@ namespace ehb
 
         for (uint32_t index = 0; index < cornerCount; index++)
         {
-            float x = reader.readFloat32(), y = reader.readFloat32(), z = reader.readFloat32();
-            float nX = reader.readFloat32(), nY = reader.readFloat32(), nZ = reader.readFloat32();
-            uint8_t r = reader.readUInt8(), g = reader.readUInt8(), b = reader.readUInt8(), a = reader.readUInt8();
-            float tX = reader.readFloat32(), tY = reader.readFloat32();
-
-            (*vertices)[index].set(x, y, z);
-            (*normals)[index].set(nX, nY, nZ);
-            (*colors)[index].set(r, g, b, a);
-            (*tcoords)[index].set(tX, 1 - tY); // adjust the y coord for osg
+            (*vertices)[index] = reader.readVec3();
+            (*normals)[index] = reader.readVec3();
+            (*colors)[index].set(reader.readUInt8(), reader.readUInt8(), reader.readUInt8(), reader.readUInt8());
+            (*tcoords)[index] = reader.readVec2();
         }
 
         for (uint32_t index = 0; index < textureCount; index++)
@@ -221,13 +217,8 @@ namespace ehb
 
             logicalNodeGrouping.id = reader.readUInt8();
 
-            logicalNodeGrouping.bbox._min.x() = reader.readFloat32();
-            logicalNodeGrouping.bbox._min.y() = reader.readFloat32();
-            logicalNodeGrouping.bbox._min.z() = reader.readFloat32();
-
-            logicalNodeGrouping.bbox._max.x() = reader.readFloat32();
-            logicalNodeGrouping.bbox._max.y() = reader.readFloat32();
-            logicalNodeGrouping.bbox._max.z() = reader.readFloat32();
+            logicalNodeGrouping.bbox._min = reader.readVec3();
+            logicalNodeGrouping.bbox._max = reader.readVec3();
 
             logicalNodeGrouping.flag = (SiegeNodeMesh::FloorFlag)reader.readUInt32();
 

@@ -62,22 +62,22 @@ namespace ehb
     {
     }
 
-    bool SiegeNodeTestState::handle(const osgGA::GUIEventAdapter & event, osgGA::GUIActionAdapter & action)
+    bool SiegeNodeTestState::handle(const osgGA::GUIEventAdapter& event, osgGA::GUIActionAdapter& action)
     {
         switch (event.getEventType())
         {
-            case (osgGA::GUIEventAdapter::KEYUP):
+        case (osgGA::GUIEventAdapter::KEYUP):
+        {
+            if (event.getKey() == '1')
             {
-                if (event.getKey() == '1')
-                {
-                    mesh->toggleAllDoorLabels();
-                    mesh->toggleBoundingBox();
-                }
-                else if (event.getKey() == '2')
-                {
-                    mesh->toggleLogicalNodeFlags();
-                }
+                mesh->toggleAllDoorLabels();
+                mesh->toggleBoundingBox();
             }
+            else if (event.getKey() == '2')
+            {
+                mesh->toggleLogicalNodeFlags();
+            }
+        }
         }
 
         return false;

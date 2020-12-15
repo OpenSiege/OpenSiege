@@ -4,6 +4,7 @@
 #include "state/IGameStateProvider.hpp"
 #include "state/GameStateMgr.hpp"
 #include "LocalFileSys.hpp"
+#include "ContentDb.hpp"
 
 #include "console/Console.hpp"
 
@@ -37,6 +38,7 @@ namespace ehb
         IConfig& config;
         GameStateMgr gameStateMgr;
         LocalFileSys fileSys; // TODO: remove local file system in favor of tank file system
+        ContentDb contentDb;
 
         osgViewer::Viewer viewer;
 

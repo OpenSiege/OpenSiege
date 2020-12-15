@@ -35,7 +35,7 @@ namespace ehb
 
         if (imageFont != nullptr)
         {
-            TextLine * line = new TextLine(scene);
+            TextLine* line = new TextLine(scene);
 
             line->text = "this is some test text";
 
@@ -45,7 +45,7 @@ namespace ehb
         {
             spdlog::get("log")->error("failed to load {}", font);
         }
-        #endif
+#endif
 
         auto data_bar = new Widget;
         data_bar->setRect(0, 449, 640, 480);
@@ -72,7 +72,7 @@ namespace ehb
     {
     }
 
-    bool UITestState::handle(const osgGA::GUIEventAdapter & event, osgGA::GUIActionAdapter & action)
+    bool UITestState::handle(const osgGA::GUIEventAdapter& event, osgGA::GUIActionAdapter& action)
     {
         return false;
     }

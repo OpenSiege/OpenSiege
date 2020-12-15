@@ -5,6 +5,7 @@
 #include <osg/MatrixTransform>
 #include <osg/ClipControl>
 #include <osgGA/TrackballManipulator>
+#include <osgViewer/ViewerEventHandlers>
 
 #include "cfg/IConfig.hpp"
 #include "state/InitState.hpp"
@@ -12,6 +13,7 @@
 #include "state/test/SiegeNodeTestState.hpp"
 #include "state/test/UITestState.hpp"
 #include "state/test/RegionTestState.hpp"
+#include "state/test/AspectMeshTestState.hpp"
 
 namespace ehb
 {
@@ -64,6 +66,8 @@ namespace ehb
 
         { // hook into the osg event system
             viewer.addEventHandler(this);
+
+            viewer.addEventHandler(new osgViewer::StatsHandler);
         }
 
         setupScene();
@@ -124,7 +128,7 @@ namespace ehb
     {
         if (gameStateType == "InitState")
         {
-            return new InitState(gameStateMgr, config, fileSys, *console);
+            return new InitState(gameStateMgr, config, fileSys, contentDb, *console);
         }
         else if (gameStateType == "GasTestState")
         {
@@ -140,7 +144,11 @@ namespace ehb
         }
         else if (gameStateType == "RegionTestState")
         {
-            return new RegionTestState(gameStateMgr, config, fileSys, viewer, *scene3d);
+            return new RegionTestState(gameStateMgr, config, fileSys, contentDb, viewer, *scene3d);
+        }
+        else if (gameStateType == "AspectMeshTestState")
+        {
+            return new AspectMeshTestState(gameStateMgr, config, fileSys, viewer, *scene3d);
         }
 
         return nullptr;

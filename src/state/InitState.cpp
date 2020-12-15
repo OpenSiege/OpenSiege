@@ -13,8 +13,10 @@
 #include "osgPlugins/ReaderWriterSNO.hpp"
 #include "osgPlugins/ReaderWriterFont.hpp"
 #include "osgPlugins/ReaderWriterSiegeNodeList.hpp"
+#include "osgPlugins/ReaderWriterASP.hpp"
 
 #include "ui/ImageFont.hpp"
+#include "ContentDb.hpp"
 #include "console/Console.hpp"
 
 namespace ehb
@@ -40,10 +42,13 @@ namespace ehb
         {
             osgDB::Registry::instance()->addReaderWriter(new ReaderWriterRAW(fileSys));
             osgDB::Registry::instance()->addReaderWriter(new ReaderWriterSNO(fileSys));
+            osgDB::Registry::instance()->addReaderWriter(new ReaderWriterASP(fileSys));
             osgDB::Registry::instance()->addReaderWriter(new ReaderWriterFont(fileSys));
             osgDB::Registry::instance()->addReaderWriter(new ReaderWriterSiegeNodeList(fileSys));
             
         }
+
+        contentDb.init(fileSys);
 
         // TODO: any asset and engine preloading from gas files
         if (auto stream = fileSys.createInputStream("/ui/config/preload_textures/preload_textures.gas"))

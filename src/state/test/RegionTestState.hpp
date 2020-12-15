@@ -19,12 +19,13 @@ namespace ehb
 {
     class IConfig;
     class IFileSys;
+    class ContentDb;
     class Region;
     class RegionTestState : public IGameState
     {
     public:
 
-        RegionTestState(IGameStateMgr& gameStateMgr, IConfig& config, IFileSys& fileSys, osgViewer::Viewer& viewer, osg::Group& scene);
+        RegionTestState(IGameStateMgr& gameStateMgr, IConfig& config, IFileSys& fileSys, ContentDb& contentDb, osgViewer::Viewer& viewer, osg::Group& scene);
 
         virtual ~RegionTestState() = default;
 
@@ -38,6 +39,7 @@ namespace ehb
         IGameStateMgr& gameStateMgr;
         IConfig& config;
         IFileSys& fileSys;
+        ContentDb& contentDb;
 
         osgViewer::Viewer& viewer;
         osg::Group& scene;
@@ -47,7 +49,7 @@ namespace ehb
         std::shared_ptr<spdlog::logger> log;
     };
 
-    inline RegionTestState::RegionTestState(IGameStateMgr& gameStateMgr, IConfig& config, IFileSys& fileSys, osgViewer::Viewer& viewer, osg::Group& scene) : gameStateMgr(gameStateMgr), config(config), fileSys(fileSys), scene(scene), viewer(viewer)
+    inline RegionTestState::RegionTestState(IGameStateMgr& gameStateMgr, IConfig& config, IFileSys& fileSys, ContentDb& contentDb, osgViewer::Viewer& viewer, osg::Group& scene) : gameStateMgr(gameStateMgr), config(config), fileSys(fileSys), contentDb(contentDb), scene(scene), viewer(viewer)
     {
     }
 }
