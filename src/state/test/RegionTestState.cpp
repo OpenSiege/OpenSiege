@@ -137,8 +137,6 @@ namespace ehb
             }
         }
 
-        log->set_level(spdlog::level::debug);
-
         // collect all files under our object path for loading
         for (const auto& filename : { "non_interactive.gas" })
         {

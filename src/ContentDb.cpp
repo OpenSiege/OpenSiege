@@ -11,7 +11,7 @@ namespace ehb
     void ContentDb::init(IFileSys& fileSys, const std::string& directory)
     {
         auto log = spdlog::get("log");
-        log->set_level(spdlog::level::debug);
+        // log->set_level(spdlog::level::debug);
         log->debug("Starting init of ContentDb");
 
         std::vector<std::unique_ptr<Fuel>> docs;
