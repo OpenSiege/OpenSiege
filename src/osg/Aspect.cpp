@@ -85,7 +85,7 @@ namespace ehb
         return group.release();
     }
 
-    Aspect::Aspect(std::shared_ptr<Impl> impl) : d (std::move(impl))
+    Aspect::Aspect(std::shared_ptr<Impl> impl) : d(std::move(impl))
     {
         auto log = spdlog::get("log");
 
@@ -103,7 +103,7 @@ namespace ehb
         // it looks like the skeleton callback just validates the skeleton and then stays in the callbacks
         // TODO: osgAnimation should expose the ValidateSkeletonVisitor to the API and let you call it once when you need it
         skeleton->setUpdateCallback(nullptr);
-        
+
         log->debug("asp has {} sub meshes", d->subMeshes.size());
 
         for (const auto& mesh : d->subMeshes)
@@ -231,7 +231,7 @@ namespace ehb
 
             if (boneNames.count(bone->getName()) != 0)
             {
-                const std::string & newName = bone->getName() + "_DUP";
+                const std::string& newName = bone->getName() + "_DUP";
                 // log->error("DUPLICATE BONE NAME: {} WE ARE REMAPPING TO {}", bone->getName(), bone->getName() + "_DUP");
                 boneNames.emplace(bone->getName() + "_DUP");
 
@@ -312,7 +312,7 @@ namespace ehb
         }
         else if (copyop.getCopyFlags() & osg::CopyOp::DEEP_COPY_NODES)
         {
-            std::function<void(osg::ref_ptr<osgAnimation::Bone>)> recurse = [&, this](osgAnimation::Bone * bone)
+            std::function<void(osg::ref_ptr<osgAnimation::Bone>)> recurse = [&, this](osgAnimation::Bone* bone)
             {
                 bones.push_back(bone);
 
@@ -333,7 +333,7 @@ namespace ehb
             recurse(static_cast<osgAnimation::Bone*>(skeleton->getChild(0)));
 
             // first child is our pseudo bone which we can grab from this group since it's been cloned
-            pseudoRoot = static_cast<osg::MatrixTransform *>(getChild(0));
+            pseudoRoot = static_cast<osg::MatrixTransform*>(getChild(0));
 
             // rebuild our geometry references
             for (uint32_t i = 0; i < pseudoRoot->getNumChildren(); ++i)

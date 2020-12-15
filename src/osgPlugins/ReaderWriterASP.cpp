@@ -11,24 +11,24 @@
 
 namespace ehb
 {
-    ReaderWriterASP::ReaderWriterASP(IFileSys & fileSys) : fileSys(fileSys)
+    ReaderWriterASP::ReaderWriterASP(IFileSys& fileSys) : fileSys(fileSys)
     {
         supportsExtension("asp", "Dungeon Siege ASP Mesh");
 
         log = spdlog::get("log");
     }
 
-    const char * ReaderWriterASP::className() const {
+    const char* ReaderWriterASP::className() const {
 
         return "Dungeon Siege Aspect Mesh Reader";
     }
 
-    bool ReaderWriterASP::acceptsExtension(const std::string & extension) const
+    bool ReaderWriterASP::acceptsExtension(const std::string& extension) const
     {
         return osgDB::equalCaseInsensitive(extension, "asp");
     }
 
-    osgDB::ReaderWriter::ReadResult ReaderWriterASP::readNode(const std::string & filename, const osgDB::Options * options) const
+    osgDB::ReaderWriter::ReadResult ReaderWriterASP::readNode(const std::string& filename, const osgDB::Options* options) const
     {
         // do an extension check just in case a file reaches a loader it's not supposed to
         const std::string ext = osgDB::getLowerCaseFileExtension(filename);
@@ -44,7 +44,7 @@ namespace ehb
         return readNode(*stream, options);
     }
 
-    osgDB::ReaderWriter::ReadResult ReaderWriterASP::readNode(std::istream & stream, const osgDB::Options * options) const
+    osgDB::ReaderWriter::ReadResult ReaderWriterASP::readNode(std::istream& stream, const osgDB::Options* options) const
     {
         ByteArray data((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());
         BinaryReader reader(data);
