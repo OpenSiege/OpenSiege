@@ -74,19 +74,23 @@ namespace ehb
         virtual void apply(osg::Group& group) override
         {
             osg::MatrixTransform* xform = static_cast<osg::MatrixTransform*> (&group);
-            SiegeNodeMesh* mesh = dynamic_cast<SiegeNodeMesh*>(xform->getChild(0));
 
-            if (mesh != nullptr)
+            if (xform->getNumChildren() > 0)
             {
-                uint32_t guid; xform->getUserValue("guid", guid);
+                SiegeNodeMesh* mesh = dynamic_cast<SiegeNodeMesh*>(xform->getChild(0));
 
-                if (unique.insert(guid).second)
+                if (mesh != nullptr)
                 {
-                    mesh->toggleLogicalNodeFlags();
-                }
-            }
+                    uint32_t guid; xform->getUserValue("guid", guid);
 
-            traverse(group);
+                    if (unique.insert(guid).second)
+                    {
+                        mesh->toggleLogicalNodeFlags();
+                    }
+                }
+
+                traverse(group);
+            }
         }
 
     };
@@ -184,8 +188,6 @@ namespace ehb
                             {
                                 log->error("unable to load model: {}", model);
                             }
-
-                            auto transform = new osg::MatrixTransform;
                         }
                         else
                         {
@@ -251,6 +253,8 @@ namespace ehb
         {
             if (event.getKey() == '2')
             {
+                log->info("enabling logical flags");
+
                 ToggleRegionLogicalFlags visitor;
                 region->accept(visitor);
 
