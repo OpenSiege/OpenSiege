@@ -62,7 +62,7 @@ namespace ehb
     class ToggleRegionLogicalFlags : public osg::NodeVisitor
     {
 
-    std::set<uint32_t> unique;
+        std::set<uint32_t> unique;
 
     public:
 

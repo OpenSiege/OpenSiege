@@ -18,7 +18,7 @@ namespace ehb
         auto log = spdlog::get("game");
 
         static const std::string meshName = "m_c_gah_fg_pos_a1.asp";
-        
+
         if (mesh = dynamic_cast<Aspect*>(osgDB::readNodeFile(meshName)); mesh != nullptr)
         {
             log->info("Loaded {}", meshName);
@@ -60,41 +60,41 @@ namespace ehb
     {
     }
 
-    bool AspectMeshTestState::handle(const osgGA::GUIEventAdapter & event, osgGA::GUIActionAdapter & action)
+    bool AspectMeshTestState::handle(const osgGA::GUIEventAdapter& event, osgGA::GUIActionAdapter& action)
     {
         switch (event.getEventType())
         {
-            case (osgGA::GUIEventAdapter::KEYUP):
+        case (osgGA::GUIEventAdapter::KEYUP):
+        {
+            if (event.getKey() == 'z')
             {
-                if (event.getKey() == 'z')
-                {
-                    mesh->toggleBoundingBox();
-                }
-                else if (event.getKey() == '1')
-                {
-                    clearAndLoadMesh(farmgirl[0]);
-                }
-                else if (event.getKey() == '2')
-                {
-                    clearAndLoadMesh(farmgirl[1]);
-                }
-                else if (event.getKey() == '3')
-                {
-                    clearAndLoadMesh(farmgirl[2]);
-                }
-                else if (event.getKey() == '4')
-                {
-                    clearAndLoadMesh(farmgirl[3]);
-                }
-                else if (event.getKey() == '5')
-                {
-                    clearAndLoadMesh(farmgirl[4]);
-                }
-                else if (event.getKey() == '6')
-                {
-                    clearAndLoadMesh(farmgirl[5]);
-                }
+                mesh->toggleBoundingBox();
             }
+            else if (event.getKey() == '1')
+            {
+                clearAndLoadMesh(farmgirl[0]);
+            }
+            else if (event.getKey() == '2')
+            {
+                clearAndLoadMesh(farmgirl[1]);
+            }
+            else if (event.getKey() == '3')
+            {
+                clearAndLoadMesh(farmgirl[2]);
+            }
+            else if (event.getKey() == '4')
+            {
+                clearAndLoadMesh(farmgirl[3]);
+            }
+            else if (event.getKey() == '5')
+            {
+                clearAndLoadMesh(farmgirl[4]);
+            }
+            else if (event.getKey() == '6')
+            {
+                clearAndLoadMesh(farmgirl[5]);
+            }
+        }
         }
         return false;
     }

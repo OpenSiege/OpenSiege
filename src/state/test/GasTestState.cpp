@@ -33,7 +33,7 @@ namespace ehb
     {
     }
 
-    bool GasTestState::handle(const osgGA::GUIEventAdapter & event, osgGA::GUIActionAdapter & action)
+    bool GasTestState::handle(const osgGA::GUIEventAdapter& event, osgGA::GUIActionAdapter& action)
     {
         return false;
     }
