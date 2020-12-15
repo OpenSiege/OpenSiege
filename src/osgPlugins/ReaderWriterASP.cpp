@@ -14,6 +14,8 @@ namespace ehb
     ReaderWriterASP::ReaderWriterASP(IFileSys & fileSys) : fileSys(fileSys)
     {
         supportsExtension("asp", "Dungeon Siege ASP Mesh");
+
+        log = spdlog::get("log");
     }
 
     const char * ReaderWriterASP::className() const {
@@ -66,6 +68,8 @@ namespace ehb
                 aspectImpl->subMeshCount = reader.readUInt32();
                 aspectImpl->renderFlags = reader.readUInt32();
 
+                log->debug("asp mesh has {} textures", aspectImpl->textureCount);
+
                 ByteArray rawText(aspectImpl->sizeTextField);
                 reader.readBytes(rawText.data(), rawText.size());
 
@@ -87,6 +91,8 @@ namespace ehb
                         }
                         aspectImpl->textureNames[i].push_back(c);
                     }
+
+                    log->debug("textureNames[{}] = {}", i, aspectImpl->textureNames[i]);
                 }
 
                 aspectImpl->boneInfos.resize(aspectImpl->boneCount);

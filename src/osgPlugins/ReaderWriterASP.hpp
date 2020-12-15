@@ -3,6 +3,8 @@
 
 #include <osgDB/ReaderWriter>
 
+#include "spdlog/spdlog.h"
+
 namespace ehb
 {
     class IFileSys;
@@ -25,5 +27,7 @@ namespace ehb
     private:
 
         IFileSys & fileSys;
+
+        std::shared_ptr<spdlog::logger> log;
     };
 }

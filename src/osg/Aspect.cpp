@@ -14,6 +14,8 @@
 #include <osgAnimation/StackedQuaternionElement>
 #include <osg/PolygonMode>
 
+#include "spdlog/spdlog.h"
+
 namespace ehb
 {
     static osgAnimation::VertexInfluence& getVertexInfluence(osgAnimation::VertexInfluenceMap& vim, const std::string& name) {
@@ -85,6 +87,8 @@ namespace ehb
 
     Aspect::Aspect(std::shared_ptr<Impl> impl) : d (std::move(impl))
     {
+        auto log = spdlog::get("log");
+
         debugDrawingGroups.resize(3);
 
         skeleton = new osgAnimation::Skeleton;
@@ -99,9 +103,13 @@ namespace ehb
         // it looks like the skeleton callback just validates the skeleton and then stays in the callbacks
         // TODO: osgAnimation should expose the ValidateSkeletonVisitor to the API and let you call it once when you need it
         skeleton->setUpdateCallback(nullptr);
+        
+        log->debug("asp has {} sub meshes", d->subMeshes.size());
 
         for (const auto& mesh : d->subMeshes)
         {
+            log->debug("asp subMesh has {} textures", mesh.textureCount);
+
             uint32_t f = 0; // track which face the loader is loading across the sub mesh
             for (uint32_t i = 0; i < mesh.textureCount; ++i)
             {
@@ -134,6 +142,8 @@ namespace ehb
 
                     texture->setWrap(osg::Texture2D::WRAP_S, osg::Texture2D::REPEAT);
                     texture->setWrap(osg::Texture2D::WRAP_T, osg::Texture2D::REPEAT);
+
+                    log->debug("loaded image {} for asp sub mesh: {}", i, imageFilename);
                 }
 
                 osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array;
