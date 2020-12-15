@@ -51,7 +51,7 @@ namespace ehb
 
         std::shared_ptr<Aspect::Impl> aspectImpl = std::make_shared<Aspect::Impl>();
 
-        unsigned int currentSubMeshIndex;
+        uint32_t currentSubMeshIndex;
 
         FourCC chunkId;
         while (reader.readFourCC(chunkId))
@@ -75,7 +75,7 @@ namespace ehb
 
                 size_t index = 0;
                 aspectImpl->textureNames.resize(aspectImpl->textureCount);
-                for (unsigned int i = 0; i < aspectImpl->textureCount; ++i)
+                for (uint32_t i = 0; i < aspectImpl->textureCount; ++i)
                 {
                     for (; index < rawText.size(); ++index)
                     {
@@ -133,7 +133,7 @@ namespace ehb
             }
             else if (chunkId == "BSUB")
             {
-                const unsigned int version = reader.readUInt32();
+                const auto version = reader.readUInt32();
 
                 currentSubMeshIndex = reader.readUInt32();
 

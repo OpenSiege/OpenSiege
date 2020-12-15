@@ -223,7 +223,7 @@ namespace ehb
 
         boneNames.emplace(root->getName());
 
-        // generate our bone heirarchy
+        // generate our bone heirarchy - start from 1 since we already handled the root bone
         for (uint32_t i = 1; i < d->boneInfos.size(); ++i)
         {
             osg::ref_ptr<osgAnimation::Bone> bone = new osgAnimation::Bone(d->boneInfos[i].name);
@@ -232,7 +232,7 @@ namespace ehb
             if (boneNames.count(bone->getName()) != 0)
             {
                 const std::string & newName = bone->getName() + "_DUP";
-                // spdlog::get("log")->error("DUPLICATE BONE NAME: {} WE ARE REMAPPING TO {}", bone->getName(), bone->getName() + "_DUP");
+                // log->error("DUPLICATE BONE NAME: {} WE ARE REMAPPING TO {}", bone->getName(), bone->getName() + "_DUP");
                 boneNames.emplace(bone->getName() + "_DUP");
 
                 bone->setName(newName);
