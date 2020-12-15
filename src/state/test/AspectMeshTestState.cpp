@@ -17,15 +17,14 @@ namespace ehb
     {
         auto log = spdlog::get("game");
 
-        // static const std::string meshName = "t_grs01_houses_generic-a-log.sno";
-        static const std::string meshName = "m_i_glb_tree-poplar-01.asp";
+        static const std::string meshName = "m_c_gah_fg_pos_a1.asp";
         
         if (mesh = dynamic_cast<Aspect*>(osgDB::readNodeFile(meshName)); mesh != nullptr)
         {
             log->info("Loaded {}", meshName);
 
-            auto t1 = new osg::MatrixTransform;
-            t1->addChild(mesh);
+            transform = new osg::MatrixTransform;
+            transform->addChild(mesh);
 
 #if 1
             // TODO: is there a better way to do this?
@@ -44,7 +43,7 @@ namespace ehb
             // applying a skeleton messes with the bounding box size and expands it way more than it should
             mesh->applySkeleton();
 
-            scene.addChild(t1);
+            scene.addChild(transform);
         }
         else
         {
@@ -67,12 +66,51 @@ namespace ehb
         {
             case (osgGA::GUIEventAdapter::KEYUP):
             {
-                if (event.getKey() == '1')
+                if (event.getKey() == 'z')
                 {
                     mesh->toggleBoundingBox();
+                }
+                else if (event.getKey() == '1')
+                {
+                    clearAndLoadMesh(farmgirl[0]);
+                }
+                else if (event.getKey() == '2')
+                {
+                    clearAndLoadMesh(farmgirl[1]);
+                }
+                else if (event.getKey() == '3')
+                {
+                    clearAndLoadMesh(farmgirl[2]);
+                }
+                else if (event.getKey() == '4')
+                {
+                    clearAndLoadMesh(farmgirl[3]);
+                }
+                else if (event.getKey() == '5')
+                {
+                    clearAndLoadMesh(farmgirl[4]);
+                }
+                else if (event.getKey() == '6')
+                {
+                    clearAndLoadMesh(farmgirl[5]);
                 }
             }
         }
         return false;
+    }
+
+    void AspectMeshTestState::clearAndLoadMesh(const std::string& filename)
+    {
+        if (filename.empty()) return;
+
+        if (mesh = dynamic_cast<Aspect*>(osgDB::readNodeFile(filename)); mesh != nullptr)
+        {
+            spdlog::get("log")->info("loading new fg mesh");
+
+            mesh->applySkeleton();
+
+            transform->removeChildren(0, 1);
+            transform->addChild(mesh);
+        }
     }
 }

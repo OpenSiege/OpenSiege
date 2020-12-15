@@ -3,6 +3,11 @@
 
 #include "state/IGameState.hpp"
 
+namespace osg
+{
+    class MatrixTransform;
+}
+
 namespace osgViewer
 {
     class Viewer;
@@ -15,6 +20,18 @@ namespace ehb
     class Aspect;
     class AspectMeshTestState : public IGameState
     {
+
+        const std::vector<std::string> farmgirl = {
+
+            "m_c_gah_fg_pos_a1.asp",
+            "m_c_gah_fg_pos_a2.asp",
+            "m_c_gah_fg_pos_a3.asp",
+            "m_c_gah_fg_pos_a4.asp",
+            "m_c_gah_fg_pos_a5.asp",
+            "m_c_gah_fg_pos_a6.asp",
+            "m_c_gah_fg_pos_a7.asp",
+        };
+
     public:
 
         AspectMeshTestState(IGameStateMgr & gameStateMgr, IConfig & config, IFileSys& fileSys, osgViewer::Viewer& viewer, osg::Group& scene);
@@ -28,6 +45,10 @@ namespace ehb
 
     private:
 
+        void clearAndLoadMesh(const std::string& filename);
+
+    private:
+
         IGameStateMgr & gameStateMgr;
         IConfig & config;
         IFileSys& fileSys;
@@ -36,6 +57,7 @@ namespace ehb
         osg::Group& scene;
 
         Aspect* mesh = nullptr;
+        osg::MatrixTransform* transform = nullptr;
     };
 
     inline AspectMeshTestState::AspectMeshTestState(IGameStateMgr& gameStateMgr, IConfig& config, IFileSys& fileSys, osgViewer::Viewer& viewer, osg::Group& scene) : gameStateMgr(gameStateMgr), config(config), fileSys(fileSys), scene(scene), viewer(viewer)
