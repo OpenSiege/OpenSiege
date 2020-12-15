@@ -122,7 +122,7 @@ namespace ehb
                 // textures are stored directly against the mesh
                 // TODO: should we store the osg::Image against AspectImpl?
                 const std::string imageFilename = d->textureNames[i] + ".raw";
-                osg::Image* image = osgDB::readImageFile(imageFilename);
+                osg::ref_ptr<osg::Image> image = osgDB::readImageFile(imageFilename);
 
                 geometry->setName(d->textureNames[i]);
 
@@ -173,7 +173,7 @@ namespace ehb
 
                 }
 
-                osg::DrawElementsUInt* elements = new osg::DrawElementsUInt(GL_TRIANGLES);
+                osg::ref_ptr<osg::DrawElementsUInt> elements = new osg::DrawElementsUInt(GL_TRIANGLES);
                 geometry->addPrimitiveSet(elements);
 
                 for (uint32_t fpt = 0; fpt < mesh.matInfo[i].faceSpan; ++fpt)
@@ -203,7 +203,7 @@ namespace ehb
         setInitialBound(cb.getBoundingBox());
 
         // setup our root bone
-        osgAnimation::Bone* root = static_cast<osgAnimation::Bone*>(skeleton->getChild(0));
+        osg::ref_ptr<osgAnimation::Bone> root = static_cast<osg::ref_ptr<osgAnimation::Bone>>(skeleton->getChild(0));
         bones.push_back(root);
 
         // root->addChild(createRefGeometry(pos, 0.25).get());
@@ -216,8 +216,8 @@ namespace ehb
         // generate our bone heirarchy
         for (uint32_t i = 1; i < d->boneInfos.size(); ++i)
         {
-            osgAnimation::Bone* bone = new osgAnimation::Bone(d->boneInfos[i].name);
-            osgAnimation::Bone* parent = bones.at(d->boneInfos[i].parentIndex);
+            osg::ref_ptr<osgAnimation::Bone> bone = new osgAnimation::Bone(d->boneInfos[i].name);
+            osg::ref_ptr<osgAnimation::Bone> parent = bones.at(d->boneInfos[i].parentIndex);
 
             if (boneNames.count(bone->getName()) != 0)
             {
@@ -265,8 +265,8 @@ namespace ehb
         // iterate again and setup our initial bone positions
         for (uint32_t i = 1; i < d->boneInfos.size(); ++i)
         {
-            osgAnimation::Bone* bone = bones.at(i);
-            osgAnimation::Bone* parent = bones.at(d->boneInfos[i].parentIndex);
+            osg::ref_ptr<osgAnimation::Bone> bone = bones.at(i);
+            osg::ref_ptr<osgAnimation::Bone> parent = bones.at(d->boneInfos[i].parentIndex);
 
             bind = osg::Matrix::rotate(d->rposInfoRel[i].rotation) * osg::Matrix::translate(d->rposInfoRel[i].position);
             inverseBind = osg::Matrix::rotate(d->rposInfoAbI[i].rotation) * osg::Matrix::translate(d->rposInfoAbI[i].position);
@@ -274,7 +274,7 @@ namespace ehb
             bone->setInvBindMatrixInSkeletonSpace(inverseBind);
 
             // updaters aren't applied unless the GameObject has a [body] component
-            osgAnimation::UpdateBone* updater = new osgAnimation::UpdateBone(d->boneInfos[i].name);
+            osg::ref_ptr<osgAnimation::UpdateBone> updater = new osgAnimation::UpdateBone(d->boneInfos[i].name);
             updater->getStackedTransforms().push_back(new osgAnimation::StackedTranslateElement("position", d->rposInfoRel[i].position));
             updater->getStackedTransforms().push_back(new osgAnimation::StackedQuaternionElement("rotation", d->rposInfoRel[i].rotation));
             bone->setUpdateCallback(updater);
@@ -302,13 +302,13 @@ namespace ehb
         }
         else if (copyop.getCopyFlags() & osg::CopyOp::DEEP_COPY_NODES)
         {
-            std::function<void(osgAnimation::Bone*)> recurse = [&, this](osgAnimation::Bone * bone)
+            std::function<void(osg::ref_ptr<osgAnimation::Bone>)> recurse = [&, this](osgAnimation::Bone * bone)
             {
                 bones.push_back(bone);
 
                 for (uint32_t i = 0; i < bone->getNumChildren(); ++i)
                 {
-                    recurse(static_cast<osgAnimation::Bone*>(bone->getChild(i)));
+                    recurse(static_cast<osg::ref_ptr<osgAnimation::Bone>>(bone->getChild(i)));
                 }
             };
 
@@ -320,7 +320,7 @@ namespace ehb
             skeleton = static_cast<osgAnimation::Skeleton*>(aspect.skeleton->clone(copyop));
 
             // make sure to update our bone reference vec
-            recurse(static_cast<osgAnimation::Bone*>(skeleton->getChild(0)));
+            recurse(static_cast<osg::ref_ptr<osgAnimation::Bone>>(skeleton->getChild(0)));
 
             // first child is our pseudo bone which we can grab from this group since it's been cloned
             pseudoRoot = static_cast<osg::MatrixTransform *>(getChild(0));
