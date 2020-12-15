@@ -17,24 +17,24 @@
 
 namespace ehb
 {
-    ReaderWriterSNO::ReaderWriterSNO(IFileSys & fileSys) : fileSys(fileSys)
+    ReaderWriterSNO::ReaderWriterSNO(IFileSys& fileSys) : fileSys(fileSys)
     {
         supportsExtension("sno", "Dungeon Siege SNO Mesh");
 
         log = spdlog::get("log");
     }
 
-    const char * ReaderWriterSNO::className() const {
+    const char* ReaderWriterSNO::className() const {
 
         return "Dungeon Siege Siege Node Reader";
     }
 
-    bool ReaderWriterSNO::acceptsExtension(const std::string & extension) const
+    bool ReaderWriterSNO::acceptsExtension(const std::string& extension) const
     {
         return osgDB::equalCaseInsensitive(extension, "sno");
     }
 
-    osgDB::ReaderWriter::ReadResult ReaderWriterSNO::readNode(const std::string & filename, const osgDB::Options * options) const
+    osgDB::ReaderWriter::ReadResult ReaderWriterSNO::readNode(const std::string& filename, const osgDB::Options* options) const
     {
         // do an extension check just in case a file reaches a loader it's not supposed to
         const std::string ext = osgDB::getLowerCaseFileExtension(filename);
@@ -50,7 +50,7 @@ namespace ehb
         return readNode(*stream, options);
     }
 
-    osgDB::ReaderWriter::ReadResult ReaderWriterSNO::readNode(std::istream & stream, const osgDB::Options * options) const
+    osgDB::ReaderWriter::ReadResult ReaderWriterSNO::readNode(std::istream& stream, const osgDB::Options* options) const
     {
         ByteArray data((std::istreambuf_iterator<char>(stream)), std::istreambuf_iterator<char>());
         BinaryReader reader(data);
@@ -77,7 +77,7 @@ namespace ehb
             float x = reader.readFloat32(), y = reader.readFloat32(), z = reader.readFloat32();
             float a00 = reader.readFloat32(), a01 = reader.readFloat32(), a02 = reader.readFloat32();
             float a10 = reader.readFloat32(), a11 = reader.readFloat32(), a12 = reader.readFloat32();
-            float a20 = reader.readFloat32(), a21 = reader.readFloat32(), a22 = reader.readFloat32(); 
+            float a20 = reader.readFloat32(), a21 = reader.readFloat32(), a22 = reader.readFloat32();
             uint32_t count = reader.readUInt32();
             /*
              * this is pretty straight forward but just documenting that osg and
