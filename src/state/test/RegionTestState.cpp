@@ -165,7 +165,8 @@ namespace ehb
 
                             if (auto mesh = dynamic_cast<Aspect*>(osgDB::readNodeFile(model)); mesh != nullptr)
                             {
-                                mesh->applySkeleton();
+                                // applying skeletons causes the update thread to run away. this needs to be looked at
+                                // mesh->applySkeleton();
 
                                 auto transform = new osg::MatrixTransform;
 

@@ -101,7 +101,7 @@ namespace ehb
 
     void AspectMeshTestState::clearAndLoadMesh(const std::string& filename)
     {
-        spdlog::get("log")->set_level(spdlog::level::debug);
+        // spdlog::get("log")->set_level(spdlog::level::debug);
 
         if (filename.empty()) return;
 
