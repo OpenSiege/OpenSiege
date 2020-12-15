@@ -5,6 +5,7 @@
 #include <osg/MatrixTransform>
 #include <osg/ClipControl>
 #include <osgGA/TrackballManipulator>
+#include <osgViewer/ViewerEventHandlers>
 
 #include "cfg/IConfig.hpp"
 #include "state/InitState.hpp"
@@ -65,6 +66,8 @@ namespace ehb
 
         { // hook into the osg event system
             viewer.addEventHandler(this);
+
+            viewer.addEventHandler(new osgViewer::StatsHandler);
         }
 
         setupScene();
