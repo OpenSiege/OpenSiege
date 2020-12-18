@@ -34,6 +34,8 @@ namespace ehb
         {
             gameStateMgr.request("ExitState");
 
+            log->error("FileSys failed to startup. Please check your ds-install-path value. This value should be set to a fully extracted bits path.");
+
             return;
         }
 
