@@ -2,6 +2,7 @@
 #include "RegionTestState.hpp"
 
 #include "IFileSys.hpp"
+#include "cfg/IConfig.hpp"
 #include "gas/Fuel.hpp"
 #include "osg/SiegeNodeMesh.hpp"
 #include "osg/Aspect.hpp"
@@ -101,8 +102,16 @@ namespace ehb
         log->info("RegionTestState::enter()");
 
         // variablizing these out as it helps my brain think about the world class a bit more
-        const std::string worldName = "multiplayer_world";
-        const std::string regionName = "town_center";
+        std::string worldName = "multiplayer_world";
+        std::string regionName = "town_center";
+
+        if (auto commandLineParam = config.getString("region", ""); !commandLineParam.empty())
+        {
+            worldName = commandLineParam.substr(0, commandLineParam.find(':'));
+            regionName = commandLineParam.substr(commandLineParam.find(':') + 1, commandLineParam.length());
+
+            log->info("overriding default region load with world: {} and region: {}", worldName, regionName);
+        }
 
         // man it would be really nice to convert these to fuel paths...
         const std::string worldPath = "/world/maps/" + worldName;

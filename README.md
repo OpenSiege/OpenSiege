@@ -39,6 +39,8 @@ If you **do not** pass a state to OpenSiege you will get a purple viewport with 
 --state <GasTestState/SiegeNodeTestState/RegionTestState/UITestState/AspectMeshTestState>
 --width <int>
 --height <int>
+--log <debug>
+--region <worldname:regionname>
 ```
 
 #### Expected Test State Output

@@ -50,6 +50,20 @@ int main(int argc, char * argv[])
     registerSiegeLogger(config.getString("logs_path", ""), "scene");
     registerSiegeLogger(config.getString("logs_path", ""), "world");
 
+    if (auto logLevel = config.getString("log", ""); !logLevel.empty())
+    {
+        if (logLevel == "debug")
+        {
+            log->info("Overriding log level to debug for all logs");
+
+            log->set_level(spdlog::level::debug);
+            spdlog::get("filesystem")->set_level(spdlog::level::debug);
+            spdlog::get("game")->set_level(spdlog::level::debug);
+            spdlog::get("scene")->set_level(spdlog::level::debug);
+            spdlog::get("world")->set_level(spdlog::level::debug);
+        }
+    }
+
     // TODO: put this behind some cmake option to disable unit testing
     registerSiegeLogger(config.getString("logs_path", ""), "testing");
 

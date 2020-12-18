@@ -38,6 +38,10 @@ namespace ehb
             if (args.read("--res_paths", value)) config.setString("res_paths", value);
 
             if (args.read("--state", value)) config.setString("state", value);
+            if (args.read("--log", value)) config.setString("log", value);
+
+            // some temporary debugging for community testing
+            if (args.read("--region", value)) config.setString("region", value);
         }
     }
 }
