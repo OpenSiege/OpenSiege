@@ -17,7 +17,14 @@ int main(int argc, char * argv[])
     using namespace ehb;
 
     // always initialize the console logger first
-    auto log = spdlog::stdout_color_mt("log");
+    std::vector<spdlog::sink_ptr> sinks = {
+
+        std::make_shared<spdlog::sinks::stdout_color_sink_mt>(),
+        std::make_shared<spdlog::sinks::basic_file_sink_mt>("log.txt", true)
+    };
+
+    auto log = std::make_shared<spdlog::logger>("log", std::begin(sinks), std::end(sinks));
+    spdlog::register_logger(log);
 
     /*
      * this reads the following configs (order is important):
