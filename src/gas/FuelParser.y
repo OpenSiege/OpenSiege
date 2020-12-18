@@ -24,6 +24,7 @@
 %define api.namespace { ehb }
 %define api.value.type { std::string }
 %define parse.assert
+%define parse.error verbose
 %define parser_class_name { FuelParser }
 
 %code requires {
