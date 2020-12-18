@@ -40,8 +40,9 @@ namespace ehb
             if (args.read("--state", value)) config.setString("state", value);
             if (args.read("--log", value)) config.setString("log", value);
 
-            // some temporary debugging for community testing
+            // some temporary debugging params for community testing
             if (args.read("--region", value)) config.setString("region", value);
+            if (args.read ("--ds-install-path")) config.setString("ds-install-path", value);
         }
     }
 }

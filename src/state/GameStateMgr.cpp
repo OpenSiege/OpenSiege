@@ -16,7 +16,7 @@ namespace ehb
     {
         if (currState.second)
         {
-            // currentState.second->leave();
+            currState.second->leave();
         }
     }
 

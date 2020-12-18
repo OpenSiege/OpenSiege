@@ -34,6 +34,7 @@ If you **do not** pass a state to OpenSiege you will get a purple viewport with 
 
 ##### Complete list of Command Line paramaters
 ```
+--ds-install-path <path>
 --bits <path>
 --fullscreen <true/false>
 --state <GasTestState/SiegeNodeTestState/RegionTestState/UITestState/AspectMeshTestState>

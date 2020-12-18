@@ -32,6 +32,7 @@ namespace ehb
 
                 // TODO: this should be removed when we swap to the tank system
                 // this should only be active in DSMOD mode
+                config.getString("ds-install-path", ini.gets("OpenSiege", "ds-install-path", ""));
                 config.setString("bits", ini.gets("OpenSiege", "bits", ""));
             }
         }

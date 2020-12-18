@@ -122,6 +122,7 @@ namespace ehb
         const fs::path iniFileName = fs::path(config.getString("config-dir", ".")) / "OpenSiege.ini";
         minIni ini(iniFileName.string());
 
+        if (!config.getString("ds-install-path", "").empty()) ini.put("OpenSiege", "ds-install-path", config.getString("ds-install-path"));
         if (!config.getString("bits", "").empty()) ini.put("OpenSiege", "bits", config.getString("bits", ""));
 
         spdlog::get("filesystem")->info("Finished writing INI to {}", iniFileName.string());

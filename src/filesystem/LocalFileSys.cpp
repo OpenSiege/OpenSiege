@@ -12,12 +12,26 @@ namespace ehb
     {
         log = spdlog::get("filesystem");
 
-        rootDir = config.getString("bits");
+        installPath = config.getString("ds-install-path");
+        bitsPath = config.getString("bits");
 
-        // no bits passed, fail out of init
-        if (rootDir.empty()) return false;
+        // no install passed, fail out of init
+        if (installPath.empty()) return false;
 
-        log->info("LocalFileSys has started and is primed with path [{}]", rootDir.string());
+        // prevent accidental double up of params
+        if (bitsPath == installPath)
+        {
+            log->warn("--ds-install-path and --bits path are the same - setting bits path to \"\"");
+            bitsPath = "";
+        }
+
+        // lets use the same gpg verify file
+        if (auto verify = createInputStream("/config/startup_verify.gpg"); verify == nullptr)
+        {
+            return false;
+        }
+
+        log->info("LocalFileSys has started and is primed with path [{}]", installPath.string());
 
         return true;
     }
@@ -30,7 +44,17 @@ namespace ehb
             filename.erase(0, 1);
         }
 
-        if (auto stream = std::make_unique<std::ifstream>(rootDir / filename, std::ios_base::binary); stream->is_open())
+        // search bits path first if it exists
+        if (fs::exists(bitsPath))
+        {
+            if (auto stream = std::make_unique<std::ifstream>(bitsPath / filename, std::ios_base::binary); !stream->is_open())
+            {
+                return stream;
+            }
+        }
+
+        // fail back to the install path for the file
+        if (auto stream = std::make_unique<std::ifstream>(installPath / filename, std::ios_base::binary); stream->is_open())
         {
             return stream;
         }
@@ -42,16 +66,39 @@ namespace ehb
     {
         FileList result;
 
+        // ensure bits gets loaded to the set first as they should take priority of the original game files
+        if (fs::exists(bitsPath))
+        {
+            try
+            {
+                for (auto& itr : fs::recursive_directory_iterator(bitsPath))
+                {
+                    const auto& filename = itr.path();
+
+                    if (fs::is_directory(filename) || fs::is_regular_file(filename))
+                    {
+                        auto test = osgDB::convertFileNameToUnixStyle(filename.string().substr(bitsPath.string().size()));
+                        result.emplace(test);
+                    }
+                }
+            }
+            catch (std::exception& e)
+            {
+                log->warn("LocalFileSys::getFiles(): {}", e.what());
+            }
+        }
+
         try
         {
-            for (auto & itr : fs::recursive_directory_iterator(rootDir))
+            for (auto & itr : fs::recursive_directory_iterator(installPath))
             {
                 const auto & filename = itr.path();
 
                 if (fs::is_directory(filename) || fs::is_regular_file(filename))
                 {
                     // result.emplace(fs::relative(filename, rootDir).string());
-                    result.emplace(osgDB::convertFileNameToUnixStyle(filename.string().substr(rootDir.string().size())));
+                    auto test = osgDB::convertFileNameToUnixStyle(filename.string().substr(installPath.string().size()));
+                    result.emplace(test);
                 }
             }
         }
@@ -73,16 +120,37 @@ namespace ehb
 
         FileList result;
 
+        // ensure bits gets loaded to the set first as they should take priority of the original game files
+        if (fs::exists(bitsPath))
+        {
+            try
+            {
+                for (auto& itr : fs::directory_iterator(bitsPath / directory))
+                {
+                    const auto& filename = itr.path();
+
+                    if (fs::is_directory(filename) || fs::is_regular_file(filename))
+                    {
+                        result.emplace(osgDB::convertFileNameToUnixStyle(filename.string().substr(bitsPath.string().size())));
+                    }
+                }
+            }
+            catch (std::exception& e)
+            {
+                log->warn("LocalFileSys::getDirectoryContents({}): {}", directory, e.what());
+            }
+        }
+
         try
         {
-            for (auto & itr : fs::directory_iterator(rootDir / directory))
+            for (auto & itr : fs::directory_iterator(installPath / directory))
             {
                 const auto & filename = itr.path();
 
                 if (fs::is_directory(filename) || fs::is_regular_file(filename))
                 {
                     // result.emplace(fs::relative(filename, rootDir).string());
-                    result.emplace(osgDB::convertFileNameToUnixStyle(filename.string().substr(rootDir.string().size())));
+                    result.emplace(osgDB::convertFileNameToUnixStyle(filename.string().substr(installPath.string().size())));
                 }
             }
         }

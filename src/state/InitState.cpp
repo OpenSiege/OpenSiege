@@ -75,10 +75,15 @@ namespace ehb
         }
 
         // TODO: any other up front init (gui?) that needs to be done
-        auto options = new osgDB::Options(std::string("font=b_gui_fnt_12p_copperplate-light"));
-        osg::ref_ptr<ImageFont> imageFont = osgDB::readRefFile<ImageFont>("/ui/fonts/fonts.gas", options);
-        console.font = imageFont;
-        console.resetCaret();
+        if (auto imageFont = osgDB::readRefFile<ImageFont>("/ui/fonts/fonts.gas", new osgDB::Options(std::string("font=b_gui_fnt_12p_copperplate-light"))); imageFont != nullptr)
+        {
+            console.font = imageFont;
+            console.resetCaret();
+        }
+        else
+        {
+            log->error("failed to find font for the console. it's just a matter of time before a crash happens");
+        }
 
         // its important to note that when DS boots, the ortho view is always 640x480 to support the front end animations
         shell.init(fileSys, scene2d, config.getInt("width", 640), config.getInt("height", 480));

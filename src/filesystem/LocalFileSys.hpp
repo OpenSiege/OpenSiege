@@ -27,7 +27,11 @@ namespace ehb
 
     private:
 
-        fs::path rootDir;
+        //! the filesys currently requires the --ds-install-path to be set directly to the games fully extracted bits
+        fs::path installPath;
+
+        //! optional bits directory for mods
+        fs::path bitsPath;
 
         std::shared_ptr<spdlog::logger> log;
     };
