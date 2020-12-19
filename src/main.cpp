@@ -26,19 +26,20 @@ int main(int argc, char * argv[])
     */
     WritableConfig config(argc, argv);
 
-    // always initialize the console logger first
+    // after the configs are read in we can create a file sink and a stdout sink to print to
     std::vector<spdlog::sink_ptr> sinks = {
 
         std::make_shared<spdlog::sinks::stdout_color_sink_mt>(),
         std::make_shared<spdlog::sinks::basic_file_sink_mt>(config.getString("logs_path", "") + std::string("/log.log"), true)
     };
 
+    // register our global logger, we should probably deprecate this and not use it
     auto log = std::make_shared<spdlog::logger>("log", std::begin(sinks), std::end(sinks));
     spdlog::register_logger(log);
 
+    // print out config for debugging purposes
     config.dump();
 
-    bool hasBits = !config.getString("bits", "").empty();
     bool hasPath = !config.getString("ds-install-path", "").empty();
     if (!hasBits) log->info("No Bits directory detected.");
     if (!hasPath) log->warn("No DS Install path detected.");
