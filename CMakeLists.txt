@@ -21,70 +21,70 @@ find_package(spdlog CONFIG QUIET)
 find_package(BISON REQUIRED)
 find_package(RE2C REQUIRED)
 
-bison_target(FuelParser "${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelParser.y" "${CMAKE_CURRENT_BINARY_DIR}/FuelParser.cpp" COMPILE_FLAGS "${YACC_FLAGS} --defines=${CMAKE_CURRENT_BINARY_DIR}/FuelParser.hpp")
-re2c_target("${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelScanner.r2c" "${CMAKE_CURRENT_BINARY_DIR}/FuelScanner.cpp")
+bison_target(FuelParser "${CMAKE_CURRENT_LIST_DIR}/src/game/gas/FuelParser.y" "${CMAKE_CURRENT_BINARY_DIR}/FuelParser.cpp" COMPILE_FLAGS "${YACC_FLAGS} --defines=${CMAKE_CURRENT_BINARY_DIR}/FuelParser.hpp")
+re2c_target("${CMAKE_CURRENT_LIST_DIR}/src/game/gas/FuelScanner.r2c" "${CMAKE_CURRENT_BINARY_DIR}/FuelScanner.cpp")
 
-set(SIEGE_SOURCES
-    "src/cfg/ArgsConfig.cpp"
-    "src/cfg/IniConfig.cpp"
-    "src/cfg/RegistryConfig.cpp"
-    "src/cfg/SteamConfig.cpp"
-    "src/cfg/UserConfig.cpp"
-    "src/cfg/WritableConfig.cpp"
+set(GAME_SOURCES
+    "src/game/cfg/ArgsConfig.cpp"
+    "src/game/cfg/IniConfig.cpp"
+    "src/game/cfg/RegistryConfig.cpp"
+    "src/game/cfg/SteamConfig.cpp"
+    "src/game/cfg/UserConfig.cpp"
+    "src/game/cfg/WritableConfig.cpp"
 
-    "src/state/GameStateMgr.cpp"
-    "src/state/InitState.cpp"
-    "src/state/TestState.cpp"
-    "src/state/test/GasTestState.cpp"
-    "src/state/test/SiegeNodeTestState.cpp"
-    "src/state/test/UITestState.cpp"
-    "src/state/test/RegionTestState.cpp"
-    "src/state/test/AspectMeshTestState.cpp"
+    "src/game/state/GameStateMgr.cpp"
+    "src/game/state/InitState.cpp"
+    "src/game/state/TestState.cpp"
+    "src/game/state/test/GasTestState.cpp"
+    "src/game/state/test/SiegeNodeTestState.cpp"
+    "src/game/state/test/UITestState.cpp"
+    "src/game/state/test/RegionTestState.cpp"
+    "src/game/state/test/AspectMeshTestState.cpp"
 
     ${BISON_FuelParser_OUTPUTS}
     ${CMAKE_CURRENT_BINARY_DIR}/FuelScanner.cpp
-    "src/gas/Fuel.cpp"
+    "src/game/gas/Fuel.cpp"
 
-    "src/osg/FileNameMap.cpp"
-    "src/osg/SiegeNodeMesh.cpp"
-    "src/osg/Aspect.cpp"
+    "src/game/osg/FileNameMap.cpp"
+    "src/game/osg/SiegeNodeMesh.cpp"
+    "src/game/osg/Aspect.cpp"
 
-    "src/osgPlugins/BinaryReader.cpp"
-    "src/osgPlugins/ReaderWriterRAW.cpp"
-    "src/osgPlugins/ReaderWriterSNO.cpp"
-    "src/osgPlugins/ReaderWriterASP.cpp"
-    "src/osgPlugins/ReaderWriterFont.cpp"
-    "src/osgPlugins/ReaderWriterSiegeNodeList.cpp"
+    "src/game/osgPlugins/BinaryReader.cpp"
+    "src/game/osgPlugins/ReaderWriterRAW.cpp"
+    "src/game/osgPlugins/ReaderWriterSNO.cpp"
+    "src/game/osgPlugins/ReaderWriterASP.cpp"
+    "src/game/osgPlugins/ReaderWriterFont.cpp"
+    "src/game/osgPlugins/ReaderWriterSiegeNodeList.cpp"
 
-    "src/LocalFileSys.cpp"
-    "src/TankFileSys.cpp"
+    "src/game/LocalFileSys.cpp"
+    "src/game/TankFileSys.cpp"
 
-    "src/world/Region.cpp"
+    "src/game/world/Region.cpp"
 
-    "src/ui/ImageFont.cpp"
-    "src/ui/Rect.cpp"
-    "src/ui/NormalizedRect.cpp"
-    "src/ui/WidgetComponent.cpp"
-    "src/ui/Widget.cpp"
-    "src/ui/TextLine.cpp"
+    "src/game/ui/ImageFont.cpp"
+    "src/game/ui/Rect.cpp"
+    "src/game/ui/NormalizedRect.cpp"
+    "src/game/ui/WidgetComponent.cpp"
+    "src/game/ui/Widget.cpp"
+    "src/game/ui/TextLine.cpp"
 
-    "src/console/ConsoleSignatureScanner.cpp"
-    "src/console/Console.cpp"
+    "src/game/console/ConsoleSignatureScanner.cpp"
+    "src/game/console/Console.cpp"
 
-    "src/StringTool.cpp"
-    "src/Platform.cpp"
-    "src/Game.cpp"
-    "src/main.cpp"
-    "src/ContentDb.cpp"
+    "src/game/StringTool.cpp"
+    "src/game/Platform.cpp"
+    "src/game/Game.cpp"
+    "src/game/main.cpp"
+    "src/game/ContentDb.cpp"
 )
 
 # main open siege target
-add_executable(OpenSiege ${EXTERN_SOURCE_FILES} ${SIEGE_SOURCES})
+add_executable(OpenSiege ${EXTERN_SOURCE_FILES} ${GAME_SOURCES})
 
 # force C++17
 set_target_properties(OpenSiege PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
 
-target_include_directories(OpenSiege PUBLIC src ${OPENSCENEGRAPH_INCLUDE_DIRS} ${EXTERN_INCLUDE_PATHS} ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories(OpenSiege PUBLIC src/game ${OPENSCENEGRAPH_INCLUDE_DIRS} ${EXTERN_INCLUDE_PATHS} ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(OpenSiege PRIVATE ${OPENSCENEGRAPH_LIBRARIES} Threads::Threads "$<$<CXX_COMPILER_ID:GNU>:stdc++fs;${XDGBASEDIR_LIBRARIES}>" spdlog::spdlog)
 
 if(MSVC)
@@ -110,7 +110,7 @@ if(MSVC)
 
     # enable folders for MSVC
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-    ASSIGN_SOURCE_GROUPS("Source Files" "${CMAKE_CURRENT_SOURCE_DIR}" ${SIEGE_SOURCES})
+    ASSIGN_SOURCE_GROUPS("Source Files" "${CMAKE_CURRENT_SOURCE_DIR}" ${GAME_SOURCES})
 endif()
 
 install(TARGETS OpenSiege RUNTIME DESTINATION bin)
