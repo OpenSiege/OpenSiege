@@ -1,6 +1,9 @@
 # used to automatically include and build dependencies
 include(FetchContent)
 
+# speed up reconfiguration by skipping updates from FetchContent
+set (FETCHCONTENT_FULLY_DISCONNECTED ON CACHE BOOL "" FORCE)
+
 FetchContent_Declare(
     spdlog
     GIT_REPOSITORY https://github.com/gabime/spdlog.git
