@@ -15,18 +15,10 @@ set(GAME_SOURCES
     "state/test/UITestState.cpp"
     "state/test/RegionTestState.cpp"
     "state/test/AspectMeshTestState.cpp"
-    
 
     "osg/FileNameMap.cpp"
     "osg/SiegeNodeMesh.cpp"
     "osg/Aspect.cpp"
-
-    "osgPlugins/BinaryReader.cpp"
-    "osgPlugins/ReaderWriterRAW.cpp"
-    "osgPlugins/ReaderWriterSNO.cpp"
-    "osgPlugins/ReaderWriterASP.cpp"
-    "osgPlugins/ReaderWriterFont.cpp"
-    "osgPlugins/ReaderWriterSiegeNodeList.cpp"
 
     "LocalFileSys.cpp"
     "TankFileSys.cpp"
@@ -51,7 +43,7 @@ set(GAME_SOURCES
 )
 
 # main open siege target
-add_executable(OpenSiege ${EXTERN_SOURCE_FILES} ${GAME_SOURCES})
+add_executable(OpenSiege ${EXTERN_SOURCE_FILES} ${CORE_SOURCES} ${GAME_SOURCES})
 
 # force C++17
 set_target_properties(OpenSiege PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
@@ -76,6 +68,7 @@ if(MSVC)
 
     # enable folders for MSVC
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+	ASSIGN_SOURCE_GROUPS("Core Files" "${CMAKE_SOURCE_DIR}/src/core" ${CORE_SOURCES})
     ASSIGN_SOURCE_GROUPS("Source Files" "${CMAKE_CURRENT_SOURCE_DIR}" ${GAME_SOURCES})
 endif()
 

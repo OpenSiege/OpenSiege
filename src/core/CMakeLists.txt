@@ -17,3 +17,14 @@ target_sources(SiegeCore
 )
 
 target_include_directories(SiegeCore PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}$<SEMICOLON>${CMAKE_BINARY_DIR}>/gas)
+
+# just dump core sources directly into the projects
+set(CORE_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/osgPlugins/BinaryReader.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/osgPlugins/ReaderWriterRAW.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/osgPlugins/ReaderWriterSNO.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/osgPlugins/ReaderWriterASP.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/osgPlugins/ReaderWriterFont.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/osgPlugins/ReaderWriterSiegeNodeList.cpp
+	PARENT_SCOPE
+)
