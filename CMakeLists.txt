@@ -24,6 +24,14 @@ find_package(RE2C REQUIRED)
 bison_target(FuelParser "${CMAKE_CURRENT_LIST_DIR}/src/game/gas/FuelParser.y" "${CMAKE_CURRENT_BINARY_DIR}/FuelParser.cpp" COMPILE_FLAGS "${YACC_FLAGS} --defines=${CMAKE_CURRENT_BINARY_DIR}/FuelParser.hpp")
 re2c_target("${CMAKE_CURRENT_LIST_DIR}/src/game/gas/FuelScanner.r2c" "${CMAKE_CURRENT_BINARY_DIR}/FuelScanner.cpp")
 
+# global options for all projects
+if(MSVC)
+    if(DISABLE_MSVC_DEBUG_ITERATOR)
+        add_definitions("-D_ITERATOR_DEBUG_LEVEL=0")
+    endif(DISABLE_MSVC_DEBUG_ITERATOR)
+    add_compile_options("/MP")
+endif(MSVC)
+
 set(GAME_SOURCES
     "src/game/cfg/ArgsConfig.cpp"
     "src/game/cfg/IniConfig.cpp"
@@ -88,12 +96,6 @@ target_include_directories(OpenSiege PUBLIC src/game ${OPENSCENEGRAPH_INCLUDE_DI
 target_link_libraries(OpenSiege PRIVATE ${OPENSCENEGRAPH_LIBRARIES} Threads::Threads "$<$<CXX_COMPILER_ID:GNU>:stdc++fs;${XDGBASEDIR_LIBRARIES}>" spdlog::spdlog)
 
 if(MSVC)
-    if(DISABLE_MSVC_DEBUG_ITERATOR)
-        target_compile_definitions(OpenSiege PRIVATE "_ITERATOR_DEBUG_LEVEL=0")
-    endif()
-
-    target_compile_options(OpenSiege PRIVATE "/MP")
-
     # place header and source files into group folders to help IDE's present the files in a logical manner
     function(ASSIGN_SOURCE_GROUPS GROUP_NAME ROOT_FOLDER)
         foreach(FILE IN ITEMS ${ARGN})
