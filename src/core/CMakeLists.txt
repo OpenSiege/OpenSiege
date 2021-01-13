@@ -26,5 +26,13 @@ set(CORE_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/osgPlugins/ReaderWriterASP.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/osgPlugins/ReaderWriterFont.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/osgPlugins/ReaderWriterSiegeNodeList.cpp
+	
+	${CMAKE_CURRENT_SOURCE_DIR}/ui/ImageFont.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/ui/Rect.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/ui/NormalizedRect.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/ui/WidgetComponent.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/ui/Widget.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/ui/TextLine.cpp
+	
 	PARENT_SCOPE
 )

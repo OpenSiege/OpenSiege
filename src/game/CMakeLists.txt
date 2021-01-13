@@ -25,13 +25,6 @@ set(GAME_SOURCES
 
     "world/Region.cpp"
 
-    "ui/ImageFont.cpp"
-    "ui/Rect.cpp"
-    "ui/NormalizedRect.cpp"
-    "ui/WidgetComponent.cpp"
-    "ui/Widget.cpp"
-    "ui/TextLine.cpp"
-
     "console/ConsoleSignatureScanner.cpp"
     "console/Console.cpp"
 
