@@ -1,0 +1,117 @@
+
+/*
+ * This file is part of gas
+ *
+ * Copyright (C) 2017-2020 OpenSiege Team
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include "FuelParser.hpp"
+#include "gas/FuelScanner.hpp"
+
+namespace ehb
+{
+    int FuelScanner::scan(std::string * yylval)
+    {
+        #define YYCTYPE char
+        #define YYCURSOR cursor
+        #define YYLIMIT limit
+        #define YYMARKER marker
+        #define YYFILL(n)
+
+        #define yytext std::string(start, cursor - start)
+
+        while (1)
+        {
+            const char * start = cursor;
+
+            if (state.empty())
+            {
+                /*
+                 * HACK: line 35 of ui/interfaces/backend/console_output/console_output.gas: [t:window;n:rollover_console]
+                 * there is a typo here as the ';' should be a ','
+                 */
+
+                /*!re2c
+                   re2c:define:YYCTYPE = "unsigned char"; // required for funky characters like copyright, etc...
+
+                    "//"[^\r\n\000]*        { continue; }
+                    "/*" ([^*] | ("*" [^/]))* "*""/" { continue; }
+
+                    "["                     { return '['; }
+                    "]"                     { return ']'; }
+                    "{"                     { return '{'; }
+                    "}"                     { return '}'; }
+                    ":"                     { return ':'; }
+                    ","                     { return ','; }
+                    ";"                     { return ','; }
+
+                    "="                     { state.push(expression_statement); return '='; }
+
+                    [0-9a-zA-Z_\-\*\.]+     { return (*yylval = yytext, FuelParser::token::Identifier); }
+
+                    [\t\r ]+                { continue; }
+                    [\n]+                   { continue; }
+
+                    '\000'                  { return 0; }
+
+                    .                       { std::cerr << "unexpected character found: '" << start[0] << "' (" << static_cast<int>(start[0]) << ")" << std::endl; return 0; }
+                 */
+            }
+            else if (state.top() == embedded_statement)
+            {
+                /*!re2c
+
+                    "//"[^\r\n\000]*        { continue; }
+                    "]]"                    { state.pop(); return (*yylval = yytext, FuelParser::token::Expression); }
+                    [\t\n\r ]               { return (*yylval = yytext, FuelParser::token::Expression); } // NOTE: do not ignore this!
+                    .                       { return (*yylval = yytext, FuelParser::token::Expression); }
+
+                 */
+
+            }
+            else if (state.top() == expression_statement)
+            {
+                /*!re2c
+
+                    "//"[^\r\n\000]*        { continue; }
+
+                    ";"                     { state.pop(); return ';'; }
+                    "[["                    { state.push(embedded_statement); return (*yylval = yytext, FuelParser::token::Expression); }
+                    ["]                     { state.push(string_literal); return (*yylval = yytext, FuelParser::token::Expression); }
+                    [\t\n\r ]               { return (*yylval = yytext, FuelParser::token::Expression); }
+                    .                       { return (*yylval = yytext, FuelParser::token::Expression); }
+
+                 */
+
+            }
+            else if (state.top() == string_literal)
+            {
+                /*!re2c
+
+                    ["]                     { state.pop(); return (*yylval = yytext, FuelParser::token::Expression); }
+                    [\t\r\n ]               { return (*yylval = yytext, FuelParser::token::Expression); } // needed because of <*>[\t\r ]+
+                    "\\."                   { return (*yylval = yytext, FuelParser::token::Expression); } // TODO: interpret escape sequence?
+                    .                       { return (*yylval = yytext, FuelParser::token::Expression); }
+
+                 */
+
+            }
+
+            assert(false);
+
+        }
+    }
+}
