@@ -44,3 +44,5 @@ set(EXTERN_SOURCE_FILES
     "${FETCHCONTENT_BASE_DIR}/minini-src/dev/minIni.c"
     PARENT_SCOPE
 )
+
+set(FETCHCONTENT_FULLY_DISCONNECTED ON CACHE BOOL "Stop extern updating" FORCE)
