@@ -21,6 +21,7 @@ namespace ehb
     class IFileSys;
     class ContentDb;
     class Region;
+    class SiegeNodeMesh;
     class RegionTestState : public IGameState
     {
     public:
@@ -45,6 +46,7 @@ namespace ehb
         osg::Group& scene;
 
         Region* region;
+        SiegeNodeMesh* selectedSiegeNode = nullptr;
         
         std::shared_ptr<spdlog::logger> log;
     };

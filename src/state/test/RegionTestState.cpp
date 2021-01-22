@@ -138,7 +138,8 @@ namespace ehb
         }
 
         // collect all files under our object path for loading
-        for (const auto& filename : { "non_interactive.gas" })
+#if 0
+        for (const auto& filename : { "non_interactive.gas", "actor.gas" })
         {
             if (auto stream = fileSys.createInputStream(objectsPath + filename))
             {
@@ -200,6 +201,7 @@ namespace ehb
                 log->error("failed to load an object file under path: {}", objectsPath + filename);
             }
         }
+#endif
 
         osgUtil::Optimizer optimizer;
         optimizer.optimize(region);
@@ -219,28 +221,41 @@ namespace ehb
     {
         if (event.getEventType() == osgGA::GUIEventAdapter::PUSH)
         {
-            if (osgViewer::View* viewer = static_cast<osgViewer::View*> (&action))
+            if (event.getButton() == osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON)
             {
-                // viewer always has a valid camera no need for a check
-                osg::Camera* camera = viewer->getCamera();
-
-                osg::ref_ptr<osgUtil::LineSegmentIntersector> intersector = new osgUtil::LineSegmentIntersector(osgUtil::Intersector::WINDOW, event.getX(), event.getY());
-                osgUtil::IntersectionVisitor visitor(intersector);
-                camera->accept(visitor);
-
-                if (intersector->containsIntersections())
+                if (osgViewer::View* viewer = static_cast<osgViewer::View*> (&action))
                 {
-                    for (auto&& intersection : intersector->getIntersections())
-                    {
-                        for (auto node : intersection.nodePath)
-                        {
-                            if (uint32_t nodeGuid; node->getUserValue("guid", nodeGuid))
-                            {
-                                if (auto nodeXform = dynamic_cast<osg::MatrixTransform*> (node))
-                                {
-                                    log->info("node you clicked was: 0x{:x}", nodeGuid);
+                    // viewer always has a valid camera no need for a check
+                    osg::Camera* camera = viewer->getCamera();
 
-                                    static_cast<SiegeNodeMesh*>(nodeXform->getChild(0))->toggleBoundingBox();
+                    osg::ref_ptr<osgUtil::LineSegmentIntersector> intersector = new osgUtil::LineSegmentIntersector(osgUtil::Intersector::WINDOW, event.getX(), event.getY());
+                    osgUtil::IntersectionVisitor visitor(intersector);
+                    camera->accept(visitor);
+
+                    if (intersector->containsIntersections())
+                    {
+                        for (auto&& intersection : intersector->getIntersections())
+                        {
+                            for (auto node : intersection.nodePath)
+                            {
+                                if (uint32_t nodeGuid; node->getUserValue("guid", nodeGuid))
+                                {
+                                    if (auto nodeXform = dynamic_cast<osg::MatrixTransform*> (node))
+                                    {
+                                        log->info("node you clicked was: 0x{:x}", nodeGuid);
+
+                                        if (selectedSiegeNode != nullptr)
+                                        {
+                                            selectedSiegeNode->toggleBoundingBox();
+                                            selectedSiegeNode->toggleAllDoorLabels();
+                                        }
+
+                                        if (selectedSiegeNode = static_cast<SiegeNodeMesh*>(nodeXform->getChild(0)); selectedSiegeNode != nullptr)
+                                        {
+                                            selectedSiegeNode->toggleBoundingBox();
+                                            selectedSiegeNode->toggleAllDoorLabels();
+                                        }
+                                    }
                                 }
                             }
                         }

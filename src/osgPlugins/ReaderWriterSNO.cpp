@@ -121,8 +121,15 @@ namespace ehb
         {
             (*vertices)[index] = reader.readVec3();
             (*normals)[index] = reader.readVec3();
-            (*colors)[index].set(reader.readUInt8(), reader.readUInt8(), reader.readUInt8(), reader.readUInt8());
+
+            // colors are swizzled - unswizzle the swizzle
+            auto r = reader.readUInt8(); auto b = reader.readUInt8(); auto g = reader.readUInt8(); auto a = reader.readUInt8();
+            (*colors)[index] = osg::Vec4(r, g, b, a);
+
             (*tcoords)[index] = reader.readVec2();
+
+            // should we just flip this when it gets loaded in the by the reader?
+            (*tcoords)[index][1] = 1 - (*tcoords)[index][1];
         }
 
         for (uint32_t index = 0; index < textureCount; index++)
@@ -180,7 +187,7 @@ namespace ehb
 
             if (stateSet == nullptr)
             {
-                log->warn("{}.gas not found falling back to {}.raw", textureFileName, textureFileName);
+                // log->warn("{}.gas not found falling back to {}.raw", textureFileName, textureFileName);
 
                 if (osg::ref_ptr<osg::Image> image = osgDB::readImageFile(textureFileName + ".raw"))
                 {
