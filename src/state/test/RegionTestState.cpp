@@ -73,26 +73,24 @@ namespace ehb
 
         virtual void apply(osg::Group& group) override
         {
-            osg::MatrixTransform* xform = static_cast<osg::MatrixTransform*> (&group);
-
-            if (xform->getNumChildren() > 0)
+            if (osg::MatrixTransform* xform = static_cast<osg::MatrixTransform*> (&group))
             {
-                SiegeNodeMesh* mesh = dynamic_cast<SiegeNodeMesh*>(xform->getChild(0));
-
-                if (mesh != nullptr)
+                if (xform->getNumChildren() > 0)
                 {
-                    uint32_t guid; xform->getUserValue("guid", guid);
-
-                    if (unique.insert(guid).second)
+                    if (SiegeNodeMesh* mesh = dynamic_cast<SiegeNodeMesh*>(xform->getChild(0)))
                     {
-                        mesh->toggleLogicalNodeFlags();
-                    }
-                }
+                        uint32_t guid; xform->getUserValue("guid", guid);
 
-                traverse(group);
+                        if (unique.insert(guid).second)
+                        {
+                            mesh->toggleLogicalNodeFlags();
+                        }
+                    }
+
+                    traverse(group);
+                }
             }
         }
-
     };
 
     void RegionTestState::enter()
