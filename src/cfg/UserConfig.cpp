@@ -78,8 +78,10 @@ namespace ehb
 
         auto logs = osgDB::concatPaths(data, "Logs");
         auto shots = osgDB::concatPaths(data, "Screen Shots");
+        auto mods = osgDB::concatPaths(data, "Mods");
 
         if (osgDB::makeDirectory(logs)) config.setString("logs_path", logs);
         if (osgDB::makeDirectory(shots)) config.setString("shots_path", shots);
+        if (osgDB::makeDirectory(mods)) config.setString("mods_path", mods);
     }
 }
