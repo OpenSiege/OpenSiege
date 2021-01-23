@@ -387,21 +387,6 @@ public:
 		// The file may be discarded after this method returns. Throws TankFile::Error on failure.
 		void indexFile(TankFile & tank);
 
-		// Attempts to extract a resource and write an uncompressed binary file with its contents.
-		// Might throw TankFile::Error if any step of the process should fail. Might also throw std::bad_alloc if out-of-memory.
-		// If 'validateCRCs' is true and the CRC32 of the file doesn't match the computed one, also fails with an exception.
-		// CRC32 of the extracted file is not computed if 'validateCRCs' is false.
-		void extractResourceToFile(TankFile & tank, const std::string & resourcePath,
-		                           const std::string & destFile, bool validateCRCs) const;
-
-		// Same as extractResourceToFile() but writes the dest file as an async background task.
-		// Unlike the previous method however, this one DOES NOT throw and exception if the file can't be written.
-		// If the async IO fails, when the returned std::future is dereferenced, it will return a boolean
-		// with the result of the file write operation. Data is fetched from the Tank before spawning the thread,
-		// so an exception might still be thrown if data can't be read/decompressed from the source Tank.
-		Task extractResourceToFileAsync(TankFile & tank, const std::string & resourcePath,
-		                                const std::string & destFile, bool validateCRCs) const;
-
 		// Attempts to extract a resource to a memory buffer.
 		// Might throw TankFile::Error if the file cannot be extracted. Might also throw std::bad_alloc if out-of-memory.
 		// If 'validateCRCs' is true and the CRC32 of the file doesn't match the computed one, also fails with an exception.
@@ -474,8 +459,6 @@ public:
 	// Queries:
 	bool isOpen()      const noexcept;
 	bool isReadOnly()  const noexcept;
-	bool isWriteOnly() const noexcept;
-	bool isReadWrite() const noexcept;
 
 	// Accessors:
 	size_t getFileSizeBytes()         const noexcept;

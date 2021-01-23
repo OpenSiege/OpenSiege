@@ -384,18 +384,6 @@ bool TankFile::isReadOnly() const noexcept
 	      !(fileOpenMode & std::ios::out);
 }
 
-bool TankFile::isWriteOnly() const noexcept
-{
-	return (fileOpenMode & std::ios::out) &&
-	      !(fileOpenMode & std::ios::in);
-}
-
-bool TankFile::isReadWrite() const noexcept
-{
-	return (fileOpenMode & std::ios::in) ||
-	       (fileOpenMode & std::ios::out);
-}
-
 size_t TankFile::getFileSizeBytes() const noexcept
 {
 	return fileSizeBytes;

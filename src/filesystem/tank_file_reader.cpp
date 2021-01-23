@@ -45,7 +45,7 @@ void TankFile::Reader::indexFile(TankFile & tank)
 		return;
 	}
 
-	if (!tank.isReadWrite() && !tank.isReadOnly())
+	if (!tank.isReadOnly())
 	{
 		// SiegeThrow(TankFile::Error, "Tank file \"" << tank.getFileName()
 		//		<< "\" must be opened for reading before TankFile::Reader can index it!");
@@ -328,25 +328,6 @@ void TankFile::Reader::buildFilePaths()
 	}
 }
 
-void TankFile::Reader::extractResourceToFile(TankFile & tank, const std::string & resourcePath,
-                                             const std::string & destFile, const bool validateCRCs) const
-{
-
-#if 0
-	if (destFile.empty())
-	{
-		SiegeThrow(TankFile::Error, "No dest filename provided!");
-	}
-
-	auto fileContents = extractResourceToMemory(tank, resourcePath, validateCRCs);
-	if (!writeResourceFile(destFile, std::move(fileContents)))
-	{
-		SiegeThrow(TankFile::Error, "Failed write resource file \""
-				<< destFile << "\": '" << utils::filesys::getLastFileError() << "'.");
-	}
-#endif
-}
-
 ByteArray TankFile::Reader::extractResourceToMemory(TankFile & tank, const std::string & resourcePath, const bool validateCRCs) const
 {
 	if (!tank.isOpen())
@@ -355,7 +336,7 @@ ByteArray TankFile::Reader::extractResourceToMemory(TankFile & tank, const std::
 		return {};
 	}
 
-	if (!tank.isReadWrite() && !tank.isReadOnly())
+	if (!tank.isReadOnly())
 	{
 		// SiegeThrow(TankFile::Error, "Tank file \"" << tank.getFileName()
 		// 		<< "\" must be opened for reading before you can extract data from it!");
