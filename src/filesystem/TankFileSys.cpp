@@ -32,8 +32,7 @@ namespace ehb
 
     FileList TankFileSys::getFiles() const
     {
-        FileList result = cache;
-        return result;
+        return cache;
     }
 
     FileList TankFileSys::getDirectoryContents(const std::string & directory_) const
