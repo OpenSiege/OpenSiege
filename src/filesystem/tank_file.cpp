@@ -292,9 +292,10 @@ std::string TankFile::priorityToString(const Priority priority)
 	case Priority::Expansion : return "Expansion";
 	case Priority::Patch     : return "Patch";
 	case Priority::User      : return "User";
-	//default : SiegeThrow(TankFile::Error, "Invalid TankFile::Priority flag!");
 	default: break;
 	} // switch (priority)
+
+	return "Unknown priority";
 }
 
 TankFile::Priority TankFile::priorityFromString(const std::string & str)
@@ -304,7 +305,7 @@ TankFile::Priority TankFile::priorityFromString(const std::string & str)
 	if (str == "Expansion") return Priority::Expansion;
 	if (str == "Patch")     return Priority::Patch;
 	if (str == "User")      return Priority::User;
-	// SiegeThrow(TankFile::Error, "Invalid TankFile::Priority string: '" << str << "'.");
+	else return Priority::Unk;
 }
 
 std::string TankFile::dataFormatToString(const DataFormat format)
@@ -314,8 +315,9 @@ std::string TankFile::dataFormatToString(const DataFormat format)
 	case DataFormat::Raw  : return "Raw";
 	case DataFormat::Zlib : return "Zlib";
 	case DataFormat::Lzo  : return "Lzo";
-	// default : SiegeThrow(TankFile::Error, "Invalid TankFile::DataFormat flag!");
 	} // switch (format)
+
+	return "Unknown format";
 }
 
 TankFile::DataFormat TankFile::dataFormatFromString(const std::string & str)
@@ -323,7 +325,7 @@ TankFile::DataFormat TankFile::dataFormatFromString(const std::string & str)
 	if (str == "Raw")  return DataFormat::Raw;
 	if (str == "Zlib") return DataFormat::Zlib;
 	if (str == "Lzo")  return DataFormat::Lzo;
-	// SiegeThrow(TankFile::Error, "Invalid TankFile::DataFormat string: '" << str << "'.");
+	else return DataFormat::Unk;
 }
 
 // ========================================================

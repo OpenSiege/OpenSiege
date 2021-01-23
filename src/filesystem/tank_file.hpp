@@ -125,7 +125,8 @@ public:
 		Language  = 0x1000, // GPG-issued language pack, filled with localized resource overrides.
 		Expansion = 0x2000, // GPG- or affiliate-issued expansion pack tank.
 		Patch     = 0x3000, // Some kind of patch tank.
-		User      = 0x4000  // User-constructed tank.
+		User      = 0x4000,  // User-constructed tank.
+		Unk       = 0x5000 // Should never happen
 	};
 
 	static std::string priorityToString(Priority priority);
@@ -141,7 +142,8 @@ public:
 	{
 		Raw,  // This resource is in raw format.
 		Zlib, // This resource is zlib-compressed.
-		Lzo   // This resource is lzo-compressed.
+		Lzo,  // This resource is lzo-compressed.
+		Unk,  // Should never happen
 	};
 
 	static std::string dataFormatToString(DataFormat format);
