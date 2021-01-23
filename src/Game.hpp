@@ -3,7 +3,7 @@
 
 #include "state/IGameStateProvider.hpp"
 #include "state/GameStateMgr.hpp"
-#include "LocalFileSys.hpp"
+#include "filesystem/LocalFileSys.hpp"
 #include "ContentDb.hpp"
 
 #include "console/Console.hpp"
