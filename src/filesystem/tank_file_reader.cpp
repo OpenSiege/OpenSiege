@@ -12,9 +12,11 @@
 // ================================================================================================
 
 #include "tank_file.hpp"
+#include "miniz.h"
 #include <algorithm>
+#include <cassert>
 
-namespace siege
+namespace ehb
 {
 
 // Can be easily disabled to avoid excessively verbose output.
@@ -39,13 +41,15 @@ void TankFile::Reader::indexFile(TankFile & tank)
 {
 	if (!tank.isOpen())
 	{
-		SiegeThrow(TankFile::Error, "Tank file \"" << tank.getFileName() << "\" is not open!");
+		// SiegeThrow(TankFile::Error, "Tank file \"" << tank.getFileName() << "\" is not open!");
+		return;
 	}
 
 	if (!tank.isReadWrite() && !tank.isReadOnly())
 	{
-		SiegeThrow(TankFile::Error, "Tank file \"" << tank.getFileName()
-				<< "\" must be opened for reading before TankFile::Reader can index it!");
+		// SiegeThrow(TankFile::Error, "Tank file \"" << tank.getFileName()
+		//		<< "\" must be opened for reading before TankFile::Reader can index it!");
+		return;
 	}
 
 	TankReaderLog("Preparing to index Tank file...");
@@ -79,7 +83,8 @@ void TankFile::Reader::readDirSet(TankFile & tank)
 		const auto dirOffs = tank.readU32();
 		if (dirOffs == TankFile::InvalidOffset || (header.dirsetOffset + dirOffs) > fileSize)
 		{
-			SiegeThrow(TankFile::Error, "Invalid directory offset: " << dirOffs);
+			//SiegeThrow(TankFile::Error, "Invalid directory offset: " << dirOffs);
+			return;
 		}
 		dirSet->dirOffsets.push_back(dirOffs);
 	}
@@ -100,14 +105,15 @@ void TankFile::Reader::readDirSet(TankFile & tank)
 		// Validate parent offset:
 		if (dirParentOffset == TankFile::InvalidOffset || (header.dirsetOffset + dirParentOffset) > fileSize)
 		{
-			SiegeThrow(TankFile::Error, "Invalid directory parent offset: " << dirParentOffset);
+			// SiegeThrow(TankFile::Error, "Invalid directory parent offset: " << dirParentOffset);
+			return;
 		}
 
 		// Check for directory root and give it the proper root name if so:
 		if (dirParentOffset == 0 && dirEntryName.empty())
 		{
 			// This must be the root directory, which is a dummy entry.
-			dirEntryName = utils::filesys::getPathSeparator();
+			dirEntryName = "/";
 		}
 
 		// Scan list of offsets to the children of this directory (files and other dirs):
@@ -117,7 +123,8 @@ void TankFile::Reader::readDirSet(TankFile & tank)
 			const auto childOffs = tank.readU32();
 			if (childOffs == TankFile::InvalidOffset || (header.dirsetOffset + childOffs) > fileSize)
 			{
-				SiegeThrow(TankFile::Error, "Invalid directory child offset: " << childOffs);
+				// SiegeThrow(TankFile::Error, "Invalid directory child offset: " << childOffs);
+				return;
 			}
 			childOffsets.push_back(childOffs);
 		}
@@ -158,7 +165,8 @@ void TankFile::Reader::readFileSet(TankFile & tank)
 		const auto fileOffs = tank.readU32();
 		if (fileOffs == TankFile::InvalidOffset || (header.filesetOffset + fileOffs) > fileSize)
 		{
-			SiegeThrow(TankFile::Error, "Invalid file offset: " << fileOffs);
+			// SiegeThrow(TankFile::Error, "Invalid file offset: " << fileOffs);
+			return;
 		}
 		fileSet->fileOffsets.push_back(fileOffs);
 	}
@@ -183,7 +191,8 @@ void TankFile::Reader::readFileSet(TankFile & tank)
 		if (fileParentOffset == TankFile::InvalidOffset ||
 		   (header.filesetOffset + fileParentOffset) > fileSize)
 		{
-			SiegeThrow(TankFile::Error, "Invalid file parent offset: " << fileParentOffset);
+			// SiegeThrow(TankFile::Error, "Invalid file parent offset: " << fileParentOffset);
+			return;
 		}
 
 		const auto fileDataFormat = static_cast<TankFile::DataFormat>(fileFormat);
@@ -254,38 +263,14 @@ void buildPathRecursive(const size_t entryIndex, const TankFile::DirSet & dirSet
 
 	if (parentIter == std::end(dirSet.dirOffsets))
 	{
-		SiegeThrow(TankFile::Error, "Found an orphan directory entry! '"
-				<< dirSet.dirEntries[entryIndex].name << "'.");
+		// SiegeThrow(TankFile::Error, "Found an orphan directory entry! '"
+		//		<< dirSet.dirEntries[entryIndex].name << "'.");
 	}
 
 	const auto parentIndex = std::distance(std::begin(dirSet.dirOffsets), parentIter);
 
 	buildPathRecursive(parentIndex, dirSet, path);
-	path += utils::filesys::getPathSeparator() + dirSet.dirEntries[entryIndex].name;
-}
-
-bool writeResourceFile(const std::string & destFileName, ByteArray fileContents)
-{
-	std::ofstream outFile;
-	if (!utils::filesys::tryOpen(outFile, destFileName, std::ofstream::binary))
-	{
-		SiegeError("Failed to open file \"" << destFileName << "\" for writing!");
-		return false;
-	}
-
-	if (fileContents.empty())
-	{
-		SiegeWarn("Written an empty resource file...");
-		return true;
-	}
-
-	if (!outFile.write(reinterpret_cast<const char *>(fileContents.data()), fileContents.size()))
-	{
-		SiegeError("Failed to write " << fileContents.size() << " bytes to file \"" << destFileName << "\"!");
-		return false;
-	}
-
-	return true;
+	path += "/" + dirSet.dirEntries[entryIndex].name;
 }
 
 } // namespace {}
@@ -301,7 +286,7 @@ void TankFile::Reader::buildDirPaths()
 	{
 		fullPath.clear();
 		buildPathRecursive(d, *dirSet, fullPath);
-		fullPath += utils::filesys::getPathSeparator();
+		fullPath += "/";
 
 		fileTable.emplace(fullPath, TankEntry(&dirSet->dirEntries[d]));
 
@@ -326,16 +311,17 @@ void TankFile::Reader::buildFilePaths()
 
 			if (parentIter == std::end(dirSet->dirOffsets))
 			{
-				SiegeThrow(TankFile::Error, "Found an orphan file entry! '"
-						<< fileSet->fileEntries[f].name << "' (parentOffset = "
-						<< fileSet->fileEntries[f].parentOffset << ")");
+				// SiegeThrow(TankFile::Error, "Found an orphan file entry! '"
+				//		<< fileSet->fileEntries[f].name << "' (parentOffset = "
+				//		<< fileSet->fileEntries[f].parentOffset << ")");
+				return;
 			}
 
 			const auto parentIndex = std::distance(std::begin(dirSet->dirOffsets), parentIter);
 			buildPathRecursive(parentIndex, *dirSet, fullPath);
 		}
 
-		fullPath += utils::filesys::getPathSeparator() + fileSet->fileEntries[f].name;
+		fullPath += "/" + fileSet->fileEntries[f].name;
 		fileTable.emplace(fullPath, TankEntry(&fileSet->fileEntries[f]));
 
 		TankReaderLog("File: " << fullPath.c_str());
@@ -345,6 +331,8 @@ void TankFile::Reader::buildFilePaths()
 void TankFile::Reader::extractResourceToFile(TankFile & tank, const std::string & resourcePath,
                                              const std::string & destFile, const bool validateCRCs) const
 {
+
+#if 0
 	if (destFile.empty())
 	{
 		SiegeThrow(TankFile::Error, "No dest filename provided!");
@@ -356,42 +344,30 @@ void TankFile::Reader::extractResourceToFile(TankFile & tank, const std::string 
 		SiegeThrow(TankFile::Error, "Failed write resource file \""
 				<< destFile << "\": '" << utils::filesys::getLastFileError() << "'.");
 	}
-}
-
-TankFile::Task TankFile::Reader::extractResourceToFileAsync(TankFile & tank, const std::string & resourcePath,
-                                                            const std::string & destFile, const bool validateCRCs) const
-{
-	if (destFile.empty())
-	{
-		SiegeThrow(TankFile::Error, "No dest filename provided!");
-	}
-
-	// Attempt the data extraction.
-	// This must be done from the caller thread since we don't lock the Tank file.
-	auto fileContents = extractResourceToMemory(tank, resourcePath, validateCRCs);
-
-	// Fire the asynchronous task of writing the output and return the std::future handle.
-	return std::async(std::launch::async, writeResourceFile, destFile, std::move(fileContents));
+#endif
 }
 
 ByteArray TankFile::Reader::extractResourceToMemory(TankFile & tank, const std::string & resourcePath, const bool validateCRCs) const
 {
 	if (!tank.isOpen())
 	{
-		SiegeThrow(TankFile::Error, "Tank file \"" << tank.getFileName() << "\" is not open!");
+		// SiegeThrow(TankFile::Error, "Tank file \"" << tank.getFileName() << "\" is not open!");
+		return {};
 	}
 
 	if (!tank.isReadWrite() && !tank.isReadOnly())
 	{
-		SiegeThrow(TankFile::Error, "Tank file \"" << tank.getFileName()
-				<< "\" must be opened for reading before you can extract data from it!");
+		// SiegeThrow(TankFile::Error, "Tank file \"" << tank.getFileName()
+		// 		<< "\" must be opened for reading before you can extract data from it!");
+		return {};
 	}
 
 	const auto it = fileTable.find(resourcePath);
 	if (it == std::end(fileTable))
 	{
-		SiegeThrow(TankFile::Error, "Resource \"" << resourcePath
-				<< "\" not found in Tank file \"" << tank.getFileName() << "\"!");
+		// SiegeThrow(TankFile::Error, "Resource \"" << resourcePath
+		//		<< "\" not found in Tank file \"" << tank.getFileName() << "\"!");
+		return {};
 	}
 
 	assert(it->first == resourcePath);
@@ -399,8 +375,9 @@ ByteArray TankFile::Reader::extractResourceToMemory(TankFile & tank, const std::
 
 	if (entry.type != TankEntry::TypeFile)
 	{
-		SiegeThrow(TankFile::Error, "Resource \"" << resourcePath << "\" in Tank file \""
-				<< tank.getFileName() << "\" is a directory and cannot be decompressed to file!");
+		// SiegeThrow(TankFile::Error, "Resource \"" << resourcePath << "\" in Tank file \""
+		//		<< tank.getFileName() << "\" is a directory and cannot be decompressed to file!");
+		return {};
 	}
 
 	assert(entry.ptr.file != nullptr);
@@ -409,7 +386,7 @@ ByteArray TankFile::Reader::extractResourceToMemory(TankFile & tank, const std::
 	if (resFile.isInvalidFile())
 	{
 		// NOTE: Not sure if this should be a hard error...
-		SiegeWarn("Resource file entry \"" << resFile.name << "\" is flagged as invalid!");
+		// SiegeWarn("Resource file entry \"" << resFile.name << "\" is flagged as invalid!");
 	}
 
 	const auto fileOffset  = resFile.offset;
@@ -462,8 +439,7 @@ ByteArray TankFile::Reader::extractResourceToMemory(TankFile & tank, const std::
 				TankReaderLog("Attempting to decompress resource chunk #" << (c + 1)
 						<< " of " << compressedHeader.numChunks << "...");
 
-				// Let Mini-Z do the decompression:
-				const int errorCode = utils::compression::decompress(uncompressedData.data(), &uncompressedLen,
+				const int errorCode = mz_uncompress(uncompressedData.data(), &uncompressedLen, 
 							compressedData.data(), static_cast<unsigned long>(compressedData.size() - chunk.extraBytes));
 
 				assert(uncompressedLen != 0 && "Nothing was decompressed!");
@@ -471,9 +447,11 @@ ByteArray TankFile::Reader::extractResourceToMemory(TankFile & tank, const std::
 
 				if (errorCode != 0)
 				{
+#if 0
 					auto errorInfo = utils::compression::getErrorString(errorCode);
 					SiegeThrow(TankFile::Error, "Failed to decompress resource \"" << resourcePath
 							<< "\"! Mini-Z error: '" << errorInfo << "'");
+#endif
 				}
 			}
 			else
@@ -509,6 +487,7 @@ ByteArray TankFile::Reader::extractResourceToMemory(TankFile & tank, const std::
 		}
 	}
 
+#if 0
 	if (validateCRCs && !fileContents.empty())
 	{
 		const auto expectedCrc = resFile.crc32;
@@ -517,69 +496,15 @@ ByteArray TankFile::Reader::extractResourceToMemory(TankFile & tank, const std::
 		if (contentsCrc != expectedCrc)
 		{
 			auto errorInfo = utils::format("Tank resource \"%s\" CRC (0x%08X) does not match the expected (0x%08X)!",
-					resourcePath.c_str(), contentsCrc, expectedCrc);
+				resourcePath.c_str(), contentsCrc, expectedCrc);
 
 			SiegeThrow(TankFile::Error, errorInfo);
 		}
 	}
+#endif
 
 	TankReaderLog("Tank resource \"" << resourcePath << "\" extracted without errors.");
 	return fileContents;
-}
-
-void TankFile::Reader::extractWholeTank(TankFile & tank, const std::string & destPath, const bool validateCRCs) const
-{
-	// destPath + '/' + tankName:
-	std::string basePath = destPath;
-	if (basePath.back() != utils::filesys::getPathSeparator()[0])
-	{
-		basePath += utils::filesys::getPathSeparator();
-	}
-	basePath += utils::filesys::removeFilenameExtension(tank.getFileName());
-
-	TankReaderLog("Extracting whole Tank to \"" << basePath << "\"...");
-
-	// Create the base path if not there yet:
-	if (!utils::filesys::createPath(basePath))
-	{
-		SiegeThrow(siege::Exception, "Failed to create path \"" << basePath << "\": " << utils::filesys::getLastFileError());
-	}
-
-	// Preallocate for the table size. All entries are potentially files.
-	std::vector<Task> tasks;
-	tasks.reserve(fileTable.size());
-
-	// Walk the file table and decompress each resource file:
-	std::string destFile;
-	for (const auto & entry : fileTable)
-	{
-		if (entry.second.type == TankEntry::TypeDir)
-		{
-			continue;
-		}
-
-		destFile = basePath + entry.first;
-
-		if (!utils::filesys::createPath(destFile))
-		{
-			SiegeThrow(siege::Exception, "Failed to create path \"" << destFile << "\": " << utils::filesys::getLastFileError());
-		}
-
-		auto task = extractResourceToFileAsync(tank, entry.first, destFile, validateCRCs);
-		tasks.emplace_back(std::move(task));
-	}
-
-	// Once all files are done, we synchronize.
-	// NOTE: Should we allow for the caller to synchronize instead?
-	//
-	int filesSuccessfullyWritten = 0;
-	for (auto & task : tasks)
-	{
-		filesSuccessfullyWritten += int(task.get());
-	}
-
-	TankReaderLog("extractWholeTank() successfully written " <<
-			filesSuccessfullyWritten << " files to path: \"" << basePath << "\"");
 }
 
 std::vector<std::string> TankFile::Reader::getFileList() const
@@ -618,4 +543,4 @@ std::vector<std::string> TankFile::Reader::getDirectoryList() const
 
 #undef TankReaderLog
 
-} // namespace siege {}
+} // namespace ehb {}

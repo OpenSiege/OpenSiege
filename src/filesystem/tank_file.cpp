@@ -13,8 +13,9 @@
 
 #include "tank_file.hpp"
 #include <cmath> // For std::ceil()
+#include <cassert>
 
-namespace siege
+namespace ehb
 {
 
 // ========================================================
@@ -74,10 +75,10 @@ void TankFile::Header::setDefaults()
 	dataCrc32      = 0;
 	utcBuildTime   = {};
 
-	utils::clearArray(copyrightText);
-	utils::clearArray(buildText);
-	utils::clearArray(titleText);
-	utils::clearArray(authorText);
+	clearArray(copyrightText);
+	clearArray(buildText);
+	clearArray(titleText);
+	clearArray(authorText);
 
 	descriptionText.clear();
 }
@@ -269,32 +270,6 @@ TankFile::DirSet::DirSet(const uint32_t numEntries)
 }
 
 // ========================================================
-// TankFile::Error:
-// ========================================================
-
-TankFile::Error::Error() noexcept
-	: Exception("Undefined TankFile error!")
-{
-}
-
-TankFile::Error::Error(const char * error) noexcept
-	: Exception(error)
-{
-}
-
-TankFile::Error::Error(const std::string & error) noexcept
-	: Exception(error.c_str())
-{
-}
-
-TankFile::Error::~Error()
-{
-	// We are compiling with the `-Wweak-vtables` flag.
-	// If we don't provide this dummy implementation here
-	// the compiler would emit a warning for this class.
-}
-
-// ========================================================
 // Static properties of TankFile:
 // ========================================================
 
@@ -316,7 +291,8 @@ std::string TankFile::priorityToString(const Priority priority)
 	case Priority::Expansion : return "Expansion";
 	case Priority::Patch     : return "Patch";
 	case Priority::User      : return "User";
-	default : SiegeThrow(TankFile::Error, "Invalid TankFile::Priority flag!");
+	//default : SiegeThrow(TankFile::Error, "Invalid TankFile::Priority flag!");
+	default: break;
 	} // switch (priority)
 }
 
@@ -327,7 +303,7 @@ TankFile::Priority TankFile::priorityFromString(const std::string & str)
 	if (str == "Expansion") return Priority::Expansion;
 	if (str == "Patch")     return Priority::Patch;
 	if (str == "User")      return Priority::User;
-	SiegeThrow(TankFile::Error, "Invalid TankFile::Priority string: '" << str << "'.");
+	// SiegeThrow(TankFile::Error, "Invalid TankFile::Priority string: '" << str << "'.");
 }
 
 std::string TankFile::dataFormatToString(const DataFormat format)
@@ -337,7 +313,7 @@ std::string TankFile::dataFormatToString(const DataFormat format)
 	case DataFormat::Raw  : return "Raw";
 	case DataFormat::Zlib : return "Zlib";
 	case DataFormat::Lzo  : return "Lzo";
-	default : SiegeThrow(TankFile::Error, "Invalid TankFile::DataFormat flag!");
+	// default : SiegeThrow(TankFile::Error, "Invalid TankFile::DataFormat flag!");
 	} // switch (format)
 }
 
@@ -346,7 +322,7 @@ TankFile::DataFormat TankFile::dataFormatFromString(const std::string & str)
 	if (str == "Raw")  return DataFormat::Raw;
 	if (str == "Zlib") return DataFormat::Zlib;
 	if (str == "Lzo")  return DataFormat::Lzo;
-	SiegeThrow(TankFile::Error, "Invalid TankFile::DataFormat string: '" << str << "'.");
+	// SiegeThrow(TankFile::Error, "Invalid TankFile::DataFormat string: '" << str << "'.");
 }
 
 // ========================================================
@@ -357,19 +333,23 @@ void TankFile::openForReading(std::string filename)
 {
 	if (isOpen())
 	{
-		SiegeThrow(TankFile::Error, "File already open!");
+		// SiegeThrow(TankFile::Error, "File already open!");
+		return;
 	}
 
 	if (filename.empty())
 	{
-		SiegeThrow(TankFile::Error, "No filename provided!");
+		// SiegeThrow(TankFile::Error, "No filename provided!");
+		return;
 	}
 
+#if 0
 	if (!utils::filesys::tryOpen(file, filename, std::ios::binary))
 	{
 		SiegeThrow(TankFile::Error, "Failed to open Tank file \"" << filename
 				<< "\": '" << utils::filesys::getLastFileError() << "'.");
 	}
+#endif
 
 	fileName     = std::move(filename);
 	fileOpenMode = std::ios::in | std::ios::binary;
@@ -377,8 +357,8 @@ void TankFile::openForReading(std::string filename)
 	queryFileSize();
 	readAndValidateHeader();
 
-	SiegeLog("Successfully opened Tank file \"" << fileName
-			<< "\" for reading. File size: " << utils::formatMemoryUnit(fileSizeBytes));
+	// SiegeLog("Successfully opened Tank file \"" << fileName
+	//		<< "\" for reading. File size: " << utils::formatMemoryUnit(fileSizeBytes));
 }
 
 void TankFile::close()
@@ -436,11 +416,13 @@ const std::string & TankFile::getFileName() const noexcept
 void TankFile::queryFileSize()
 {
 	assert(isOpen());
+#if 0
 	utils::filesys::queryFileSize(fileName, fileSizeBytes);
 	if (fileSizeBytes == 0)
 	{
 		SiegeWarn("Tank file \"" << fileName << "\" appears to be empty...");
 	}
+#endif
 }
 
 void TankFile::readAndValidateHeader()
@@ -498,24 +480,26 @@ void TankFile::readAndValidateHeader()
 	// Fatal errors:
 	if (fileHeader.productId != TankFile::ProductId)
 	{
-		SiegeThrow(TankFile::Error, "\"" << fileName
-				<< "\": Header product id doesn't match the expected value!");
+		// SiegeThrow(TankFile::Error, "\"" << fileName
+		//		<< "\": Header product id doesn't match the expected value!");
+		return;
 	}
 	if (fileHeader.tankId != TankFile::TankId)
 	{
-		SiegeThrow(TankFile::Error, "\"" << fileName
-				<< "\": Header Tank id doesn't match the expected value!");
+		// SiegeThrow(TankFile::Error, "\"" << fileName
+		//		<< "\": Header Tank id doesn't match the expected value!");
+		return;
 	}
 
 	// Warnings:
 	if (fileHeader.creatorId != TankFile::CreatorIdGPG &&
 	    fileHeader.creatorId != TankFile::CreatorIdUser)
 	{
-		SiegeWarn("Tank creator id is unknown: " << fileHeader.creatorId);
+		// SiegeWarn("Tank creator id is unknown: " << fileHeader.creatorId);
 	}
 	if (fileHeader.headerVersion != Header::ExpectedVersion)
 	{
-		SiegeWarn("Unknown Tank header version: " << fileHeader.headerVersion);
+		// SiegeWarn("Unknown Tank header version: " << fileHeader.headerVersion);
 	}
 }
 
@@ -525,7 +509,8 @@ void TankFile::seekAbsoluteOffset(const size_t offsetInBytes)
 	// Seek absolute offset relative to the beginning of the file.
 	if (!file.seekg(offsetInBytes, std::ifstream::beg))
 	{
-		SiegeThrow(TankFile::Error, "Failed to seek file offset on TankFile::seekAbsoluteOffset()!");
+		// SiegeThrow(TankFile::Error, "Failed to seek file offset on TankFile::seekAbsoluteOffset()!");
+		return;
 	}
 }
 
@@ -537,11 +522,14 @@ void TankFile::readBytes(void * buffer, const size_t numBytes)
 
 	if (!file.read(reinterpret_cast<char *>(buffer), numBytes))
 	{
+#if 0
 		SiegeError("Only " << file.gcount() << " bytes of " << numBytes
 				<< " could be read from \"" << fileName << "\"!");
 
 		SiegeThrow(TankFile::Error, "Failed to read " << utils::formatMemoryUnit(numBytes)
 				<< " from Tank file \"" << fileName << "\"!");
+#endif
+		return;
 	}
 }
 
@@ -572,13 +560,13 @@ std::string TankFile::readNString()
 	lenInChars = alignToDword(lenInChars + 2) - 2; // 2 for the word we've just read
 	assert(((lenInChars + 2) % sizeof(uint32_t)) == 0);
 
-	if (lenInChars >= utils::MaxTempStringLen)
+	if (lenInChars >= 2048)
 	{
-		SiegeThrow(TankFile::Error, "String overflow in TankFile::readNString()! "
-				<< lenInChars << " >= " << utils::MaxTempStringLen);
+		// SiegeThrow(TankFile::Error, "String overflow in TankFile::readNString()! "
+		//		<< lenInChars << " >= " << utils::MaxTempStringLen);
 	}
 
-	char buffer[utils::MaxTempStringLen];
+	char buffer[2048];
 	readBytes(buffer, lenInChars);
 	buffer[lenInChars] = 0;
 
@@ -598,13 +586,13 @@ WideString TankFile::readWNString()
 	lenInChars = alignToDword(lenInChars + 2) - 2; // 2 for the word we've just read
 	assert(((lenInChars + 2) % sizeof(uint32_t)) == 0);
 
-	if (lenInChars >= utils::MaxTempStringLen)
+	if (lenInChars >= 2048)
 	{
-		SiegeThrow(TankFile::Error, "String overflow in TankFile::readWNString()! "
-				<< lenInChars << " >= " << utils::MaxTempStringLen);
+		// SiegeThrow(TankFile::Error, "String overflow in TankFile::readWNString()! "
+		// 		<< lenInChars << " >= " << utils::MaxTempStringLen);
 	}
 
-	WideChar buffer[utils::MaxTempStringLen];
+	WideChar buffer[2048];
 	readBytes(buffer, lenInChars * sizeof(WideChar));
 	buffer[lenInChars] = 0;
 
@@ -646,4 +634,4 @@ Guid TankFile::readGuid()
 	return guid;
 }
 
-} // namespace siege {}
+} // namespace ehb {}

@@ -25,10 +25,12 @@ FetchContent_Declare(
     GIT_TAG master
 )
 
-add_subdirectory(spdlog)
-add_subdirectory(whereami)
-add_subdirectory(ValveFileVDF)
-add_subdirectory(minIni)
+set(BUILD_TESTING OFF CACHE BOOL "Stop valvevdf from testing" FORCE)
+
+FetchContent_MakeAvailable(spdlog)
+FetchContent_MakeAvailable(whereami)
+FetchContent_MakeAvailable(ValveFileVDF)
+FetchContent_MakeAvailable(minIni)
 
 # speed up reconfiguration by skipping updates from FetchContent
 set (FETCHCONTENT_FULLY_DISCONNECTED ON CACHE BOOL "" FORCE)
@@ -38,6 +40,7 @@ set(EXTERN_INCLUDE_PATHS
     "${FETCHCONTENT_BASE_DIR}/whereami-src/src"
     "${FETCHCONTENT_BASE_DIR}/valvefilevdf-src"
     "${FETCHCONTENT_BASE_DIR}/minini-src/dev"
+	"${CMAKE_CURRENT_SOURCE_DIR}/miniz"
     PARENT_SCOPE
 )
 
@@ -45,5 +48,8 @@ set(EXTERN_INCLUDE_PATHS
 set(EXTERN_SOURCE_FILES
     "${FETCHCONTENT_BASE_DIR}/whereami-src/src/whereami.c"
     "${FETCHCONTENT_BASE_DIR}/minini-src/dev/minIni.c"
+	"${CMAKE_CURRENT_SOURCE_DIR}/miniz/miniz.c"
     PARENT_SCOPE
 )
+
+set(FETCHCONTENT_FULLY_DISCONNECTED ON CACHE BOOL "Stop extern updating" FORCE)
