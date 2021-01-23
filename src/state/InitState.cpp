@@ -29,7 +29,9 @@ namespace ehb
 
         if (!fileSys.init(config))
         {
-            // TODO: shut down the engine
+            gameStateMgr.request("ExitState");
+
+            return;
         }
 
         // setup the NNK system and register it with OSG

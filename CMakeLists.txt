@@ -34,6 +34,7 @@ set(SIEGE_SOURCES
 
     "src/state/GameStateMgr.cpp"
     "src/state/InitState.cpp"
+	"src/state/ExitState.cpp"
     "src/state/TestState.cpp"
     "src/state/test/GasTestState.cpp"
     "src/state/test/SiegeNodeTestState.cpp"

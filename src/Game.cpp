@@ -9,6 +9,7 @@
 
 #include "cfg/IConfig.hpp"
 #include "state/InitState.hpp"
+#include "state/ExitState.hpp"
 #include "state/test/GasTestState.hpp"
 #include "state/test/SiegeNodeTestState.hpp"
 #include "state/test/UITestState.hpp"
@@ -129,6 +130,10 @@ namespace ehb
         if (gameStateType == "InitState")
         {
             return new InitState(gameStateMgr, config, fileSys, contentDb, *console);
+        }
+        else if (gameStateType == "ExitState")
+        {
+            return new ExitState(gameStateMgr, config, viewer);
         }
         else if (gameStateType == "GasTestState")
         {
