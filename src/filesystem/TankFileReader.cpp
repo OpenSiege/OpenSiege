@@ -11,7 +11,7 @@
 //
 // ================================================================================================
 
-#include "tank_file.hpp"
+#include "TankFile.hpp"
 #include "miniz.h"
 #include <algorithm>
 #include <cassert>

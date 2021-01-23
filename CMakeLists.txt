@@ -81,8 +81,8 @@ set(SIEGE_SOURCES
     "src/osgPlugins/ReaderWriterFont.cpp"
     "src/osgPlugins/ReaderWriterSiegeNodeList.cpp"
 
-    "src/filesystem/tank_file.cpp"
-    "src/filesystem/tank_file_reader.cpp"
+    "src/filesystem/TankFile.cpp"
+    "src/filesystem/TankFileReader.cpp"
     "src/filesystem/LocalFileSys.cpp"
     "src/filesystem/TankFileSys.cpp"
 

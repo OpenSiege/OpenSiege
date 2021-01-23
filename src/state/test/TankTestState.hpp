@@ -2,7 +2,7 @@
 #pragma once
 
 #include "state/IGameState.hpp"
-#include "filesystem/tank_file.hpp"
+#include "filesystem/TankFile.hpp"
 
 #include <spdlog/spdlog.h>
 
@@ -44,6 +44,6 @@ namespace ehb
         {
             spdlog::get("log")->error("Tank: {} was loaded with {} bytes but expected was {}", tank.getFileName(), tank.getFileSizeBytes(), expected);
             return false;
-        }
+        }        
     }
 }
