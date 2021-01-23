@@ -5,7 +5,7 @@
 #include <osgDB/Registry>
 #include <osgDB/ReadFile>
 
-#include "LocalFileSys.hpp"
+#include "filesystem/LocalFileSys.hpp"
 #include "cfg/IConfig.hpp"
 #include "state/GameStateMgr.hpp"
 #include "osg/FileNameMap.hpp"

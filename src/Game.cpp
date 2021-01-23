@@ -16,6 +16,7 @@
 #include "state/test/UITestState.hpp"
 #include "state/test/RegionTestState.hpp"
 #include "state/test/AspectMeshTestState.hpp"
+#include "state/test/TankTestState.hpp"
 
 namespace ehb
 {
@@ -155,6 +156,10 @@ namespace ehb
         else if (gameStateType == "AspectMeshTestState")
         {
             return new AspectMeshTestState(gameStateMgr, config, fileSys, viewer, *scene3d);
+        }
+        else if (gameStateType == "TankTestState")
+        {
+            return new TankTestState(gameStateMgr, config, fileSys);
         }
 
         return nullptr;

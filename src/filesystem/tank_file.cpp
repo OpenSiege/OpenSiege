@@ -13,6 +13,7 @@
 
 #include "tank_file.hpp"
 #include <cmath> // For std::ceil()
+#include <filesystem>
 #include <cassert>
 
 namespace ehb
@@ -343,13 +344,8 @@ void TankFile::openForReading(std::string filename)
 		return;
 	}
 
-#if 0
-	if (!utils::filesys::tryOpen(file, filename, std::ios::binary))
-	{
-		SiegeThrow(TankFile::Error, "Failed to open Tank file \"" << filename
-				<< "\": '" << utils::filesys::getLastFileError() << "'.");
-	}
-#endif
+	file.exceptions(0);
+	file.open(filename, std::ios::binary | std::ios::in);
 
 	fileName     = std::move(filename);
 	fileOpenMode = std::ios::in | std::ios::binary;
@@ -416,13 +412,8 @@ const std::string & TankFile::getFileName() const noexcept
 void TankFile::queryFileSize()
 {
 	assert(isOpen());
-#if 0
-	utils::filesys::queryFileSize(fileName, fileSizeBytes);
-	if (fileSizeBytes == 0)
-	{
-		SiegeWarn("Tank file \"" << fileName << "\" appears to be empty...");
-	}
-#endif
+
+	fileSizeBytes = std::filesystem::file_size(fileName);
 }
 
 void TankFile::readAndValidateHeader()
