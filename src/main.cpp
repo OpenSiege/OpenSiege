@@ -84,6 +84,7 @@ void registerSiegeLogger(const std::string& path, const std::string& name)
         log->info("-== Log category : {}", log->name());
         log->info("-== Session      : {}", dateTime);
         log->info("-== Build        : [] (1.11.1.1486 (msqa:{}))", msqa);
+        log->info("-== Git          : {} ({})", ehb::Platform::Git::GIT_BRANCH, ehb::Platform::Git::GIT_SHA1);
         log->info("-==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==-");
 
         auto console = spdlog::get("log")->sinks().back();

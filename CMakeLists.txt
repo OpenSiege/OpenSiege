@@ -24,6 +24,22 @@ find_package(RE2C REQUIRED)
 bison_target(FuelParser "${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelParser.y" "${CMAKE_CURRENT_BINARY_DIR}/FuelParser.cpp" COMPILE_FLAGS "${YACC_FLAGS} --defines=${CMAKE_CURRENT_BINARY_DIR}/FuelParser.hpp")
 re2c_target("${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelScanner.r2c" "${CMAKE_CURRENT_BINARY_DIR}/FuelScanner.cpp")
 
+execute_process(
+	COMMAND git rev-parse --abbrev-ref HEAD
+	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+	OUTPUT_VARIABLE GIT_BRANCH
+	OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+execute_process(
+	COMMAND git log -1 --format=%h
+	WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+	OUTPUT_VARIABLE GIT_SHA1
+	OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
+configure_file("${CMAKE_SOURCE_DIR}/src/Platform.cpp.in" "${CMAKE_BINARY_DIR}/Platform.cpp" @ONLY)
+
 set(SIEGE_SOURCES
     "src/cfg/ArgsConfig.cpp"
     "src/cfg/IniConfig.cpp"
@@ -73,7 +89,7 @@ set(SIEGE_SOURCES
     "src/console/Console.cpp"
 
     "src/StringTool.cpp"
-    "src/Platform.cpp"
+    "${CMAKE_BINARY_DIR}/Platform.cpp"
     "src/Game.cpp"
     "src/main.cpp"
     "src/ContentDb.cpp"
