@@ -7,6 +7,7 @@
 #include <osgGA/TrackballManipulator>
 #include <osgViewer/ViewerEventHandlers>
 
+#include "Platform.hpp"
 #include "cfg/IConfig.hpp"
 #include "state/InitState.hpp"
 #include "state/ExitState.hpp"
@@ -52,7 +53,7 @@ namespace ehb
 
         // set the title and disable the mouse cursor for the window
         osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits(*viewer.getCamera()->getGraphicsContext()->getTraits());
-        traits->windowName = "Open Siege - Dev";
+        traits->windowName = "Open Siege - " + Platform::Git::GIT_BRANCH + " - " + Platform::Git::GIT_SHA1;
         // traits->useCursor = false;
         osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits);
         osg::ref_ptr<osg::Camera> cam = new osg::Camera(*viewer.getCamera());
