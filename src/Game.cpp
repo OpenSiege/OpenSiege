@@ -158,7 +158,7 @@ namespace ehb
         }
         else if (gameStateType == "FullMapTestState")
         {
-            return new FullMapTestState(gameStateMgr, config, fileSys, contentDb, viewer, *scene3d);
+            return new FullMapTestState(gameStateMgr, config, fileSys, contentDb, viewer, *scene3d, worldMapDataCache);
         }
         else if (gameStateType == "AspectMeshTestState")
         {
