@@ -8,12 +8,13 @@ namespace ehb
     class IConfig;
     class IFileSys;
     class ContentDb;
+    class WorldMapDataCache;
     class Console;
     class InitState : public IGameState
     {
     public:
 
-        InitState(IGameStateMgr & gameStateMgr, IConfig & config, IFileSys & fileSys, ContentDb& contentDb, Console& console);
+        InitState(IGameStateMgr & gameStateMgr, IConfig & config, IFileSys & fileSys, ContentDb& contentDb, WorldMapDataCache& worldMapDataCache, Console& console);
 
         virtual ~InitState() = default;
 
@@ -28,10 +29,11 @@ namespace ehb
         IConfig & config;
         IFileSys& fileSys;
         ContentDb& contentDb;
+        WorldMapDataCache& worldMapDataCache;
         Console& console;
     };
 
-    inline InitState::InitState(IGameStateMgr& gameStateMgr, IConfig& config, IFileSys& fileSys, ContentDb& contentDb, Console& console) : gameStateMgr(gameStateMgr), config(config), fileSys(fileSys), contentDb(contentDb), console(console)
+    inline InitState::InitState(IGameStateMgr& gameStateMgr, IConfig& config, IFileSys& fileSys, ContentDb& contentDb, WorldMapDataCache& worldMapDataCache, Console& console) : gameStateMgr(gameStateMgr), config(config), fileSys(fileSys), contentDb(contentDb), worldMapDataCache(worldMapDataCache), console(console)
     {
     }
 }

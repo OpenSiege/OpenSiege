@@ -35,7 +35,7 @@ namespace ehb
     };
 
     // SiegePos pos = valueAsSiegePos("-1.11579,0,-3.83528,0xc4660a9d");
-    SiegePos valueAsSiegePos(const std::string& value)
+    static SiegePos valueAsSiegePos(const std::string& value)
     {
         const auto itr1 = value.find(',');
         const auto itr2 = value.find(',', itr1 + 1);

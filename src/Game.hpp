@@ -6,6 +6,7 @@
 #include "filesystem/LocalFileSys.hpp"
 #include "filesystem/TankFileSys.hpp"
 #include "ContentDb.hpp"
+#include "world/WorldMapData.hpp"
 
 #include "console/Console.hpp"
 
@@ -41,6 +42,7 @@ namespace ehb
         // LocalFileSys fileSys; // TODO: remove local file system in favor of tank file system
         TankFileSys fileSys;
         ContentDb contentDb;
+        WorldMapDataCache worldMapDataCache;
 
         osgViewer::Viewer viewer;
 

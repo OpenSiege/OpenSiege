@@ -67,6 +67,7 @@ set(SIEGE_SOURCES
     "src/state/test/SiegeNodeTestState.cpp"
     "src/state/test/UITestState.cpp"
     "src/state/test/RegionTestState.cpp"
+	"src/state/test/FullMapTestState.cpp"
     "src/state/test/AspectMeshTestState.cpp"
     "src/state/test/TankTestState.cpp"
 
@@ -93,6 +94,7 @@ set(SIEGE_SOURCES
     "src/filesystem/TankFileSys.cpp"
 
     "src/world/Region.cpp"
+	"src/world/WorldMapData.cpp"
 
     "src/ui/ImageFont.cpp"
     "src/ui/Rect.cpp"

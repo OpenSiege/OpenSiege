@@ -15,6 +15,7 @@
 #include "state/test/SiegeNodeTestState.hpp"
 #include "state/test/UITestState.hpp"
 #include "state/test/RegionTestState.hpp"
+#include "state/test/FullMapTestState.hpp"
 #include "state/test/AspectMeshTestState.hpp"
 #include "state/test/TankTestState.hpp"
 
@@ -133,7 +134,7 @@ namespace ehb
     {
         if (gameStateType == "InitState")
         {
-            return new InitState(gameStateMgr, config, fileSys, contentDb, *console);
+            return new InitState(gameStateMgr, config, fileSys, contentDb, worldMapDataCache, *console);
         }
         else if (gameStateType == "ExitState")
         {
@@ -154,6 +155,10 @@ namespace ehb
         else if (gameStateType == "RegionTestState")
         {
             return new RegionTestState(gameStateMgr, config, fileSys, contentDb, viewer, *scene3d);
+        }
+        else if (gameStateType == "FullMapTestState")
+        {
+            return new FullMapTestState(gameStateMgr, config, fileSys, contentDb, viewer, *scene3d);
         }
         else if (gameStateType == "AspectMeshTestState")
         {

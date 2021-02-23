@@ -18,6 +18,7 @@
 
 #include "ui/ImageFont.hpp"
 #include "ContentDb.hpp"
+#include "world/WorldMapData.hpp"
 #include "console/Console.hpp"
 
 namespace ehb
@@ -53,6 +54,7 @@ namespace ehb
         }
 
         contentDb.init(fileSys);
+        worldMapDataCache.init(fileSys);
 
         // TODO: any asset and engine preloading from gas files
         if (auto stream = fileSys.createInputStream("/ui/config/preload_textures/preload_textures.gas"))
