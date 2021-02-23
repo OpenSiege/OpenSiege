@@ -31,6 +31,9 @@ namespace ehb
         virtual FileList getDirectoryContents(const std::string & directory) const = 0;
 
         void eachGasFile(const std::string& directory, std::function<void(const std::string&, std::unique_ptr<Fuel>)> func);
+
+        //! get the last folder or filename of the given path
+        std::string filename(const std::string& path);
     };
 
     inline void IFileSys::eachGasFile(const std::string& directory, std::function<void(const std::string&, std::unique_ptr<Fuel>)> func)
@@ -61,5 +64,15 @@ namespace ehb
                 }
             }
         }
+    }
+
+    inline std::string IFileSys::filename(const std::string& path)
+    {
+        if (auto find = path.find_last_of("/"); find != std::string::npos)
+        {
+            return path.substr(find + 1, path.length());
+        }
+
+        return {};
     }
 }
