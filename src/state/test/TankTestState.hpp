@@ -44,6 +44,8 @@ namespace ehb
         {
             spdlog::get("log")->error("Tank: {} was loaded with {} bytes but expected was {}", tank.getFileName(), tank.getFileSizeBytes(), expected);
             return false;
-        }        
+        }
+
+        return true;
     }
 }
