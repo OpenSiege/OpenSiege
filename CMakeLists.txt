@@ -64,7 +64,7 @@ set(SIEGE_SOURCES
     "src/state/test/UITestState.cpp"
     "src/state/test/RegionTestState.cpp"
     "src/state/test/AspectMeshTestState.cpp"
-	"src/state/test/TankTestState.cpp"
+    "src/state/test/TankTestState.cpp"
 
     ${BISON_FuelParser_OUTPUTS}
     ${CMAKE_CURRENT_BINARY_DIR}/FuelScanner.cpp

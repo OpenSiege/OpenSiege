@@ -40,7 +40,7 @@ set(EXTERN_INCLUDE_PATHS
     "${FETCHCONTENT_BASE_DIR}/whereami-src/src"
     "${FETCHCONTENT_BASE_DIR}/valvefilevdf-src"
     "${FETCHCONTENT_BASE_DIR}/minini-src/dev"
-	"${CMAKE_CURRENT_SOURCE_DIR}/miniz"
+    "${CMAKE_CURRENT_SOURCE_DIR}/miniz"
     PARENT_SCOPE
 )
 
@@ -48,7 +48,7 @@ set(EXTERN_INCLUDE_PATHS
 set(EXTERN_SOURCE_FILES
     "${FETCHCONTENT_BASE_DIR}/whereami-src/src/whereami.c"
     "${FETCHCONTENT_BASE_DIR}/minini-src/dev/minIni.c"
-	"${CMAKE_CURRENT_SOURCE_DIR}/miniz/miniz.c"
+    "${CMAKE_CURRENT_SOURCE_DIR}/miniz/miniz.c"
     PARENT_SCOPE
 )
 
