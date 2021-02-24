@@ -25,25 +25,115 @@ namespace ehb
 
 namespace
 {
+	inline std::string wideStringToStdString(const WideString& wStr)
+	{
+		static_assert(sizeof(WideChar) == 2, "This will only work if we are dealing with 2-byte wchars!");
 
-#if SIEGE_TANK_DEBUG
+		//
+		// Convert 2-byte long Windows wchar_t string to a C string.
+		//
+		// Currently not doing a proper conversion, just grabbing
+		// the lower byte of each WideChar.
+		//
+		// Also uses a fixed size buffer, so string length is
+		// limited to MaxTempStringLen!
+		//
+
+		if (wStr.empty())
+		{
+			return std::string();
+		}
+
+		int i;
+		char temBuf[2048];
+
+		for (i = 0; i < (2048 - 1); ++i)
+		{
+			const char c = static_cast<char>(wStr[i] & 0x00FF);
+			temBuf[i] = c;
+			if (c == 0)
+			{
+				break;
+			}
+		}
+
+		if (i == (2048 - 1))
+		{
+			return {};
+		}
+
+		temBuf[i] = '\0';
+		return temBuf;
+}
 
 inline std::string toString(const WideString & wStr)
 {
 	return wStr.empty() ? "<EMPTY>" : ("\"" + wideStringToStdString(wStr) + "\"");
 }
 
-inline std::string toHexa(const uint32_t val)
-{
-	return utils::format("0x%08X", val);
-}
-
-#endif // SIEGE_TANK_DEBUG
-
 inline uint16_t alignToDword(const uint16_t size) noexcept
 {
 	const uint16_t offset = 4 - (size % 4);
 	return size + offset;
+}
+
+static std::string removeTrailingFloatZeros(const std::string& floatStr)
+{
+	// Only process if the number is decimal (has a dot somewhere):
+	if (floatStr.find_last_of('.') == std::string::npos)
+	{
+		return floatStr;
+	}
+
+	std::string trimmed(floatStr);
+
+	// Remove trailing zeros:
+	while (!trimmed.empty() && (trimmed.back() == '0'))
+	{
+		trimmed.pop_back();
+	}
+
+	// If the dot was left alone at the end, remove it too:
+	if (!trimmed.empty() && (trimmed.back() == '.'))
+	{
+		trimmed.pop_back();
+	}
+
+	return trimmed;
+}
+
+static std::string formatMemoryUnit(uint64_t memorySizeInBytes, bool abbreviated = false)
+{
+	const char* memUnitStr;
+	double adjustedSize;
+	char numStrBuf[128];
+
+	if (memorySizeInBytes < 1024)
+	{
+		memUnitStr = (abbreviated ? "B" : "Bytes");
+		adjustedSize = static_cast<double>(memorySizeInBytes);
+	}
+	else if (memorySizeInBytes < (1024 * 1024))
+	{
+		memUnitStr = (abbreviated ? "KB" : "Kilobytes");
+		adjustedSize = (memorySizeInBytes / 1024.0);
+	}
+	else if (memorySizeInBytes < (1024 * 1024 * 1024))
+	{
+		memUnitStr = (abbreviated ? "MB" : "Megabytes");
+		adjustedSize = (memorySizeInBytes / 1024.0 / 1024.0);
+	}
+	else
+	{
+		memUnitStr = (abbreviated ? "GB" : "Gigabytes");
+		adjustedSize = (memorySizeInBytes / 1024.0 / 1024.0 / 1024.0);
+	}
+
+	// We only care about the first 2 decimal digits.
+	std::snprintf(numStrBuf, sizeof(numStrBuf), "%.2f", adjustedSize);
+
+	// Remove trailing zeros if no significant decimal digits:
+	return removeTrailingFloatZeros(numStrBuf) + std::string(" ") + memUnitStr;
 }
 
 } // namespace {}
@@ -334,15 +424,17 @@ TankFile::DataFormat TankFile::dataFormatFromString(const std::string & str)
 
 void TankFile::openForReading(std::string filename)
 {
-	if (isOpen())
-	{
-		// SiegeThrow(TankFile::Error, "File already open!");
-		return;
-	}
+	log = spdlog::get("filesystem");
 
 	if (filename.empty())
 	{
-		// SiegeThrow(TankFile::Error, "No filename provided!");
+		log->critical("No filename provided to TankFile for reading!");
+		return;
+	}
+
+	if (isOpen())
+	{
+		log->error("File [{}] already open!", filename);
 		return;
 	}
 
@@ -355,8 +447,7 @@ void TankFile::openForReading(std::string filename)
 	queryFileSize();
 	readAndValidateHeader();
 
-	// SiegeLog("Successfully opened Tank file \"" << fileName
-	//		<< "\" for reading. File size: " << utils::formatMemoryUnit(fileSizeBytes));
+	log->debug("Successfully opened Tank file [{}] for reading. File size: [{}]", fileName, fileSizeBytes);
 }
 
 void TankFile::close()
@@ -432,55 +523,51 @@ void TankFile::readAndValidateHeader()
 	fileHeader.descriptionText = readWNString();
 
 	// Optional debug printing:
-	#if SIEGE_TANK_DEBUG
-	SiegeLog("====== TANK HEADER FOR FILE: \"" << fileName << "\" ======");
-	SiegeLog("productId.........: " << fileHeader.productId);
-	SiegeLog("tankId............: " << fileHeader.tankId);
-	SiegeLog("headerVersion.....: " << versionWordToStr(fileHeader.headerVersion));
-	SiegeLog("dirsetOffset......: " << toHexa(fileHeader.dirsetOffset)  << " (" << utils::formatMemoryUnit(fileHeader.dirsetOffset)  << ")");
-	SiegeLog("filesetOffset.....: " << toHexa(fileHeader.filesetOffset) << " (" << utils::formatMemoryUnit(fileHeader.filesetOffset) << ")");
-	SiegeLog("indexSize.........: " << utils::formatMemoryUnit(fileHeader.indexSize));
-	SiegeLog("dataOffset........: " << toHexa(fileHeader.dataOffset) << " (" << utils::formatMemoryUnit(fileHeader.dataOffset) << ")");
-	SiegeLog("productVersion....: " << fileHeader.productVersion);
-	SiegeLog("minimumVersion....: " << fileHeader.minimumVersion);
-	SiegeLog("priority..........: " << priorityToString(fileHeader.priority));
-	SiegeLog("flags.............: " << fileHeader.flags);
-	SiegeLog("creatorId.........: " << fileHeader.creatorId);
-	SiegeLog("Guid..............: " << fileHeader.guid);
-	SiegeLog("indexCrc32........: " << toHexa(fileHeader.indexCrc32));
-	SiegeLog("dataCrc32.........: " << toHexa(fileHeader.dataCrc32));
-	SiegeLog("utcBuildTime......: " << fileHeader.utcBuildTime);
-	SiegeLog("copyrightText.....: " << toString(fileHeader.copyrightText));
-	SiegeLog("buildText.........: " << toString(fileHeader.buildText));
-	SiegeLog("titleText.........: " << toString(fileHeader.titleText));
-	SiegeLog("authorText........: " << toString(fileHeader.authorText));
-	SiegeLog("descriptionText...: " << toString(fileHeader.descriptionText));
-	SiegeLog("====== END TANK HEADER ======");
-	#endif // SIEGE_TANK_DEBUG
+	log->debug("====== TANK HEADER FOR FILE: {} ======", fileName);
+	log->debug("productId.........: {}" , fileHeader.productId);
+	log->debug("tankId............: {}" , fileHeader.tankId);
+	log->debug("headerVersion.....: {}" , fileHeader.headerVersion);
+	log->debug("dirsetOffset......: 0x{:x}, ({})", fileHeader.dirsetOffset, formatMemoryUnit(fileHeader.dirsetOffset));
+	log->debug("filesetOffset.....: 0x{:x}, ({})", fileHeader.filesetOffset, formatMemoryUnit(fileHeader.filesetOffset));
+	log->debug("indexSize.........: {}" , formatMemoryUnit(fileHeader.indexSize));
+	log->debug("dataOffset........: 0x{:x}, ({})", fileHeader.dataOffset, formatMemoryUnit(fileHeader.dataOffset));
+	log->debug("productVersion....: {}", fileHeader.productVersion);
+	log->debug("minimumVersion....: {}", fileHeader.minimumVersion);
+	log->debug("priority..........: {}", priorityToString(fileHeader.priority));
+	log->debug("flags.............: {}", fileHeader.flags);
+	log->debug("creatorId.........: {}", fileHeader.creatorId);
+	log->debug("Guid..............: {}", fileHeader.guid);
+	log->debug("indexCrc32........: 0x{:x}" , fileHeader.indexCrc32);
+	log->debug("dataCrc32.........: 0x{:x}" , fileHeader.dataCrc32);
+	log->debug("utcBuildTime......: {}", fileHeader.utcBuildTime);
+	log->debug("copyrightText.....: {}", toString(fileHeader.copyrightText));
+	log->debug("buildText.........: {}", toString(fileHeader.buildText));
+	log->debug("titleText.........: {}", toString(fileHeader.titleText));
+	log->debug("authorText........: {}", toString(fileHeader.authorText));
+	log->debug("descriptionText...: {}", toString(fileHeader.descriptionText));
+	log->debug("====== END TANK HEADER ======");
 
 	// Fatal errors:
 	if (fileHeader.productId != TankFile::ProductId)
 	{
-		// SiegeThrow(TankFile::Error, "\"" << fileName
-		//		<< "\": Header product id doesn't match the expected value!");
+		log->critical("[{}]: Header product id doesn't match the expected value!", fileName);
 		return;
 	}
 	if (fileHeader.tankId != TankFile::TankId)
 	{
-		// SiegeThrow(TankFile::Error, "\"" << fileName
-		//		<< "\": Header Tank id doesn't match the expected value!");
+		log->critical("[{}]: Header Tank id doesn't match the expected value!", fileName);
 		return;
 	}
 
 	// Warnings:
 	if (fileHeader.creatorId != TankFile::CreatorIdGPG &&
 	    fileHeader.creatorId != TankFile::CreatorIdUser)
-	{
-		// SiegeWarn("Tank creator id is unknown: " << fileHeader.creatorId);
+	{		
+		log->warn("Tank creator id is unknown: [{}]", fileHeader.creatorId);
 	}
 	if (fileHeader.headerVersion != Header::ExpectedVersion)
 	{
-		// SiegeWarn("Unknown Tank header version: " << fileHeader.headerVersion);
+		log->warn("Unknown Tank header version: [{}]", fileHeader.headerVersion);
 	}
 }
 
@@ -490,7 +577,7 @@ void TankFile::seekAbsoluteOffset(const size_t offsetInBytes)
 	// Seek absolute offset relative to the beginning of the file.
 	if (!file.seekg(offsetInBytes, std::ifstream::beg))
 	{
-		// SiegeThrow(TankFile::Error, "Failed to seek file offset on TankFile::seekAbsoluteOffset()!");
+		log->critical("Failed to seek file offset on TankFile::seekAbsoluteOffset()!");
 		return;
 	}
 }
@@ -503,13 +590,10 @@ void TankFile::readBytes(void * buffer, const size_t numBytes)
 
 	if (!file.read(reinterpret_cast<char *>(buffer), numBytes))
 	{
-#if 0
-		SiegeError("Only " << file.gcount() << " bytes of " << numBytes
-				<< " could be read from \"" << fileName << "\"!");
+		log->critical("Only {} bytes of {} could be read from {}!", file.gcount(), numBytes,fileName);
 
-		SiegeThrow(TankFile::Error, "Failed to read " << utils::formatMemoryUnit(numBytes)
-				<< " from Tank file \"" << fileName << "\"!");
-#endif
+		log->critical("Failed to read {} from Tank file {}", formatMemoryUnit(numBytes), fileName);
+
 		return;
 	}
 }
@@ -569,8 +653,8 @@ WideString TankFile::readWNString()
 
 	if (lenInChars >= 2048)
 	{
-		// SiegeThrow(TankFile::Error, "String overflow in TankFile::readWNString()! "
-		// 		<< lenInChars << " >= " << utils::MaxTempStringLen);
+		log->critical("String overflow in TankFile::readWNString()! {} >= 2048", lenInChars);
+		return {};
 	}
 
 	WideChar buffer[2048];

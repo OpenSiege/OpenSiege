@@ -61,14 +61,14 @@ namespace ehb
 
         FileList eachTankDir, eachTankFile;
 
-        if (const std::string dsInstallPath = config.getString("ds-install-path"); !dsInstallPath.empty())
+        if (const std::string& dsInstallPath = config.getString("ds-install-path"); !dsInstallPath.empty())
         {
             defaultValues.emplace("map_paths", osgDB::concatPaths(dsInstallPath, "Maps"));
             // defaultValues.emplace("res_paths", osgDB::concatPaths(dsInstallPath, "DSLOA"));
             defaultValues.emplace("res_paths", osgDB::concatPaths(dsInstallPath, "Resources"));
         }
 
-        if (const std::string dataDir = config.getString("data-dir"); !dataDir.empty())
+        if (const std::string& dataDir = config.getString("data-dir"); !dataDir.empty())
         {
             defaultValues.emplace("mod_paths", osgDB::concatPaths(dataDir, "Mods"));
         }

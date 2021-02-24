@@ -21,6 +21,8 @@
 
 // this has the FourCC class
 #include "osgPlugins/BinaryReader.hpp"
+#include <spdlog/spdlog.h>
+#include <spdlog/fmt/ostr.h>
 
 // stripped from siege/helper_types.hpp
 namespace ehb
@@ -36,6 +38,21 @@ namespace ehb
 		uint16_t minute;
 		uint16_t second;
 		uint16_t milliseconds;
+
+		template<typename OStream>
+		friend OStream& operator << (OStream& s, const SystemTime& time)
+		{
+			char timeStr[512];
+
+			// Print as: dd/mm/yyy  hh:mm:ss
+			std::snprintf(timeStr, sizeof(timeStr), "%02d/%02d/%04d  %02d:%02d:%02d",
+				time.day, time.month, time.year,
+				time.hour, time.minute, time.second);
+
+			timeStr[sizeof(timeStr) - 1] = '\0';
+			s << timeStr;
+			return s;
+		}
 	};
 
 	struct FileTime final
@@ -55,6 +72,30 @@ namespace ehb
 		uint32_t version1;
 		uint32_t version2;
 		uint32_t version3;
+
+		template<typename OStream>
+		friend OStream& operator << (OStream& s, const ProductVersion& version)
+		{
+			std::function<std::string(const uint32_t)> versionWordToStr = [] (const uint32_t version) -> std::string
+			{
+				const uint32_t major = (version & 0x00FFA000) >> 16;
+				const uint32_t minor = (version & 0x0000FF00) >> 8;
+				const uint32_t build = (version & 0x000000FF);
+
+				char verStr[256];
+
+				// Print as: major.minor.build
+				std::snprintf(verStr, sizeof(verStr), "%u.%u.%u", major, minor, build);
+				verStr[sizeof(verStr) - 1] = '\0';
+
+				return std::move(verStr);
+			};
+
+			s << versionWordToStr(version.version1) << "  "
+				<< versionWordToStr(version.version2) << "  "
+				<< versionWordToStr(version.version3);
+			return s;
+		}
 	};
 
 	struct Guid final
@@ -64,6 +105,33 @@ namespace ehb
 		uint16_t data2;
 		uint16_t data3;
 		uint8_t  data4[8];
+
+		template<typename OStream>
+		friend OStream& operator << (OStream& s, const Guid& guid)
+		{
+			char guidStr[1024];
+
+			//
+			// Sample: a42790e0-7810-11cf-8f52-0040333594a3
+			//
+			std::snprintf(guidStr, sizeof(guidStr),
+				"%08x-%04x-%04x-%02x%02x-%02x%02x%02x%02x%02x%02x",
+				guid.data1,
+				guid.data2,
+				guid.data3,
+				guid.data4[0],
+				guid.data4[1],
+				guid.data4[2],
+				guid.data4[3],
+				guid.data4[4],
+				guid.data4[5],
+				guid.data4[6],
+				guid.data4[7]);
+
+			guidStr[sizeof(guidStr) - 1] = '\0';
+			s << guidStr;
+			return s;
+		}
 	};
 
 	// Pack three version bytes into a single 32bit word.
@@ -442,6 +510,8 @@ public:
 		DirSetPtr  dirSet;
 		FileSetPtr fileSet;
 		FileTable  fileTable;
+
+		std::shared_ptr<spdlog::logger> log;
 	};
 
 	// TankFile::Reader will have access to private data
@@ -488,6 +558,8 @@ private:
 	Header         fileHeader;
 	OpenMode       fileOpenMode  = 0;
 	size_t         fileSizeBytes = 0;
+
+	std::shared_ptr<spdlog::logger> log;
 };
 
 } // namespace ehb {}
