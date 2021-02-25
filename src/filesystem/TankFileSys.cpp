@@ -1,20 +1,35 @@
 
 #include "TankFileSys.hpp"
 
-#include <filesystem>
 #include <sstream>
 
 #include "cfg/IConfig.hpp"
 #include "TankFile.hpp"
 
-namespace fs = std::filesystem;
-
 namespace ehb
 {
     InputStream TankFileSys::createInputStream(const std::string & filename_)
     {
-        const std::string filename = osgDB::convertToLowerCase(filename_);
+        std::string filename = osgDB::convertToLowerCase(filename_);
 
+        // the first location we check is the bits path
+        if (bits)
+        {
+            // remove leading / if this is an absolute path in the filesytem
+            if (filename.front() == '/' || filename.front() == '\\')
+                filename.erase(0, 1);
+
+            auto path = *bits / fs::path(filename);
+
+            if (auto stream = std::make_unique<std::ifstream>(path, std::ios_base::binary); stream->is_open())
+            {
+                return stream;
+            }
+
+            // file wasn't located in the bits so lets move onto the tanks
+        }
+
+        // iterate over the tanks to try and find our file
         for (auto& entry : eachTank)
         {
             if (auto data = entry->reader.extractResourceToMemory(entry->tank, filename, false); data.size() != 0)
@@ -27,7 +42,8 @@ namespace ehb
             }
         }
 
-        return nullptr;
+        // file doesn't exist
+        return {};
     }
 
     FileList TankFileSys::getFiles() const
@@ -60,6 +76,33 @@ namespace ehb
         std::unordered_multimap<std::string, std::string> defaultValues;
 
         FileList eachTankDir, eachTankFile;
+
+        // the first pass we do is into the bits directory, if there are files in the bits
+        // they shouldn't end up in final cache
+        if (const std::string& bitsPath = config.getString("bits"); !bitsPath.empty())
+        {
+            bits = bitsPath;
+
+            try
+            {
+                for (const auto& itr : fs::recursive_directory_iterator(bitsPath))
+                {
+                    const auto& filename = itr.path();
+                    
+                    if (fs::is_directory(filename) || fs::is_regular_file(filename))
+                    {
+                        // this seems like a needless convert when dealing with local files?
+                        auto path = osgDB::convertFileNameToUnixStyle(filename.string().substr((*bits).string().size()));
+
+                        cache.emplace(path);
+                    }
+                }
+            }
+            catch (std::exception& e)
+            {
+                log->error("TankFileSys - while parsing bits we got an error: {}", e.what());
+            }
+        }
 
         if (const std::string& dsInstallPath = config.getString("ds-install-path"); !dsInstallPath.empty())
         {
@@ -141,7 +184,7 @@ namespace ehb
                     directory.pop_back();
                 }
 
-                cache.insert(list.begin(), list.end());
+                std::merge(std::begin(cache), std::end(cache), std::begin(list), std::end(list), std::inserter(cache, std::end(cache)));
             }
 
             eachTank.emplace_back(std::move(entry));
