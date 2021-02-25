@@ -174,7 +174,7 @@ namespace ehb
             { // cache the entire list of files...
                 const auto list = entry->reader.getFileList();
 
-                cache.insert(list.begin(), list.end());
+                std::merge(std::begin(cache), std::end(cache), std::begin(list), std::end(list), std::inserter(cache, std::end(cache)));
             }
             { // ...and directories
                 auto list = entry->reader.getDirectoryList();
