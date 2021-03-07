@@ -12,6 +12,13 @@ endif(UNIX)
 # windows specific - DO NOT ENABLE UNLESS ABSOLUTELY NECESSARY
 option(DISABLE_MSVC_DEBUG_ITERATOR "Disable the debug iterator for MSVC. All libraries must be built with the same option" OFF)
 
+if(MSVC)
+    if(DISABLE_MSVC_DEBUG_ITERATOR)
+		# global compile definition to make sure the definition propagates to external projects
+        add_compile_definitions("_ITERATOR_DEBUG_LEVEL=0")
+    endif()
+endif()
+
 add_subdirectory(extern)
 
 # required packages for minimal build should go here
@@ -101,14 +108,7 @@ add_executable(OpenSiege ${EXTERN_SOURCE_FILES} ${SIEGE_SOURCES})
 # force C++17
 set_target_properties(OpenSiege PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
 
-target_include_directories(OpenSiege PUBLIC src ${OPENSCENEGRAPH_INCLUDE_DIRS} ${EXTERN_INCLUDE_PATHS} ${CMAKE_CURRENT_BINARY_DIR})
-target_link_libraries(OpenSiege PRIVATE ${OPENSCENEGRAPH_LIBRARIES} Threads::Threads "$<$<CXX_COMPILER_ID:GNU>:stdc++fs;${XDGBASEDIR_LIBRARIES}>" spdlog::spdlog)
-
 if(MSVC)
-    if(DISABLE_MSVC_DEBUG_ITERATOR)
-        target_compile_definitions(OpenSiege PRIVATE "_ITERATOR_DEBUG_LEVEL=0")
-    endif()
-
     target_compile_options(OpenSiege PRIVATE "/MP")
 
     # place header and source files into group folders to help IDE's present the files in a logical manner
@@ -129,5 +129,9 @@ if(MSVC)
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)
     ASSIGN_SOURCE_GROUPS("Source Files" "${CMAKE_CURRENT_SOURCE_DIR}" ${SIEGE_SOURCES})
 endif()
+
+target_include_directories(OpenSiege PUBLIC src ${OPENSCENEGRAPH_INCLUDE_DIRS} ${EXTERN_INCLUDE_PATHS} ${CMAKE_CURRENT_BINARY_DIR})
+target_link_libraries(OpenSiege PRIVATE ${OPENSCENEGRAPH_LIBRARIES} Threads::Threads "$<$<CXX_COMPILER_ID:GNU>:stdc++fs;${XDGBASEDIR_LIBRARIES}>" spdlog::spdlog)
+
 
 install(TARGETS OpenSiege RUNTIME DESTINATION bin)
