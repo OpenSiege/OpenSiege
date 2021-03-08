@@ -1,9 +1,6 @@
 # used to automatically include and build dependencies
 include(FetchContent)
 
-# speed up reconfiguration by skipping updates from FetchContent
-set (FETCHCONTENT_FULLY_DISCONNECTED ON CACHE BOOL "" FORCE)
-
 FetchContent_Declare(
     spdlog
     GIT_REPOSITORY https://github.com/gabime/spdlog.git
@@ -32,6 +29,9 @@ add_subdirectory(spdlog)
 add_subdirectory(whereami)
 add_subdirectory(ValveFileVDF)
 add_subdirectory(minIni)
+
+# speed up reconfiguration by skipping updates from FetchContent
+set (FETCHCONTENT_FULLY_DISCONNECTED ON CACHE BOOL "" FORCE)
 
 # the below don't have a cmake build system so we will just manually include them
 set(EXTERN_INCLUDE_PATHS
