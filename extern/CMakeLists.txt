@@ -26,9 +26,6 @@ FetchContent_MakeAvailable(spdlog)
 FetchContent_MakeAvailable(whereami)
 FetchContent_MakeAvailable(minIni)
 
-# speed up reconfiguration by skipping updates from FetchContent
-set (FETCHCONTENT_FULLY_DISCONNECTED ON CACHE BOOL "" FORCE)
-
 # the below don't have a cmake build system so we will just manually include them
 set(EXTERN_INCLUDE_PATHS
     "${FETCHCONTENT_BASE_DIR}/whereami-src/src"
@@ -46,4 +43,5 @@ set(EXTERN_SOURCE_FILES
     PARENT_SCOPE
 )
 
+# speed up reconfiguration by skipping updates from FetchContent
 set(FETCHCONTENT_FULLY_DISCONNECTED ON CACHE BOOL "Stop extern updating" FORCE)

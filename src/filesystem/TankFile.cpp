@@ -319,7 +319,7 @@ void TankFile::openForReading(std::string filename)
 		return;
 	}
 
-	file.exceptions(0);
+	file.exceptions(std::ios::goodbit);
 	file.open(filename, std::ios::binary | std::ios::in);
 
 	fileName     = std::move(filename);
@@ -339,7 +339,6 @@ void TankFile::close()
 	}
 
 	fileSizeBytes = 0;
-	fileOpenMode  = 0;
 
 	fileName.clear();
 	fileHeader.setDefaults();

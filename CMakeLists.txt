@@ -28,6 +28,8 @@ find_package(spdlog CONFIG QUIET)
 find_package(BISON REQUIRED)
 find_package(RE2C REQUIRED)
 
+# some linux builds struggle without a pre-existing folder
+make_directory("${CMAKE_CURRENT_BINARY_DIR}/fuel")
 bison_target(FuelParser "${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelParser.y" "${CMAKE_CURRENT_BINARY_DIR}/fuel/FuelParser.cpp" COMPILE_FLAGS "${YACC_FLAGS} --defines=${CMAKE_CURRENT_BINARY_DIR}/fuel/FuelParser.hpp")
 re2c_target("${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelScanner.r2c" "${CMAKE_CURRENT_BINARY_DIR}/fuel/FuelScanner.cpp")
 

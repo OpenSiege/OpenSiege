@@ -589,7 +589,7 @@ private:
 	std::ifstream  file;
 	std::string    fileName;
 	Header         fileHeader;
-	OpenMode       fileOpenMode  = 0;
+	OpenMode       fileOpenMode;
 	size_t         fileSizeBytes = 0;
 
 	std::shared_ptr<spdlog::logger> log;

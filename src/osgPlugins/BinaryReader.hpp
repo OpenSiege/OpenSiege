@@ -5,6 +5,7 @@
 #include <osg/Vec2>
 #include <osg/Vec3>
 #include <osg/Quat>
+#include <cstring>
 #include <string>
 
 namespace ehb
