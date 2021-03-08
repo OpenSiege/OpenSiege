@@ -120,7 +120,7 @@ void TankFile::Reader::readDirSet(TankFile & tank)
 		const auto dirOffs = tank.readU32();
 		if (dirOffs == TankFile::InvalidOffset || (header.dirsetOffset + dirOffs) > fileSize)
 		{
-			//SiegeThrow(TankFile::Error, "Invalid directory offset: " << dirOffs);
+			log->critical("Invalid directory offset: {}", dirOffs);
 			return;
 		}
 		dirSet->dirOffsets.push_back(dirOffs);
@@ -142,7 +142,7 @@ void TankFile::Reader::readDirSet(TankFile & tank)
 		// Validate parent offset:
 		if (dirParentOffset == TankFile::InvalidOffset || (header.dirsetOffset + dirParentOffset) > fileSize)
 		{
-			// SiegeThrow(TankFile::Error, "Invalid directory parent offset: " << dirParentOffset);
+			log->critical("Invalid directory parent offset: {}", dirParentOffset);
 			return;
 		}
 
@@ -160,7 +160,7 @@ void TankFile::Reader::readDirSet(TankFile & tank)
 			const auto childOffs = tank.readU32();
 			if (childOffs == TankFile::InvalidOffset || (header.dirsetOffset + childOffs) > fileSize)
 			{
-				// SiegeThrow(TankFile::Error, "Invalid directory child offset: " << childOffs);
+				log->critical("Invalid directory child offset: {}", childOffs);
 				return;
 			}
 			childOffsets.push_back(childOffs);
@@ -202,7 +202,7 @@ void TankFile::Reader::readFileSet(TankFile & tank)
 		const auto fileOffs = tank.readU32();
 		if (fileOffs == TankFile::InvalidOffset || (header.filesetOffset + fileOffs) > fileSize)
 		{
-			// SiegeThrow(TankFile::Error, "Invalid file offset: " << fileOffs);
+			log->critical("Invalid file offset: {}", fileOffs);
 			return;
 		}
 		fileSet->fileOffsets.push_back(fileOffs);
@@ -228,7 +228,7 @@ void TankFile::Reader::readFileSet(TankFile & tank)
 		if (fileParentOffset == TankFile::InvalidOffset ||
 		   (header.filesetOffset + fileParentOffset) > fileSize)
 		{
-			// SiegeThrow(TankFile::Error, "Invalid file parent offset: " << fileParentOffset);
+			log->critical("Invalid file parent offset: {}", fileParentOffset);
 			return;
 		}
 

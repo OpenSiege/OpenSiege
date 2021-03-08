@@ -102,13 +102,11 @@ TankFile::CompressedFileEntryHeader::CompressedFileEntryHeader(const uint32_t nC
 		chunkHeaders.reserve(numChunks);
 	}
 
-	#if SIEGE_TANK_DEBUG
 	constexpr uint32_t Win32PageSize = 4;
 	if ((chunkSize % Win32PageSize) != 0)
 	{
-		SiegeWarn("Compressed chunk size is not rounded to the size of a 4KB page!");
+		spdlog::get("filesystem")->warn("Compressed chunk size is not rounded to the size of a 4KB page!");
 	}
-	#endif // SIEGE_TANK_DEBUG
 }
 
 // ========================================================
@@ -127,9 +125,7 @@ TankFile::FileEntry::FileEntry(const uint32_t nParentOffs, const uint32_t nSize,
 	, flags(fileFlags)
 	, name(std::move(filename))
 {
-	#if SIEGE_TANK_DEBUG
-	if (name.empty()) { SiegeWarn("Empty FileEntry name!"); }
-	#endif // SIEGE_TANK_DEBUG
+	if (name.empty()) { spdlog::get("filesystem")->warn("Empty FileEntry name!"); }
 }
 
 void TankFile::FileEntry::setCompressedHeader(std::unique_ptr<TankFile::CompressedFileEntryHeader> header)
@@ -219,9 +215,7 @@ TankFile::DirEntry::DirEntry(const uint32_t nParentOffs, const uint32_t nChildCo
 		childOffsets.reserve(childCount);
 	}
 
-	#if SIEGE_TANK_DEBUG
-	if (name.empty()) { SiegeWarn("Empty DirEntry name!"); }
-	#endif // SIEGE_TANK_DEBUG
+	if (name.empty()) { spdlog::get("filesystem")->warn("Empty DirEntry name!"); }
 }
 
 TankFile::DirEntry::DirEntry(const uint32_t nParentOffs, const uint32_t nChildCount, const FileTime ft,
@@ -232,9 +226,7 @@ TankFile::DirEntry::DirEntry(const uint32_t nParentOffs, const uint32_t nChildCo
 	, name(std::move(dirName))
 	, childOffsets(std::forward<std::vector<uint32_t>>(childOffs))
 {
-	#if SIEGE_TANK_DEBUG
-	if (name.empty()) { SiegeWarn("Empty DirEntry name!"); }
-	#endif // SIEGE_TANK_DEBUG
+	if (name.empty()) { spdlog::get("filesystem")->warn("Empty DirEntry name!"); }
 }
 
 // ========================================================
@@ -518,8 +510,7 @@ std::string TankFile::readNString()
 
 	if (lenInChars >= 2048)
 	{
-		// SiegeThrow(TankFile::Error, "String overflow in TankFile::readNString()! "
-		//		<< lenInChars << " >= " << utils::MaxTempStringLen);
+		log->critical("String overflow in TankFile::readNString()! lenInChars >= 2048");
 	}
 
 	char buffer[2048];
