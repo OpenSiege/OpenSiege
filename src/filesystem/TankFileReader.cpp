@@ -13,8 +13,6 @@
 
 #include "TankFile.hpp"
 #include "miniz.h"
-#include <algorithm>
-#include <cassert>
 
 namespace ehb
 {

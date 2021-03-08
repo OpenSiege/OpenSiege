@@ -12,9 +12,7 @@
 // ================================================================================================
 
 #include "TankFile.hpp"
-#include <cmath> // For std::ceil()
 #include <filesystem>
-#include <cassert>
 
 namespace ehb
 {

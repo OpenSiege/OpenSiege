@@ -1,10 +1,7 @@
 
 #include "TankFileSys.hpp"
 
-#include <sstream>
-
 #include "cfg/IConfig.hpp"
-#include "TankFile.hpp"
 
 namespace ehb
 {
@@ -15,7 +12,7 @@ namespace ehb
         // the first location we check is the bits path
         if (bits)
         {
-            // remove leading / if this is an absolute path in the filesytem
+            // remove leading / if this is an absolute path in the filesystem
             if (filename.front() == '/' || filename.front() == '\\')
                 filename.erase(0, 1);
 

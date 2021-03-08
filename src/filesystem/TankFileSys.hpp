@@ -5,7 +5,7 @@
 #include <filesystem>
 
 #include "IFileSys.hpp"
-#include "filesystem/TankFile.hpp"
+#include "TankFile.hpp"
 
 #include <spdlog/spdlog.h>
 
@@ -13,12 +13,6 @@ namespace fs = std::filesystem;
 
 namespace ehb
 {
-    struct TankEntry
-    {
-        TankFile tank;
-        TankFile::Reader reader;
-    };
-
     class IConfig;
     class TankFileSys : public IFileSys
     {
@@ -32,6 +26,14 @@ namespace ehb
 
         virtual FileList getFiles() const override;
         virtual FileList getDirectoryContents(const std::string & directory) const override;
+
+    private:
+
+        struct TankEntry
+        {
+            TankFile tank;
+            TankFile::Reader reader;
+        };
 
     private:
 
