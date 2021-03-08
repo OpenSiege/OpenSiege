@@ -43,7 +43,7 @@ namespace ehb
 
         static void connect(osg::MatrixTransform* targetNode, uint32_t targetDoor, osg::MatrixTransform* connectNode, uint32_t connectDoor);
 
-        virtual osg::BoundingSphere SiegeNodeMesh::computeBound() const override;
+        virtual osg::BoundingSphere computeBound() const override;
 
         void toggleAllDoorLabels();
 
