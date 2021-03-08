@@ -63,8 +63,50 @@ namespace ehb
 		uint32_t lowDateTime = 0;
 		uint32_t highDateTime = 0;
 
-		uint64_t toU64() const;
-		time_t toPortableTime() const;
+		uint64_t toU64() const
+		{
+			return static_cast<uint64_t>(highDateTime) << 32 | lowDateTime;
+		}
+
+		time_t toPortableTime() const
+		{
+			constexpr uint64_t TicksPerSecond = 10000000;
+			constexpr uint64_t EpochDifference = 11644473600UL;
+
+			uint64_t input = toU64();
+			uint64_t temp = input / TicksPerSecond; // Convert from 100ns intervals to seconds
+			temp = temp - EpochDifference;           // Subtract number of seconds between epochs
+
+			return static_cast<time_t>(temp);
+		}
+
+		template<typename OStream>
+		friend OStream& operator << (OStream& s, const FileTime& ft)
+		{
+			// Detect a null FileTime:
+			if (ft.toU64() == 0)
+			{
+				return s << "<NULL>";
+			}
+
+			const time_t t = ft.toPortableTime();
+
+#ifdef _MSC_VER
+			std::string ftStr;
+			char ctimeBuf[256];
+			ctime_s(ctimeBuf, sizeof(ctimeBuf), &t);
+			ftStr = ctimeBuf;
+#else // _MSC_VER
+			std::string ftStr = std::ctime(&t);
+#endif // _MSC_VER
+
+			// Remove the '\n' always added by ctime():
+			if (!ftStr.empty())
+			{
+				ftStr.pop_back();
+			}
+			return s << ftStr;
+		}
 	};
 
 	struct ProductVersion final

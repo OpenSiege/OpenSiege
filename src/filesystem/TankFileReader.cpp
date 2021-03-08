@@ -18,15 +18,106 @@
 
 namespace ehb
 {
+	static std::string removeTrailingFloatZeros(const std::string& floatStr)
+	{
+		// Only process if the number is decimal (has a dot somewhere):
+		if (floatStr.find_last_of('.') == std::string::npos)
+		{
+			return floatStr;
+		}
 
-// Can be easily disabled to avoid excessively verbose output.
-#if SIEGE_TANK_DEBUG
-	#define TankReaderLog SiegeLog
-#else // !SIEGE_TANK_DEBUG
-	#ifndef TankReaderLog
-		#define TankReaderLog(x) /* nothing */
-	#endif // TankReaderLog
-#endif // SIEGE_TANK_DEBUG
+		std::string trimmed(floatStr);
+
+		// Remove trailing zeros:
+		while (!trimmed.empty() && (trimmed.back() == '0'))
+		{
+			trimmed.pop_back();
+		}
+
+		// If the dot was left alone at the end, remove it too:
+		if (!trimmed.empty() && (trimmed.back() == '.'))
+		{
+			trimmed.pop_back();
+		}
+
+		return trimmed;
+	}
+	static std::string formatMemoryUnit(uint64_t memorySizeInBytes, bool abbreviated = false)
+	{
+		const char* memUnitStr;
+		double adjustedSize;
+		char numStrBuf[128];
+
+		if (memorySizeInBytes < 1024)
+		{
+			memUnitStr = (abbreviated ? "B" : "Bytes");
+			adjustedSize = static_cast<double>(memorySizeInBytes);
+		}
+		else if (memorySizeInBytes < (1024 * 1024))
+		{
+			memUnitStr = (abbreviated ? "KB" : "Kilobytes");
+			adjustedSize = (memorySizeInBytes / 1024.0);
+		}
+		else if (memorySizeInBytes < (1024 * 1024 * 1024))
+		{
+			memUnitStr = (abbreviated ? "MB" : "Megabytes");
+			adjustedSize = (memorySizeInBytes / 1024.0 / 1024.0);
+		}
+		else
+		{
+			memUnitStr = (abbreviated ? "GB" : "Gigabytes");
+			adjustedSize = (memorySizeInBytes / 1024.0 / 1024.0 / 1024.0);
+		}
+
+		// We only care about the first 2 decimal digits.
+		std::snprintf(numStrBuf, sizeof(numStrBuf), "%.2f", adjustedSize);
+
+		// Remove trailing zeros if no significant decimal digits:
+		return removeTrailingFloatZeros(numStrBuf) + std::string(" ") + memUnitStr;
+	}
+
+	static uint32_t computeCrc32(const void* data, size_t sizeBytes) noexcept
+	{
+		assert(data != nullptr);
+		assert(sizeBytes != 0);
+
+		//
+		// This compact CRC 32 algo was adapted from miniz.c, which in turn was taken from
+		// "A compact CCITT crc16 and crc32 C implementation that balances processor cache usage against speed"
+		// By Karl Malbrain.
+		//
+		static const uint32_t crcTable[16] =
+		{
+			0,
+			0x1DB71064,
+			0x3B6E20C8,
+			0x26D930AC,
+			0x76DC4190,
+			0x6B6B51F4,
+			0x4DB26158,
+			0x5005713C,
+			0xEDB88320,
+			0xF00F9344,
+			0xD6D6A3E8,
+			0xCB61B38C,
+			0x9B64C2B0,
+			0x86D3D2D4,
+			0xA00AE278,
+			0xBDBDF21C
+		};
+
+		const uint8_t* ptr = reinterpret_cast<const uint8_t*>(data);
+		uint32_t crcu32 = 0;
+
+		crcu32 = ~crcu32;
+		while (sizeBytes--)
+		{
+			uint8_t b = *ptr++;
+			crcu32 = (crcu32 >> 4) ^ crcTable[(crcu32 & 0xF) ^ (b & 0xF)];
+			crcu32 = (crcu32 >> 4) ^ crcTable[(crcu32 & 0xF) ^ (b >> 4)];
+		}
+		return ~crcu32;
+	}
 
 // ========================================================
 // TankFile::Reader:
@@ -39,20 +130,24 @@ TankFile::Reader::Reader(TankFile & tank)
 
 void TankFile::Reader::indexFile(TankFile & tank)
 {
+	if (log == nullptr)
+	{
+		log = spdlog::get("filesystem");
+	}
+
 	if (!tank.isOpen())
 	{
-		// SiegeThrow(TankFile::Error, "Tank file \"" << tank.getFileName() << "\" is not open!");
+		log->critical("Tank file {} is not open!", tank.getFileName());
 		return;
 	}
 
 	if (!tank.isReadOnly())
 	{
-		// SiegeThrow(TankFile::Error, "Tank file \"" << tank.getFileName()
-		//		<< "\" must be opened for reading before TankFile::Reader can index it!");
+		log->critical("Tank file {} must be opened before TankFile::Reader can index it!", tank.getFileName());
 		return;
 	}
 
-	TankReaderLog("Preparing to index Tank file...");
+	log->debug("Preparing to index Tank file {}...", tank.getFileName());
 
 	// Discard current metadata, if any, before loading new.
 	dirSet  = nullptr;
@@ -73,9 +168,9 @@ void TankFile::Reader::readDirSet(TankFile & tank)
 	const auto numDirectories = tank.readU32();
 	dirSet.reset(new DirSet(numDirectories));
 
-	TankReaderLog("====== readDirSet() ======");
-	TankReaderLog("numDirectories = " << numDirectories);
-	TankReaderLog("-");
+	log->debug("====== readDirSet() ======");
+	log->debug("numDirectories = {}", numDirectories);
+	log->debug("-");
 
 	// Scan dir offset list:
 	for (uint32_t d = 0; d < numDirectories; ++d)
@@ -129,13 +224,13 @@ void TankFile::Reader::readDirSet(TankFile & tank)
 			childOffsets.push_back(childOffs);
 		}
 
-		TankReaderLog("dirEntry.parentOffset..: " << dirParentOffset);
-		TankReaderLog("dirEntry.myOffset......: " << dirOffs);
-		TankReaderLog("dirEntry.childCount....: " << dirChildCount);
-		TankReaderLog("dirEntry.fileTime......: " << dirFileTime);
-		TankReaderLog("dirEntry.childOffsets..: " << childOffsets.size());
-		TankReaderLog("dirEntry.name..........: " << dirEntryName);
-		TankReaderLog("-");
+		log->debug("dirEntry.parentOffset..: {}", dirParentOffset);
+		log->debug("dirEntry.myOffset......: {}", dirOffs);
+		log->debug("dirEntry.childCount....: {}", dirChildCount);
+		log->debug("dirEntry.fileTime......: {}", dirFileTime);
+		log->debug("dirEntry.childOffsets..: {}", childOffsets.size());
+		log->debug("dirEntry.name..........: {}", dirEntryName);
+		log->debug("-");
 
 		dirSet->dirEntries.emplace_back(dirParentOffset, dirChildCount, dirFileTime, dirEntryName, std::move(childOffsets));
 		assert(childOffsets.empty());
@@ -155,9 +250,9 @@ void TankFile::Reader::readFileSet(TankFile & tank)
 	const auto numFiles = tank.readU32();
 	fileSet.reset(new FileSet(numFiles));
 
-	TankReaderLog("====== readFileSet() ======");
-	TankReaderLog("numFiles = " << numFiles);
-	TankReaderLog("-");
+	log->debug("====== readFileSet() ======");
+	log->debug("numFiles = {}", numFiles);
+	log->debug("-");
 
 	// Scan file offset list:
 	for (uint32_t f = 0; f < numFiles; ++f)
@@ -197,17 +292,17 @@ void TankFile::Reader::readFileSet(TankFile & tank)
 
 		const auto fileDataFormat = static_cast<TankFile::DataFormat>(fileFormat);
 
-		TankReaderLog("fileEntry.parentOffset..: " << fileParentOffset);
-		TankReaderLog("fileEntry.myOffset......: " << fileOffs);
-		TankReaderLog("fileEntry.size..........: " << utils::formatMemoryUnit(fileEntrySize));
-		TankReaderLog("fileEntry.offset........: " << fileDataOffset);
-		TankReaderLog("fileEntry.crc32.........: " << utils::format("0x%08X", fileCrc32));
-		TankReaderLog("fileEntry.fileTime......: " << fileTime);
-		TankReaderLog("fileEntry.format........: " << TankFile::dataFormatToString(fileDataFormat));
-		TankReaderLog("fileEntry.flags.........: " << fileFlags);
-		TankReaderLog("fileEntry.name..........: " << fileEntryName);
-		TankReaderLog("fileEntry.isCompressed..: " << (TankFile::isDataFormatCompressed(fileDataFormat) ? "yes" : "no"));
-		TankReaderLog("-");
+		log->debug("fileEntry.parentOffset..: {}", fileParentOffset);
+		log->debug("fileEntry.myOffset......: {}", fileOffs);
+		log->debug("fileEntry.size..........: {}", formatMemoryUnit(fileEntrySize));
+		log->debug("fileEntry.offset........: {}", fileDataOffset);
+		log->debug("fileEntry.crc32.........: 0x{:x}", fileCrc32);
+		log->debug("fileEntry.fileTime......: {}", fileTime);
+		log->debug("fileEntry.format........: {}", TankFile::dataFormatToString(fileDataFormat));
+		log->debug("fileEntry.flags.........: {}", fileFlags);
+		log->debug("fileEntry.name..........: {}", fileEntryName);
+		log->debug("fileEntry.isCompressed..: {}", (TankFile::isDataFormatCompressed(fileDataFormat) ? "yes" : "no"));
+		log->debug("-");
 
 		fileSet->fileEntries.emplace_back(fileParentOffset, fileEntrySize, fileDataOffset,
 				fileCrc32, fileTime, fileDataFormat, fileFlags, fileEntryName);
@@ -263,8 +358,7 @@ void buildPathRecursive(const size_t entryIndex, const TankFile::DirSet & dirSet
 
 	if (parentIter == std::end(dirSet.dirOffsets))
 	{
-		// SiegeThrow(TankFile::Error, "Found an orphan directory entry! '"
-		//		<< dirSet.dirEntries[entryIndex].name << "'.");
+		spdlog::get("filesystem")->critical("Found an orphan directory entry! '{}'", dirSet.dirEntries[entryIndex].name);
 	}
 
 	const auto parentIndex = std::distance(std::begin(dirSet.dirOffsets), parentIter);
@@ -279,7 +373,7 @@ void buildPathRecursive(const size_t entryIndex, const TankFile::DirSet & dirSet
 
 void TankFile::Reader::buildDirPaths()
 {
-	TankReaderLog("Building master directory table...");
+	log->debug("Building master directory table...");
 
 	std::string fullPath;
 	for (uint32_t d = 0; d < dirSet->numDirs; ++d)
@@ -290,13 +384,13 @@ void TankFile::Reader::buildDirPaths()
 
 		fileTable.emplace(fullPath, TankEntry(&dirSet->dirEntries[d]));
 
-		TankReaderLog("Dir: " << fullPath.c_str());
+		log->debug("Dir: {}", fullPath.c_str());
 	}
 }
 
 void TankFile::Reader::buildFilePaths()
 {
-	TankReaderLog("Building master file table...");
+	log->debug("Building master file table...");
 
 	std::string fullPath;
 	for (uint32_t f = 0; f < fileSet->numFiles; ++f)
@@ -311,9 +405,7 @@ void TankFile::Reader::buildFilePaths()
 
 			if (parentIter == std::end(dirSet->dirOffsets))
 			{
-				// SiegeThrow(TankFile::Error, "Found an orphan file entry! '"
-				//		<< fileSet->fileEntries[f].name << "' (parentOffset = "
-				//		<< fileSet->fileEntries[f].parentOffset << ")");
+				log->critical("Found an orphan file entry '{}' (parentOffset = {})", fileSet->fileEntries[f].name, fileSet->fileEntries[f].parentOffset);
 				return;
 			}
 
@@ -324,7 +416,7 @@ void TankFile::Reader::buildFilePaths()
 		fullPath += "/" + fileSet->fileEntries[f].name;
 		fileTable.emplace(fullPath, TankEntry(&fileSet->fileEntries[f]));
 
-		TankReaderLog("File: " << fullPath.c_str());
+		log->debug("File: {}", fullPath.c_str());
 	}
 }
 
@@ -332,22 +424,22 @@ ByteArray TankFile::Reader::extractResourceToMemory(TankFile & tank, const std::
 {
 	if (!tank.isOpen())
 	{
-		// SiegeThrow(TankFile::Error, "Tank file \"" << tank.getFileName() << "\" is not open!");
+		log->critical("Tank file {} is not open!", tank.getFileName());
+
 		return {};
 	}
 
 	if (!tank.isReadOnly())
 	{
-		// SiegeThrow(TankFile::Error, "Tank file \"" << tank.getFileName()
-		// 		<< "\" must be opened for reading before you can extract data from it!");
+		log->critical("Tank file {} must be opened for reading before you can extract data from it!", tank.getFileName());
 		return {};
 	}
 
 	const auto it = fileTable.find(resourcePath);
 	if (it == std::end(fileTable))
 	{
-		// SiegeThrow(TankFile::Error, "Resource \"" << resourcePath
-		//		<< "\" not found in Tank file \"" << tank.getFileName() << "\"!");
+		// the below is commented out because currently OpenSiege loops through tanks to find what it needs and this floods the log
+		// log->critical("Resource {} not found in Tank file {}", resourcePath, tank.getFileName());
 		return {};
 	}
 
@@ -356,8 +448,7 @@ ByteArray TankFile::Reader::extractResourceToMemory(TankFile & tank, const std::
 
 	if (entry.type != TankEntry::TypeFile)
 	{
-		// SiegeThrow(TankFile::Error, "Resource \"" << resourcePath << "\" in Tank file \""
-		//		<< tank.getFileName() << "\" is a directory and cannot be decompressed to file!");
+		log->critical("Resource {} in Tank file is a directory and cannot be decompressed to file!", resourcePath);
 		return {};
 	}
 
@@ -367,7 +458,7 @@ ByteArray TankFile::Reader::extractResourceToMemory(TankFile & tank, const std::
 	if (resFile.isInvalidFile())
 	{
 		// NOTE: Not sure if this should be a hard error...
-		// SiegeWarn("Resource file entry \"" << resFile.name << "\" is flagged as invalid!");
+		log->warn("Resource file entry {} is flagged as invalid!", resFile.name);
 	}
 
 	const auto fileOffset  = resFile.offset;
@@ -377,7 +468,7 @@ ByteArray TankFile::Reader::extractResourceToMemory(TankFile & tank, const std::
 
 	if (!resFile.isCompressed()) // Simple raw resource file:
 	{
-		TankReaderLog("Extracting UNCOMPRESSED Tank resource \"" << resourcePath << "\"...");
+		log->debug("Extracting UNCOMPRESSED Tank resource {}...", resourcePath);
 
 		// 'devlogic.dsres' (one of our test Tanks from the game) has
 		// a few empty uncompressed dummy files. This check handles those.
@@ -390,9 +481,8 @@ ByteArray TankFile::Reader::extractResourceToMemory(TankFile & tank, const std::
 	}
 	else // LZO/Zlib compressed:
 	{
-		TankReaderLog("Extracting COMPRESSED Tank resource \"" << resourcePath << "\". "
-				<< "Uncompressed size: " << utils::formatMemoryUnit(fileSize, true)
-				<< ", compression fmt: " << dataFormatToString(resFile.format));
+		log->debug("Extracting COMPRESSED Tank resource {}\nUncompressed size: {}, compression fmt:{}", 
+			resourcePath, formatMemoryUnit(fileSize, true), dataFormatToString(resFile.format));
 
 		const auto & compressedHeader = resFile.getCompressedHeader();
 
@@ -417,8 +507,7 @@ ByteArray TankFile::Reader::extractResourceToMemory(TankFile & tank, const std::
 				uncompressedData.resize(chunk.uncompressedSize + chunk.extraBytes);
 				uncompressedLen = static_cast<unsigned long>(uncompressedData.size());
 
-				TankReaderLog("Attempting to decompress resource chunk #" << (c + 1)
-						<< " of " << compressedHeader.numChunks << "...");
+				log->debug("Attempting to decompress resource chunk #{} of {}...", (c + 1), compressedHeader.numChunks);
 
 				const int errorCode = mz_uncompress(uncompressedData.data(), &uncompressedLen, 
 							compressedData.data(), static_cast<unsigned long>(compressedData.size() - chunk.extraBytes));
@@ -428,16 +517,12 @@ ByteArray TankFile::Reader::extractResourceToMemory(TankFile & tank, const std::
 
 				if (errorCode != 0)
 				{
-#if 0
-					auto errorInfo = utils::compression::getErrorString(errorCode);
-					SiegeThrow(TankFile::Error, "Failed to decompress resource \"" << resourcePath
-							<< "\"! Mini-Z error: '" << errorInfo << "'");
-#endif
+					log->critical("Failed to decompress resource {}! Mini-Z error: {}", resourcePath, errorCode);
 				}
 			}
 			else
 			{
-				TankReaderLog("Chunk #" << (c + 1) << " of " << compressedHeader.numChunks << " is stored without compression...");
+				log->debug("Chunk #{} of {} is stored without compression...", (c + 1), compressedHeader.numChunks);
 
 				compressedData.clear();
 				assert(chunk.uncompressedSize == chunk.compressedSize);
@@ -468,23 +553,20 @@ ByteArray TankFile::Reader::extractResourceToMemory(TankFile & tank, const std::
 		}
 	}
 
-#if 0
 	if (validateCRCs && !fileContents.empty())
 	{
+		// mini-z issue to work out later
+		#undef crc32
 		const auto expectedCrc = resFile.crc32;
-		const auto contentsCrc = utils::computeCrc32(fileContents.data(), fileContents.size());
+		const auto contentsCrc = computeCrc32(fileContents.data(), fileContents.size());
 
 		if (contentsCrc != expectedCrc)
 		{
-			auto errorInfo = utils::format("Tank resource \"%s\" CRC (0x%08X) does not match the expected (0x%08X)!",
-				resourcePath.c_str(), contentsCrc, expectedCrc);
-
-			SiegeThrow(TankFile::Error, errorInfo);
+			log->critical("Tank resource {} CRC 0x{:x} does not match the expected (0x{:x})!", resourcePath, contentsCrc, expectedCrc);
 		}
 	}
-#endif
 
-	TankReaderLog("Tank resource \"" << resourcePath << "\" extracted without errors.");
+	log->debug("Tank resource {} extracted without errors"", resourcePath");
 	return fileContents;
 }
 
