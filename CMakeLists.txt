@@ -14,7 +14,7 @@ option(DISABLE_MSVC_DEBUG_ITERATOR "Disable the debug iterator for MSVC. All lib
 
 if(MSVC)
     if(DISABLE_MSVC_DEBUG_ITERATOR)
-		# global compile definition to make sure the definition propagates to external projects
+        # global compile definition to make sure the definition propagates to external projects
         add_compile_definitions("_ITERATOR_DEBUG_LEVEL=0")
     endif()
 endif()
@@ -28,8 +28,10 @@ find_package(spdlog CONFIG QUIET)
 find_package(BISON REQUIRED)
 find_package(RE2C REQUIRED)
 
-bison_target(FuelParser "${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelParser.y" "${CMAKE_CURRENT_BINARY_DIR}/FuelParser.cpp" COMPILE_FLAGS "${YACC_FLAGS} --defines=${CMAKE_CURRENT_BINARY_DIR}/FuelParser.hpp")
-re2c_target("${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelScanner.r2c" "${CMAKE_CURRENT_BINARY_DIR}/FuelScanner.cpp")
+# some linux builds struggle without a pre-existing folder
+make_directory("${CMAKE_CURRENT_BINARY_DIR}/fuel")
+bison_target(FuelParser "${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelParser.y" "${CMAKE_CURRENT_BINARY_DIR}/fuel/FuelParser.cpp" COMPILE_FLAGS "${YACC_FLAGS} --defines=${CMAKE_CURRENT_BINARY_DIR}/fuel/FuelParser.hpp")
+re2c_target("${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelScanner.r2c" "${CMAKE_CURRENT_BINARY_DIR}/fuel/FuelScanner.cpp")
 
 execute_process(
 	COMMAND git rev-parse --abbrev-ref HEAD
@@ -64,9 +66,10 @@ set(SIEGE_SOURCES
     "src/state/test/UITestState.cpp"
     "src/state/test/RegionTestState.cpp"
     "src/state/test/AspectMeshTestState.cpp"
+    "src/state/test/TankTestState.cpp"
 
     ${BISON_FuelParser_OUTPUTS}
-    ${CMAKE_CURRENT_BINARY_DIR}/FuelScanner.cpp
+    ${CMAKE_CURRENT_BINARY_DIR}/fuel/FuelScanner.cpp
     "src/gas/Fuel.cpp"
 
     "src/osg/FileNameMap.cpp"
@@ -80,8 +83,10 @@ set(SIEGE_SOURCES
     "src/osgPlugins/ReaderWriterFont.cpp"
     "src/osgPlugins/ReaderWriterSiegeNodeList.cpp"
 
-    "src/LocalFileSys.cpp"
-    "src/TankFileSys.cpp"
+    "src/filesystem/TankFile.cpp"
+    "src/filesystem/TankFileReader.cpp"
+    "src/filesystem/LocalFileSys.cpp"
+    "src/filesystem/TankFileSys.cpp"
 
     "src/world/Region.cpp"
 
@@ -130,7 +135,7 @@ if(MSVC)
     ASSIGN_SOURCE_GROUPS("Source Files" "${CMAKE_CURRENT_SOURCE_DIR}" ${SIEGE_SOURCES})
 endif()
 
-target_include_directories(OpenSiege PUBLIC src ${OPENSCENEGRAPH_INCLUDE_DIRS} ${EXTERN_INCLUDE_PATHS} ${CMAKE_CURRENT_BINARY_DIR})
+target_include_directories(OpenSiege PUBLIC src ${OPENSCENEGRAPH_INCLUDE_DIRS} ${EXTERN_INCLUDE_PATHS} ${CMAKE_CURRENT_BINARY_DIR}/fuel)
 target_link_libraries(OpenSiege PRIVATE ${OPENSCENEGRAPH_LIBRARIES} Threads::Threads "$<$<CXX_COMPILER_ID:GNU>:stdc++fs;${XDGBASEDIR_LIBRARIES}>" spdlog::spdlog)
 
 

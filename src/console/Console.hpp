@@ -14,6 +14,7 @@
 namespace ehb
 {
     class IConfig;
+    class IFileSys;
     class IGameStateMgr;
     class Console : public Widget
     {
@@ -23,7 +24,7 @@ namespace ehb
         // TODO: disconnect the console from ImageFonts
         osg::ref_ptr<ImageFont> font = nullptr;
 
-        Console(IConfig& config, IGameStateMgr& gameStateMgr, osg::Group& scene3d, osg::Group& scene2d);
+        Console(IConfig& config, IFileSys& fileSys, IGameStateMgr& gameStateMgr, osg::Group& scene3d, osg::Group& scene2d);
 
         virtual ~Console() = default;
 
@@ -55,6 +56,7 @@ namespace ehb
     private:
 
         IConfig& config;
+        IFileSys& fileSys;
         IGameStateMgr& gameStateMgr;
         osg::Group& scene3d;
         osg::Group& scene2d;

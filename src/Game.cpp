@@ -16,10 +16,11 @@
 #include "state/test/UITestState.hpp"
 #include "state/test/RegionTestState.hpp"
 #include "state/test/AspectMeshTestState.hpp"
+#include "state/test/TankTestState.hpp"
 
 namespace ehb
 {
-    Game::Game(IConfig & config) : config(config), gameStateMgr(this), scene3d(new osg::Group), scene2d(new osg::Group), console(new Console(config, gameStateMgr, *scene3d, *scene2d))
+    Game::Game(IConfig & config) : config(config), gameStateMgr(this), scene3d(new osg::Group), scene2d(new osg::Group), console(new Console(config, fileSys, gameStateMgr, *scene3d, *scene2d))
     {
     }
 
@@ -155,6 +156,10 @@ namespace ehb
         else if (gameStateType == "AspectMeshTestState")
         {
             return new AspectMeshTestState(gameStateMgr, config, fileSys, viewer, *scene3d);
+        }
+        else if (gameStateType == "TankTestState")
+        {
+            return new TankTestState(gameStateMgr, config, fileSys);
         }
 
         return nullptr;

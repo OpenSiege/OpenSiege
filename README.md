@@ -40,7 +40,7 @@ choco install winflexbison3
 ```
 
 #### OpenSiege Command Line Params
-When launching OpenSiege will attempt to resolve your bits path automatically. If it cannot be resolved use the ```bits``` command line to pass the directory. This only needs to be done once as that path is written to the user config file.
+When launching OpenSiege will attempt to resolve your ```ds-install-path``` path automatically. If it cannot be resolved use the ```ds-install-path``` command line to pass the directory. This only needs to be done once as that path is written to the user config file.
 
 If you **do not** pass a state to OpenSiege you will get a purple viewport with an outline for the console by default. It's recommended to pass ```--state "RegionTestState"```for a complete map load of ```town_center```.
 
@@ -70,6 +70,7 @@ If you **do not** pass a state to OpenSiege you will get a purple viewport with 
 * [ValveFileVDF](https://github.com/TinyTinni/ValveFileVDF)
 * [re2c](https://re2c.org/)
 * [bison](https://www.gnu.org/software/bison/)
+* [miniz](https://github.com/richgel999/miniz)
 
 ## Authors
 

@@ -1,13 +1,18 @@
 
 #pragma once
 
+#include <optional>
+#include <filesystem>
+
 #include "IFileSys.hpp"
+#include "TankFile.hpp"
 
 #include <spdlog/spdlog.h>
 
+namespace fs = std::filesystem;
+
 namespace ehb
 {
-    // TODO: implement tanks
     class IConfig;
     class TankFileSys : public IFileSys
     {
@@ -23,6 +28,23 @@ namespace ehb
         virtual FileList getDirectoryContents(const std::string & directory) const override;
 
     private:
+
+        struct TankEntry
+        {
+            TankFile tank;
+            TankFile::Reader reader;
+        };
+
+    private:
+
+        //! store tank files, this vector removed duplicates and orders by priority
+        std::vector<std::unique_ptr<TankEntry>> eachTank;
+
+        //! contains a full list of files from the tanks that are loaded
+        FileList cache;
+
+        //! the optional bits path
+        std::optional<fs::path> bits;
 
         std::shared_ptr<spdlog::logger> log;
     };

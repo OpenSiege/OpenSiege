@@ -4,6 +4,7 @@
 #include <sstream>
 #include "state/IGameStateMgr.hpp"
 #include "cfg/IConfig.hpp"
+#include "IFileSys.hpp"
 #include "StringTool.hpp"
 #include "osg/SiegeNodeMesh.hpp"
 
@@ -11,7 +12,7 @@
 
 namespace ehb
 {
-    Console::Console(IConfig& config, IGameStateMgr& gameStateMgr, osg::Group& scene3d, osg::Group& scene2d) : Widget(), config(config), gameStateMgr(gameStateMgr), scene3d(scene3d), scene2d(scene2d)
+    Console::Console(IConfig& config, IFileSys& fileSys, IGameStateMgr& gameStateMgr, osg::Group& scene3d, osg::Group& scene2d) : Widget(), config(config), fileSys(fileSys), gameStateMgr(gameStateMgr), scene3d(scene3d), scene2d(scene2d)
     {
         getOrCreateStateSet()->setMode(GL_DEPTH_TEST, false);
         getOrCreateStateSet()->setMode(GL_BLEND, true);
@@ -220,7 +221,20 @@ namespace ehb
                         scene2d.removeChildren(0, scene2d.getNumChildren());
                     }
                 }
-            }            
+            }
+            else if (scanner.accept("dumpfilesys"))
+            {
+                auto log = spdlog::get("filesystem");
+
+                log->info("STARTING FILESYSTEM DUMP");
+
+                for (auto file : fileSys.getFiles())
+                {
+                    log->info("{}", file);
+                }
+
+                log->info("FINISHED FILESYSTEM DUMP");
+            }
 
             auto line = std::make_unique<TextLine>(*this);
             line->text = inputLine->text.substr(1, inputLine->text.size());
