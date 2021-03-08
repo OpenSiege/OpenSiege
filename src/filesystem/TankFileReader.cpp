@@ -18,64 +18,6 @@
 
 namespace ehb
 {
-	static std::string removeTrailingFloatZeros(const std::string& floatStr)
-	{
-		// Only process if the number is decimal (has a dot somewhere):
-		if (floatStr.find_last_of('.') == std::string::npos)
-		{
-			return floatStr;
-		}
-
-		std::string trimmed(floatStr);
-
-		// Remove trailing zeros:
-		while (!trimmed.empty() && (trimmed.back() == '0'))
-		{
-			trimmed.pop_back();
-		}
-
-		// If the dot was left alone at the end, remove it too:
-		if (!trimmed.empty() && (trimmed.back() == '.'))
-		{
-			trimmed.pop_back();
-		}
-
-		return trimmed;
-	}
-	static std::string formatMemoryUnit(uint64_t memorySizeInBytes, bool abbreviated = false)
-	{
-		const char* memUnitStr;
-		double adjustedSize;
-		char numStrBuf[128];
-
-		if (memorySizeInBytes < 1024)
-		{
-			memUnitStr = (abbreviated ? "B" : "Bytes");
-			adjustedSize = static_cast<double>(memorySizeInBytes);
-		}
-		else if (memorySizeInBytes < (1024 * 1024))
-		{
-			memUnitStr = (abbreviated ? "KB" : "Kilobytes");
-			adjustedSize = (memorySizeInBytes / 1024.0);
-		}
-		else if (memorySizeInBytes < (1024 * 1024 * 1024))
-		{
-			memUnitStr = (abbreviated ? "MB" : "Megabytes");
-			adjustedSize = (memorySizeInBytes / 1024.0 / 1024.0);
-		}
-		else
-		{
-			memUnitStr = (abbreviated ? "GB" : "Gigabytes");
-			adjustedSize = (memorySizeInBytes / 1024.0 / 1024.0 / 1024.0);
-		}
-
-		// We only care about the first 2 decimal digits.
-		std::snprintf(numStrBuf, sizeof(numStrBuf), "%.2f", adjustedSize);
-
-		// Remove trailing zeros if no significant decimal digits:
-		return removeTrailingFloatZeros(numStrBuf) + std::string(" ") + memUnitStr;
-	}
-
 	static uint32_t computeCrc32(const void* data, size_t sizeBytes) noexcept
 	{
 		assert(data != nullptr);
@@ -294,7 +236,7 @@ void TankFile::Reader::readFileSet(TankFile & tank)
 
 		log->debug("fileEntry.parentOffset..: {}", fileParentOffset);
 		log->debug("fileEntry.myOffset......: {}", fileOffs);
-		log->debug("fileEntry.size..........: {}", formatMemoryUnit(fileEntrySize));
+		log->debug("fileEntry.size..........: {}", StringTool::formatMemoryUnit(fileEntrySize));
 		log->debug("fileEntry.offset........: {}", fileDataOffset);
 		log->debug("fileEntry.crc32.........: 0x{:x}", fileCrc32);
 		log->debug("fileEntry.fileTime......: {}", fileTime);
@@ -482,7 +424,7 @@ ByteArray TankFile::Reader::extractResourceToMemory(TankFile & tank, const std::
 	else // LZO/Zlib compressed:
 	{
 		log->debug("Extracting COMPRESSED Tank resource {}\nUncompressed size: {}, compression fmt:{}", 
-			resourcePath, formatMemoryUnit(fileSize, true), dataFormatToString(resFile.format));
+			resourcePath, StringTool::formatMemoryUnit(fileSize, true), dataFormatToString(resFile.format));
 
 		const auto & compressedHeader = resFile.getCompressedHeader();
 

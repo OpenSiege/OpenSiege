@@ -23,120 +23,11 @@ namespace ehb
 // Local helpers:
 // ========================================================
 
-namespace
-{
-	inline std::string wideStringToStdString(const WideString& wStr)
-	{
-		static_assert(sizeof(WideChar) == 2, "This will only work if we are dealing with 2-byte wchars!");
-
-		//
-		// Convert 2-byte long Windows wchar_t string to a C string.
-		//
-		// Currently not doing a proper conversion, just grabbing
-		// the lower byte of each WideChar.
-		//
-		// Also uses a fixed size buffer, so string length is
-		// limited to MaxTempStringLen!
-		//
-
-		if (wStr.empty())
-		{
-			return std::string();
-		}
-
-		int i;
-		char temBuf[2048];
-
-		for (i = 0; i < (2048 - 1); ++i)
-		{
-			const char c = static_cast<char>(wStr[i] & 0x00FF);
-			temBuf[i] = c;
-			if (c == 0)
-			{
-				break;
-			}
-		}
-
-		if (i == (2048 - 1))
-		{
-			return {};
-		}
-
-		temBuf[i] = '\0';
-		return temBuf;
-}
-
-inline std::string toString(const WideString & wStr)
-{
-	return wStr.empty() ? "<EMPTY>" : ("\"" + wideStringToStdString(wStr) + "\"");
-}
-
 inline uint16_t alignToDword(const uint16_t size) noexcept
 {
 	const uint16_t offset = 4 - (size % 4);
 	return size + offset;
 }
-
-static std::string removeTrailingFloatZeros(const std::string& floatStr)
-{
-	// Only process if the number is decimal (has a dot somewhere):
-	if (floatStr.find_last_of('.') == std::string::npos)
-	{
-		return floatStr;
-	}
-
-	std::string trimmed(floatStr);
-
-	// Remove trailing zeros:
-	while (!trimmed.empty() && (trimmed.back() == '0'))
-	{
-		trimmed.pop_back();
-	}
-
-	// If the dot was left alone at the end, remove it too:
-	if (!trimmed.empty() && (trimmed.back() == '.'))
-	{
-		trimmed.pop_back();
-	}
-
-	return trimmed;
-}
-
-static std::string formatMemoryUnit(uint64_t memorySizeInBytes, bool abbreviated = false)
-{
-	const char* memUnitStr;
-	double adjustedSize;
-	char numStrBuf[128];
-
-	if (memorySizeInBytes < 1024)
-	{
-		memUnitStr = (abbreviated ? "B" : "Bytes");
-		adjustedSize = static_cast<double>(memorySizeInBytes);
-	}
-	else if (memorySizeInBytes < (1024 * 1024))
-	{
-		memUnitStr = (abbreviated ? "KB" : "Kilobytes");
-		adjustedSize = (memorySizeInBytes / 1024.0);
-	}
-	else if (memorySizeInBytes < (1024 * 1024 * 1024))
-	{
-		memUnitStr = (abbreviated ? "MB" : "Megabytes");
-		adjustedSize = (memorySizeInBytes / 1024.0 / 1024.0);
-	}
-	else
-	{
-		memUnitStr = (abbreviated ? "GB" : "Gigabytes");
-		adjustedSize = (memorySizeInBytes / 1024.0 / 1024.0 / 1024.0);
-	}
-
-	// We only care about the first 2 decimal digits.
-	std::snprintf(numStrBuf, sizeof(numStrBuf), "%.2f", adjustedSize);
-
-	// Remove trailing zeros if no significant decimal digits:
-	return removeTrailingFloatZeros(numStrBuf) + std::string(" ") + memUnitStr;
-}
-
-} // namespace {}
 
 // ========================================================
 // TankFile::Header:
@@ -527,10 +418,10 @@ void TankFile::readAndValidateHeader()
 	log->debug("productId.........: {}" , fileHeader.productId);
 	log->debug("tankId............: {}" , fileHeader.tankId);
 	log->debug("headerVersion.....: {}" , fileHeader.headerVersion);
-	log->debug("dirsetOffset......: 0x{:x}, ({})", fileHeader.dirsetOffset, formatMemoryUnit(fileHeader.dirsetOffset));
-	log->debug("filesetOffset.....: 0x{:x}, ({})", fileHeader.filesetOffset, formatMemoryUnit(fileHeader.filesetOffset));
-	log->debug("indexSize.........: {}" , formatMemoryUnit(fileHeader.indexSize));
-	log->debug("dataOffset........: 0x{:x}, ({})", fileHeader.dataOffset, formatMemoryUnit(fileHeader.dataOffset));
+	log->debug("dirsetOffset......: 0x{:x}, ({})", fileHeader.dirsetOffset, StringTool::formatMemoryUnit(fileHeader.dirsetOffset));
+	log->debug("filesetOffset.....: 0x{:x}, ({})", fileHeader.filesetOffset, StringTool::formatMemoryUnit(fileHeader.filesetOffset));
+	log->debug("indexSize.........: {}" , StringTool::formatMemoryUnit(fileHeader.indexSize));
+	log->debug("dataOffset........: 0x{:x}, ({})", fileHeader.dataOffset, StringTool::formatMemoryUnit(fileHeader.dataOffset));
 	log->debug("productVersion....: {}", fileHeader.productVersion);
 	log->debug("minimumVersion....: {}", fileHeader.minimumVersion);
 	log->debug("priority..........: {}", priorityToString(fileHeader.priority));
@@ -540,11 +431,11 @@ void TankFile::readAndValidateHeader()
 	log->debug("indexCrc32........: 0x{:x}" , fileHeader.indexCrc32);
 	log->debug("dataCrc32.........: 0x{:x}" , fileHeader.dataCrc32);
 	log->debug("utcBuildTime......: {}", fileHeader.utcBuildTime);
-	log->debug("copyrightText.....: {}", toString(fileHeader.copyrightText));
-	log->debug("buildText.........: {}", toString(fileHeader.buildText));
-	log->debug("titleText.........: {}", toString(fileHeader.titleText));
-	log->debug("authorText........: {}", toString(fileHeader.authorText));
-	log->debug("descriptionText...: {}", toString(fileHeader.descriptionText));
+	log->debug("copyrightText.....: {}", StringTool::toString(fileHeader.copyrightText));
+	log->debug("buildText.........: {}", StringTool::toString(fileHeader.buildText));
+	log->debug("titleText.........: {}", StringTool::toString(fileHeader.titleText));
+	log->debug("authorText........: {}", StringTool::toString(fileHeader.authorText));
+	log->debug("descriptionText...: {}", StringTool::toString(fileHeader.descriptionText));
 	log->debug("====== END TANK HEADER ======");
 
 	// Fatal errors:
@@ -592,7 +483,7 @@ void TankFile::readBytes(void * buffer, const size_t numBytes)
 	{
 		log->critical("Only {} bytes of {} could be read from {}!", file.gcount(), numBytes,fileName);
 
-		log->critical("Failed to read {} from Tank file {}", formatMemoryUnit(numBytes), fileName);
+		log->critical("Failed to read {} from Tank file {}", StringTool::formatMemoryUnit(numBytes), fileName);
 
 		return;
 	}

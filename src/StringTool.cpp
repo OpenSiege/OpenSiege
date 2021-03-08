@@ -44,4 +44,109 @@ namespace ehb
     {
         return std::string(str).empty();
     }
+
+	std::string StringTool::wideStringToStdString(const WideString& wStr)
+	{
+		static_assert(sizeof(WideChar) == 2, "This will only work if we are dealing with 2-byte wchars!");
+
+		//
+		// Convert 2-byte long Windows wchar_t string to a C string.
+		//
+		// Currently not doing a proper conversion, just grabbing
+		// the lower byte of each WideChar.
+		//
+		// Also uses a fixed size buffer, so string length is
+		// limited to MaxTempStringLen!
+		//
+
+		if (wStr.empty())
+		{
+			return std::string();
+		}
+
+		int i;
+		char temBuf[2048];
+
+		for (i = 0; i < (2048 - 1); ++i)
+		{
+			const char c = static_cast<char>(wStr[i] & 0x00FF);
+			temBuf[i] = c;
+			if (c == 0)
+			{
+				break;
+			}
+		}
+
+		if (i == (2048 - 1))
+		{
+			return {};
+		}
+
+		temBuf[i] = '\0';
+		return temBuf;
+	}
+
+	std::string StringTool::toString(const WideString& wStr)
+	{
+		return wStr.empty() ? "<EMPTY>" : ("\"" + wideStringToStdString(wStr) + "\"");
+	}
+
+	std::string StringTool::removeTrailingFloatZeros(const std::string& floatStr)
+	{
+		// Only process if the number is decimal (has a dot somewhere):
+		if (floatStr.find_last_of('.') == std::string::npos)
+		{
+			return floatStr;
+		}
+
+		std::string trimmed(floatStr);
+
+		// Remove trailing zeros:
+		while (!trimmed.empty() && (trimmed.back() == '0'))
+		{
+			trimmed.pop_back();
+		}
+
+		// If the dot was left alone at the end, remove it too:
+		if (!trimmed.empty() && (trimmed.back() == '.'))
+		{
+			trimmed.pop_back();
+		}
+
+		return trimmed;
+	}
+
+	std::string StringTool::formatMemoryUnit(uint64_t memorySizeInBytes, bool abbreviated)
+	{
+		const char* memUnitStr;
+		double adjustedSize;
+		char numStrBuf[128];
+
+		if (memorySizeInBytes < 1024)
+		{
+			memUnitStr = (abbreviated ? "B" : "Bytes");
+			adjustedSize = static_cast<double>(memorySizeInBytes);
+		}
+		else if (memorySizeInBytes < (1024 * 1024))
+		{
+			memUnitStr = (abbreviated ? "KB" : "Kilobytes");
+			adjustedSize = (memorySizeInBytes / 1024.0);
+		}
+		else if (memorySizeInBytes < (1024 * 1024 * 1024))
+		{
+			memUnitStr = (abbreviated ? "MB" : "Megabytes");
+			adjustedSize = (memorySizeInBytes / 1024.0 / 1024.0);
+		}
+		else
+		{
+			memUnitStr = (abbreviated ? "GB" : "Gigabytes");
+			adjustedSize = (memorySizeInBytes / 1024.0 / 1024.0 / 1024.0);
+		}
+
+		// We only care about the first 2 decimal digits.
+		std::snprintf(numStrBuf, sizeof(numStrBuf), "%.2f", adjustedSize);
+
+		// Remove trailing zeros if no significant decimal digits:
+		return removeTrailingFloatZeros(numStrBuf) + std::string(" ") + memUnitStr;
+	}
 }

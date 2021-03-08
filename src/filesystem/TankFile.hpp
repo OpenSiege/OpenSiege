@@ -21,6 +21,7 @@
 
 // this has the FourCC class
 #include "osgPlugins/BinaryReader.hpp"
+#include "StringTool.hpp"
 #include <spdlog/spdlog.h>
 #include <spdlog/fmt/ostr.h>
 
@@ -186,16 +187,6 @@ namespace ehb
 			((minor & 0xFF) << 8) |
 			(build & 0xFF));
 	}
-
-	// Dungeon Siege used WCHAR or wchar_t for some text strings,
-	// which is 16bits wide on Windows. They are saved to file
-	// as a pair of bytes so we need to use a properly sized type,
-	// since the assumption that wchar_t is 16bits everywhere is
-	// false. It is 32bits wide on Mac and Linux.
-	using WideChar = char16_t;
-
-	// Redefine std::string for the WideChar type.
-	using WideString = std::basic_string<WideChar>;
 }
 
 namespace ehb
