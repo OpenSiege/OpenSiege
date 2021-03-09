@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "IGameState.hpp"
+#include "state/IGameState.hpp"
 
 namespace ehb
 {

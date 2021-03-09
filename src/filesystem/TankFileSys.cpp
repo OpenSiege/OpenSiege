@@ -7,14 +7,15 @@ namespace ehb
 {
     InputStream TankFileSys::createInputStream(const std::string & filename_)
     {
-        std::string filename = osgDB::convertToLowerCase(filename_);
+        const std::string path = osgDB::convertToLowerCase(filename_);
+        std::string_view filename{ path };
 
         // the first location we check is the bits path
         if (bits)
         {
             // remove leading / if this is an absolute path in the filesystem
-            if (filename.front() == '/' || filename.front() == '\\')
-                filename.erase(0, 1);
+            if (path.front() == '/' || path.front() == '\\')
+                filename.remove_prefix(1);
 
             auto path = *bits / fs::path(filename);
 
@@ -29,7 +30,7 @@ namespace ehb
         // iterate over the tanks to try and find our file
         for (auto& entry : eachTank)
         {
-            if (auto data = entry->reader.extractResourceToMemory(entry->tank, filename, false); data.size() != 0)
+            if (auto data = entry->reader.extractResourceToMemory(entry->tank, path, false); data.size() != 0)
             {
                 auto stream = std::make_unique<std::stringstream>();
 
