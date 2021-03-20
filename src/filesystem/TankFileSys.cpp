@@ -94,7 +94,7 @@ namespace ehb
                         // this seems like a needless convert when dealing with local files?
                         auto path = osgDB::convertFileNameToUnixStyle(filename.string().substr((*bits).string().size()));
 
-                        cache.emplace(path);
+                        cache.emplace(osgDB::convertToLowerCase(path));
                     }
                 }
             }

@@ -32,13 +32,44 @@ namespace ehb
 
                         if (itr.second != true)
                         {
-                            log->debug("duplicate mesh mapping found: tried to insert filename {} for guid {}, but found filename {} there already", node->valueOf("filename"), node->valueOf("guid"), itr.first->second);
+                            log->error("duplicate mesh mapping found: tried to insert filename {} for guid {}, but found filename {} there already", node->valueOf("filename"), node->valueOf("guid"), itr.first->second);
                         }
                     }
                 }
 
                 fileCount++;
             });
+
+        // looks like DS can support mesh indexes per region and according to testing siege editor keeps them unique
+        for (auto map : fileSys.getDirectoryContents("/world/maps"))
+        {
+            if (map == "/world/maps/map_world") continue;
+            if (map == "/world/maps/multiplayer_world") continue;
+
+            for (auto regions : fileSys.getDirectoryContents(map + "/regions"))
+            {
+                const auto node_mesh_index = regions + "/index/node_mesh_index.gas";
+
+                if (auto stream = fileSys.createInputStream(node_mesh_index))
+                {
+                    if (Fuel doc; doc.load(*stream))
+                    {
+                        if (const auto node_mesh_index_child = doc.child("node_mesh_index"))
+                        {
+                            for (const auto attrib : node_mesh_index_child->eachAttribute())
+                            {
+                                const auto itr = meshFileNameToGuidKeyMap.emplace(attrib.name, osgDB::convertToLowerCase(attrib.value));
+
+                                if (itr.second != true)
+                                {
+                                    log->error("duplicate mesh mapping found: tried to insert filename {} for guid {}, but found filename {} there already", attrib.value, attrib.name, itr.first->second);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
         log->debug("after loading {} files there are {} entries in our mesh filename to key map", fileCount, meshFileNameToGuidKeyMap.size());
 
