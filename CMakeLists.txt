@@ -24,10 +24,7 @@ endif()
 
 add_subdirectory(extern)
 
-# required packages for minimal build should go here
-# find_package(OpenSceneGraph REQUIRED COMPONENTS osg osgDB osgViewer osgGA osgText osgUtil osgAnimation)
-# find_package(Threads REQUIRED)
-# find_package(spdlog CONFIG QUIET)
+# these are required due to having exes associated with them
 find_package(BISON REQUIRED)
 find_package(RE2C REQUIRED)
 
@@ -138,7 +135,6 @@ if(MSVC)
     ASSIGN_SOURCE_GROUPS("Source Files" "${CMAKE_CURRENT_SOURCE_DIR}" ${SIEGE_SOURCES})
 endif()
 
-#target_include_directories(OpenSiege PUBLIC src ${OPENSCENEGRAPH_INCLUDE_DIRS} ${EXTERN_INCLUDE_PATHS} ${CMAKE_CURRENT_BINARY_DIR}/fuel)
 target_include_directories(OpenSiege PUBLIC src ${EXTERN_INCLUDE_PATHS} ${CMAKE_CURRENT_BINARY_DIR}/fuel)
 target_link_libraries(OpenSiege PRIVATE CONAN_PKG::openscenegraph CONAN_PKG::spdlog)
 
