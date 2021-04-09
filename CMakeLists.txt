@@ -4,6 +4,9 @@ project(OpenSiege)
 # add custom cmake modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup(TARGETS)
+
 if (UNIX)
     find_package(PkgConfig)
     pkg_check_modules(XDGBASEDIR REQUIRED libxdg-basedir)
@@ -22,9 +25,9 @@ endif()
 add_subdirectory(extern)
 
 # required packages for minimal build should go here
-find_package(OpenSceneGraph REQUIRED COMPONENTS osg osgDB osgViewer osgGA osgText osgUtil osgAnimation)
-find_package(Threads REQUIRED)
-find_package(spdlog CONFIG QUIET)
+# find_package(OpenSceneGraph REQUIRED COMPONENTS osg osgDB osgViewer osgGA osgText osgUtil osgAnimation)
+# find_package(Threads REQUIRED)
+# find_package(spdlog CONFIG QUIET)
 find_package(BISON REQUIRED)
 find_package(RE2C REQUIRED)
 
@@ -135,8 +138,9 @@ if(MSVC)
     ASSIGN_SOURCE_GROUPS("Source Files" "${CMAKE_CURRENT_SOURCE_DIR}" ${SIEGE_SOURCES})
 endif()
 
-target_include_directories(OpenSiege PUBLIC src ${OPENSCENEGRAPH_INCLUDE_DIRS} ${EXTERN_INCLUDE_PATHS} ${CMAKE_CURRENT_BINARY_DIR}/fuel)
-target_link_libraries(OpenSiege PRIVATE ${OPENSCENEGRAPH_LIBRARIES} Threads::Threads "$<$<CXX_COMPILER_ID:GNU>:stdc++fs;${XDGBASEDIR_LIBRARIES}>" spdlog::spdlog)
+#target_include_directories(OpenSiege PUBLIC src ${OPENSCENEGRAPH_INCLUDE_DIRS} ${EXTERN_INCLUDE_PATHS} ${CMAKE_CURRENT_BINARY_DIR}/fuel)
+target_include_directories(OpenSiege PUBLIC src ${EXTERN_INCLUDE_PATHS} ${CMAKE_CURRENT_BINARY_DIR}/fuel)
+target_link_libraries(OpenSiege PRIVATE CONAN_PKG::openscenegraph CONAN_PKG::qt spdlog::spdlog)
 
 
 install(TARGETS OpenSiege RUNTIME DESTINATION bin)
