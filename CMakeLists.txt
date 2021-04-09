@@ -140,7 +140,7 @@ endif()
 
 #target_include_directories(OpenSiege PUBLIC src ${OPENSCENEGRAPH_INCLUDE_DIRS} ${EXTERN_INCLUDE_PATHS} ${CMAKE_CURRENT_BINARY_DIR}/fuel)
 target_include_directories(OpenSiege PUBLIC src ${EXTERN_INCLUDE_PATHS} ${CMAKE_CURRENT_BINARY_DIR}/fuel)
-target_link_libraries(OpenSiege PRIVATE CONAN_PKG::openscenegraph CONAN_PKG::qt spdlog::spdlog)
+target_link_libraries(OpenSiege PRIVATE CONAN_PKG::openscenegraph CONAN_PKG::spdlog)
 
 
 install(TARGETS OpenSiege RUNTIME DESTINATION bin)

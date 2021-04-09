@@ -5,12 +5,6 @@ include(FetchContent)
 # project to be imported
 
 FetchContent_Declare(
-    spdlog
-    GIT_REPOSITORY https://github.com/gabime/spdlog.git
-    GIT_TAG v1.x
-)
-
-FetchContent_Declare(
     whereami
     GIT_REPOSITORY https://github.com/gpakosz/whereami.git
     GIT_TAG master
@@ -22,7 +16,6 @@ FetchContent_Declare(
     GIT_TAG master
 )
 
-FetchContent_MakeAvailable(spdlog)
 FetchContent_MakeAvailable(whereami)
 FetchContent_MakeAvailable(minIni)
 
