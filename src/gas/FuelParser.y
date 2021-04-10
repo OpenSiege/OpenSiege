@@ -19,7 +19,7 @@
  */
 
 %skeleton "lalr1.cc"
-%require "3.0"
+%require "3.2"
 %defines
 %define api.namespace { ehb }
 %define api.value.type { std::string }
