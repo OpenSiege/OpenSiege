@@ -30,8 +30,8 @@ find_package(RE2C REQUIRED)
 
 # some linux builds struggle without a pre-existing folder
 make_directory("${CMAKE_CURRENT_BINARY_DIR}/fuel")
-bison_target(FuelParser "${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelParser.y" "${CMAKE_CURRENT_BINARY_DIR}/fuel/FuelParser.cpp" COMPILE_FLAGS "${YACC_FLAGS} --defines=${CMAKE_CURRENT_BINARY_DIR}/fuel/FuelParser.hpp")
-re2c_target("${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelScanner.r2c" "${CMAKE_CURRENT_BINARY_DIR}/fuel/FuelScanner.cpp")
+bison_target(FuelParser "${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelParser.y" "${CMAKE_CURRENT_BINARY_DIR}/fuel/FuelParser.cpp" COMPILE_FLAGS "${YACC_FLAGS} --no-lines --defines=${CMAKE_CURRENT_BINARY_DIR}/fuel/FuelParser.hpp")
+re2c_target(NAME FuelScanner INPUT "${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelScanner.r2c" OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/fuel/FuelScanner.cpp" OPTIONS "--no-debug-info")
 
 execute_process(
 	COMMAND git rev-parse --abbrev-ref HEAD
