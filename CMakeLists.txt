@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.11)
 project(OpenSiege)
 
+# add custom cmake modules
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)
 
@@ -20,6 +23,17 @@ if(MSVC)
 endif()
 
 add_subdirectory(extern)
+
+option(REGENERATE_FUEL_PARSER "Enable this option to regenerate the Fuel parser files" OFF)
+
+if(REGENERATE_FUEL_PARSER)
+    # these are required due to having exes associated with them
+    find_package(BISON REQUIRED)
+    find_package(RE2C REQUIRED)
+
+    bison_target(FuelParser "${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelParser.y" "${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelParser.cpp" COMPILE_FLAGS "${YACC_FLAGS} --no-lines --defines=${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelParser.hpp")
+    re2c_target(NAME FuelScanner INPUT "${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelScanner.r2c" OUTPUT "${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelScanner.cpp" OPTIONS "--no-debug-info")
+endif()
 
 execute_process(
 	COMMAND git rev-parse --abbrev-ref HEAD
