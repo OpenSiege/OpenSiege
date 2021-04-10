@@ -1,9 +1,6 @@
 cmake_minimum_required(VERSION 3.11)
 project(OpenSiege)
 
-# add custom cmake modules
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
-
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup(TARGETS)
 
@@ -23,15 +20,6 @@ if(MSVC)
 endif()
 
 add_subdirectory(extern)
-
-# these are required due to having exes associated with them
-find_package(BISON REQUIRED)
-find_package(RE2C REQUIRED)
-
-# some linux builds struggle without a pre-existing folder
-make_directory("${CMAKE_CURRENT_BINARY_DIR}/fuel")
-bison_target(FuelParser "${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelParser.y" "${CMAKE_CURRENT_BINARY_DIR}/fuel/FuelParser.cpp" COMPILE_FLAGS "${YACC_FLAGS} --no-lines --defines=${CMAKE_CURRENT_BINARY_DIR}/fuel/FuelParser.hpp")
-re2c_target(NAME FuelScanner INPUT "${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelScanner.r2c" OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/fuel/FuelScanner.cpp" OPTIONS "--no-debug-info")
 
 execute_process(
 	COMMAND git rev-parse --abbrev-ref HEAD
@@ -68,8 +56,8 @@ set(SIEGE_SOURCES
     "src/state/test/AspectMeshTestState.cpp"
     "src/state/test/TankTestState.cpp"
 
-    ${BISON_FuelParser_OUTPUTS}
-    ${CMAKE_CURRENT_BINARY_DIR}/fuel/FuelScanner.cpp
+    "src/gas/FuelScanner.cpp"
+    "src/gas/FuelParser.cpp"
     "src/gas/Fuel.cpp"
 
     "src/osg/FileNameMap.cpp"
