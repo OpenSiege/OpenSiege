@@ -15,28 +15,16 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Building
 
-#### Linux Specific
+OpenSiege requires the installation of the [conan](https://conan.io/) package manager. Please refer to the [build instructions](https://docs.conan.io/en/latest/installation.html) for your platform.
 
 ```
-TODO
-```
-
-#### Windows Specific
-
-We recommend using [chocolatey](https://chocolatey.org/install) to install the proper RE2C and Bison dependencies.
-
-```
-choco install re2c
-choco install winflexbison3
-```
-
-#### OpenSiege Build
-
-```
-1. Checkout repository with: git clone https://github.com/OpenSiege/OpenSiege
-2. Create a build folder
-3. Run cmake from the build folder
-4. Compile
+git clone https://github.com/OpenSiege/OpenSiege.git
+cd OpenSiege
+mkdir build
+cd build
+conan install .. -s build_type=Debug
+conan install .. -s build_type=Release
+cmake ..
 ```
 
 #### OpenSiege Command Line Params
