@@ -5,3 +5,6 @@ class OpenSiegeConan(ConanFile):
     requires = "openscenegraph/3.6.5", "spdlog/1.8.5"
     generators = "cmake"
     default_options = "openscenegraph:shared=True"
+    
+    def imports(self):
+        self.copy("*.dll", dst="bin", src="bin")
