@@ -155,7 +155,7 @@ namespace ehb
         }
         else if (gameStateType == "AspectMeshTestState")
         {
-            return new AspectMeshTestState(gameStateMgr, config, fileSys, viewer, *scene3d);
+            return new AspectMeshTestState(gameStateMgr, config, fileSys, viewer, contentDb, *scene3d);
         }
         else if (gameStateType == "TankTestState")
         {

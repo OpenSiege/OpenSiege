@@ -17,24 +17,14 @@ namespace ehb
 {
     class IConfig;
     class IFileSys;
+    class ContentDb;
     class Aspect;
     class AspectMeshTestState : public IGameState
     {
 
-        const std::vector<std::string> farmgirl = {
-
-            "m_c_gah_fg_pos_a1.asp",
-            "m_c_gah_fg_pos_a2.asp",
-            "m_c_gah_fg_pos_a3.asp",
-            "m_c_gah_fg_pos_a4.asp",
-            "m_c_gah_fg_pos_a5.asp",
-            "m_c_gah_fg_pos_a6.asp",
-            "m_c_gah_fg_pos_a7.asp",
-        };
-
     public:
 
-        AspectMeshTestState(IGameStateMgr & gameStateMgr, IConfig & config, IFileSys& fileSys, osgViewer::Viewer& viewer, osg::Group& scene);
+        AspectMeshTestState(IGameStateMgr & gameStateMgr, IConfig & config, IFileSys& fileSys, osgViewer::Viewer& viewer, ContentDb& contentDb, osg::Group& scene);
 
         virtual ~AspectMeshTestState() = default;
 
@@ -52,6 +42,7 @@ namespace ehb
         IGameStateMgr & gameStateMgr;
         IConfig & config;
         IFileSys& fileSys;
+        ContentDb& contentDb;
 
         osgViewer::Viewer& viewer;
         osg::Group& scene;
@@ -60,7 +51,7 @@ namespace ehb
         osg::MatrixTransform* transform = nullptr;
     };
 
-    inline AspectMeshTestState::AspectMeshTestState(IGameStateMgr& gameStateMgr, IConfig& config, IFileSys& fileSys, osgViewer::Viewer& viewer, osg::Group& scene) : gameStateMgr(gameStateMgr), config(config), fileSys(fileSys), scene(scene), viewer(viewer)
+    inline AspectMeshTestState::AspectMeshTestState(IGameStateMgr& gameStateMgr, IConfig& config, IFileSys& fileSys, osgViewer::Viewer& viewer, ContentDb& contentDb, osg::Group& scene) : gameStateMgr(gameStateMgr), config(config), fileSys(fileSys), scene(scene), viewer(viewer), contentDb(contentDb)
     {
     }
 }

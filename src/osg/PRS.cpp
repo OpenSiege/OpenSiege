@@ -19,7 +19,7 @@ namespace ehb
                 const auto boneCount = reader.readUInt32();
                 const auto length = reader.readFloat32();
 
-                log->info("reading animation with sizeTextField = {}, boneCount = {}, length = {}", sizeTextField, boneCount, length);
+                log->debug("reading animation with sizeTextField = {}, boneCount = {}, length = {}", sizeTextField, boneCount, length);
 
                 // no idea what these bytes are
                 reader.skipBytes(48);
@@ -56,11 +56,11 @@ namespace ehb
                     [](uint8_t b) { return (b != 0) ? b : '-';  });
 
                 rawText.push_back(0);
-                log->info("raw text: {}", rawText.data());
+                log->debug("raw text: {}", rawText.data());
 
                 for (auto bone : boneInfos)
                 {
-                    log->info("bone name: {}", bone.boneName);
+                    log->debug("bone name: {}", bone.boneName);
                 }
 
             }
@@ -83,7 +83,7 @@ namespace ehb
                 const auto rotKeyCount = reader.readUInt32();
                 const auto posKeyCount = reader.readUInt32();
 
-                log->info("rootKey has {} positional keys and {} rotational keys", posKeyCount, rotKeyCount);
+                log->debug("rootKey has {} positional keys and {} rotational keys", posKeyCount, rotKeyCount);
 
                 rKeyListSeq.rotKeys.resize(rotKeyCount);
                 for (auto& key : rKeyListSeq.rotKeys)
@@ -109,7 +109,7 @@ namespace ehb
                 const auto rotKeyCount = reader.readUInt32();
                 const auto posKeyCount = reader.readUInt32();
 
-                log->info("bone {} has {} positional keys and {} rotation keys", boneIndex, posKeyCount, rotKeyCount);
+                log->debug("bone {} has {} positional keys and {} rotation keys", boneIndex, posKeyCount, rotKeyCount);
 
                 AnimSeq& seq = kListSeq[boneIndex];
 
