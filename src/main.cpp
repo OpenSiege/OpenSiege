@@ -38,7 +38,7 @@ int main(int argc, char * argv[])
     // but if we don't have either then there are no assets to load
     if (!hasPath)
     {
-        log->error("No DS Install Path detected. Please check you have the proper registry keys / steam / WINE configuration. You can also use the command line flag --ds-install path for manual setup.");
+        log->error("No DS Install Path detected. Please check you have the proper registry keys / steam / WINE configuration. You can also use the command line flag --ds-install-path for manual setup.");
 
         return 0;
     }

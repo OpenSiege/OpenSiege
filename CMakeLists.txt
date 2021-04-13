@@ -4,6 +4,9 @@ project(OpenSiege)
 # add custom cmake modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup(TARGETS)
+
 if (UNIX)
     find_package(PkgConfig)
     pkg_check_modules(XDGBASEDIR REQUIRED libxdg-basedir)
@@ -21,17 +24,16 @@ endif()
 
 add_subdirectory(extern)
 
-# required packages for minimal build should go here
-find_package(OpenSceneGraph REQUIRED COMPONENTS osg osgDB osgViewer osgGA osgText osgUtil osgAnimation)
-find_package(Threads REQUIRED)
-find_package(spdlog CONFIG QUIET)
-find_package(BISON REQUIRED)
-find_package(RE2C REQUIRED)
+option(REGENERATE_FUEL_PARSER "Enable this option to regenerate the Fuel parser files" OFF)
 
-# some linux builds struggle without a pre-existing folder
-make_directory("${CMAKE_CURRENT_BINARY_DIR}/fuel")
-bison_target(FuelParser "${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelParser.y" "${CMAKE_CURRENT_BINARY_DIR}/fuel/FuelParser.cpp" COMPILE_FLAGS "${YACC_FLAGS} --defines=${CMAKE_CURRENT_BINARY_DIR}/fuel/FuelParser.hpp")
-re2c_target("${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelScanner.r2c" "${CMAKE_CURRENT_BINARY_DIR}/fuel/FuelScanner.cpp")
+if(REGENERATE_FUEL_PARSER)
+    # these are required due to having exes associated with them
+    find_package(BISON REQUIRED)
+    find_package(RE2C REQUIRED)
+
+    bison_target(FuelParser "${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelParser.y" "${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelParser.cpp" COMPILE_FLAGS "${YACC_FLAGS} --no-lines --defines=${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelParser.hpp")
+    re2c_target(NAME FuelScanner INPUT "${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelScanner.r2c" OUTPUT "${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelScanner.cpp" OPTIONS "--no-debug-info")
+endif()
 
 execute_process(
 	COMMAND git rev-parse --abbrev-ref HEAD
@@ -68,8 +70,8 @@ set(SIEGE_SOURCES
     "src/state/test/AspectMeshTestState.cpp"
     "src/state/test/TankTestState.cpp"
 
-    ${BISON_FuelParser_OUTPUTS}
-    ${CMAKE_CURRENT_BINARY_DIR}/fuel/FuelScanner.cpp
+    "src/gas/FuelScanner.cpp"
+    "src/gas/FuelParser.cpp"
     "src/gas/Fuel.cpp"
 
     "src/osg/FileNameMap.cpp"
@@ -135,8 +137,8 @@ if(MSVC)
     ASSIGN_SOURCE_GROUPS("Source Files" "${CMAKE_CURRENT_SOURCE_DIR}" ${SIEGE_SOURCES})
 endif()
 
-target_include_directories(OpenSiege PUBLIC src ${OPENSCENEGRAPH_INCLUDE_DIRS} ${EXTERN_INCLUDE_PATHS} ${CMAKE_CURRENT_BINARY_DIR}/fuel)
-target_link_libraries(OpenSiege PRIVATE ${OPENSCENEGRAPH_LIBRARIES} Threads::Threads "$<$<CXX_COMPILER_ID:GNU>:stdc++fs;${XDGBASEDIR_LIBRARIES}>" spdlog::spdlog)
+target_include_directories(OpenSiege PUBLIC src ${EXTERN_INCLUDE_PATHS} ${CMAKE_CURRENT_BINARY_DIR}/fuel)
+target_link_libraries(OpenSiege PRIVATE CONAN_PKG::openscenegraph CONAN_PKG::spdlog)
 
 
 install(TARGETS OpenSiege RUNTIME DESTINATION bin)
