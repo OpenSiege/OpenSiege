@@ -110,6 +110,7 @@ set(SIEGE_SOURCES
     "src/Game.cpp"
     "src/main.cpp"
     "src/ContentDb.cpp"
+    "src/World.cpp"
 )
 
 # main open siege target

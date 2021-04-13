@@ -7,9 +7,11 @@
 #include "osg/Aspect.hpp"
 #include "ContentDb.hpp"
 #include "world/Region.hpp"
+#include "World.hpp"
 #include "spdlog/fmt/ostr.h"
 
 #include <set>
+#include <chrono>
 #include <osgDB/ReadFile>
 #include <osg/Group>
 #include <osgDB/Options>
@@ -57,6 +59,35 @@ static std::ostream& operator << (std::ostream& s, const ehb::SiegePos& pos)
 
 namespace ehb
 {
+    class RemoveFromGraphAfterXSeconds : public osg::NodeCallback
+    {
+        float howLong = 0;
+        osg::Group& scene;
+        std::chrono::time_point <std::chrono::system_clock> startTime, now;
+
+    public:
+
+        RemoveFromGraphAfterXSeconds(float seconds, osg::Group& scene) : howLong(seconds), scene(scene)
+        {
+            startTime = std::chrono::system_clock::now();
+
+            spdlog::get("log")->info("startign timer");
+        }
+
+        virtual void operator()(osg::Node* node, osg::NodeVisitor* visitor)
+        {
+            now = std::chrono::system_clock::now();
+
+            auto test = std::chrono::duration_cast<std::chrono::milliseconds>(now - startTime).count();
+            spdlog::get("log")->info("duration : {}", test / 1000);
+            if (test / 1000 >= howLong)
+            {
+                spdlog::get("log")->info("we should be done now");
+                scene.removeChild(0, scene.getNumChildren());
+            }
+        }
+    };
+
     // since we are using software instancing we have to keep track of the guids of handled nodes as to not keep flipping things on and off
     class ToggleRegionLogicalFlags : public osg::NodeVisitor
     {
@@ -280,7 +311,12 @@ namespace ehb
                                 {
                                     if (auto nodeXform = dynamic_cast<osg::MatrixTransform*> (node))
                                     {
-                                        log->info("node you clicked was: 0x{:x}", nodeGuid);
+                                        osg::Vec3 trans = dynamic_cast<osg::MatrixTransform*>(node)->getMatrix().getTrans();
+
+                                        log->info("node you clicked was: {}, {}, {} 0x{:x}", trans.x(), trans.y(), trans.z(), nodeGuid);
+
+                                        World::drawDebugLine(scene, osg::Vec3(0, 0, 0), region->targetNode(), trans, nodeXform, osg::Vec4(1, 0, 0, 1), "Path Finding Line");
+
                                     }
                                 }
                             }
