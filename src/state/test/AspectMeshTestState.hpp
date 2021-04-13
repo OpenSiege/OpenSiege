@@ -3,6 +3,11 @@
 
 #include "state/IGameState.hpp"
 
+#include <osgAnimation/Animation>
+#include <osgAnimation/BasicAnimationManager>
+
+#include <spdlog/spdlog.h>
+
 namespace osg
 {
     class MatrixTransform;
@@ -17,24 +22,14 @@ namespace ehb
 {
     class IConfig;
     class IFileSys;
+    class ContentDb;
     class Aspect;
     class AspectMeshTestState : public IGameState
     {
 
-        const std::vector<std::string> farmgirl = {
-
-            "m_c_gah_fg_pos_a1.asp",
-            "m_c_gah_fg_pos_a2.asp",
-            "m_c_gah_fg_pos_a3.asp",
-            "m_c_gah_fg_pos_a4.asp",
-            "m_c_gah_fg_pos_a5.asp",
-            "m_c_gah_fg_pos_a6.asp",
-            "m_c_gah_fg_pos_a7.asp",
-        };
-
     public:
 
-        AspectMeshTestState(IGameStateMgr & gameStateMgr, IConfig & config, IFileSys& fileSys, osgViewer::Viewer& viewer, osg::Group& scene);
+        AspectMeshTestState(IGameStateMgr & gameStateMgr, IConfig & config, IFileSys& fileSys, osgViewer::Viewer& viewer, ContentDb& contentDb, osg::Group& scene);
 
         virtual ~AspectMeshTestState() = default;
 
@@ -49,18 +44,27 @@ namespace ehb
 
     private:
 
+        std::shared_ptr<spdlog::logger> log;
+
         IGameStateMgr & gameStateMgr;
         IConfig & config;
         IFileSys& fileSys;
+        ContentDb& contentDb;
 
         osgViewer::Viewer& viewer;
         osg::Group& scene;
 
         Aspect* mesh = nullptr;
         osg::MatrixTransform* transform = nullptr;
+
+        //! store these while we still use factory BasicAnimationManager
+        bool isFidgeting = true;
+        osg::ref_ptr<osgAnimation::Animation> fidgetAnimation = nullptr;
+        osg::ref_ptr<osgAnimation::Animation> walkAnimation = nullptr;
+        osg::ref_ptr<osgAnimation::BasicAnimationManager> animationManager = nullptr;
     };
 
-    inline AspectMeshTestState::AspectMeshTestState(IGameStateMgr& gameStateMgr, IConfig& config, IFileSys& fileSys, osgViewer::Viewer& viewer, osg::Group& scene) : gameStateMgr(gameStateMgr), config(config), fileSys(fileSys), scene(scene), viewer(viewer)
+    inline AspectMeshTestState::AspectMeshTestState(IGameStateMgr& gameStateMgr, IConfig& config, IFileSys& fileSys, osgViewer::Viewer& viewer, ContentDb& contentDb, osg::Group& scene) : gameStateMgr(gameStateMgr), config(config), fileSys(fileSys), scene(scene), viewer(viewer), contentDb(contentDb)
     {
     }
 }
