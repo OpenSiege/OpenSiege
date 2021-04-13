@@ -69,6 +69,7 @@ set(SIEGE_SOURCES
     "src/state/test/RegionTestState.cpp"
     "src/state/test/AspectMeshTestState.cpp"
     "src/state/test/TankTestState.cpp"
+    "src/state/test/UnveilingTestState.cpp"
 
     "src/gas/FuelScanner.cpp"
     "src/gas/FuelParser.cpp"
