@@ -7,6 +7,8 @@
 #include <osg/MatrixTransform>
 #include <osg/Group>
 #include <osgViewer/Viewer>
+#include <osgAnimation/Animation>
+#include <osgAnimation/BasicAnimationManager>
 #include <spdlog/spdlog.h>
 
 #include "osg/Aspect.hpp"
@@ -40,8 +42,22 @@ namespace ehb
             }
 #endif
 
+            if (auto animation = static_cast<osgAnimation::Animation*>(osgDB::readObjectFile("a_c_gah_fg_fs0_at.prs")); animation != nullptr)
+            {
+                log->info("loaded animation for use");
+
+                osg::ref_ptr<osgAnimation::BasicAnimationManager> animManager = new osgAnimation::BasicAnimationManager;
+                animation->setPlayMode(osgAnimation::Animation::LOOP);
+
+                animManager->registerAnimation(animation);
+                animManager->playAnimation(animation);
+
+                mesh->setUpdateCallback(animManager);
+            }
+
             // applying a skeleton messes with the bounding box size and expands it way more than it should
             mesh->applySkeleton();
+
 
             scene.addChild(transform);
         }

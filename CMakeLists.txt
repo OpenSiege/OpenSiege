@@ -77,11 +77,13 @@ set(SIEGE_SOURCES
     "src/osg/FileNameMap.cpp"
     "src/osg/SiegeNodeMesh.cpp"
     "src/osg/Aspect.cpp"
+    "src/osg/PRS.cpp"
 
     "src/osgPlugins/BinaryReader.cpp"
     "src/osgPlugins/ReaderWriterRAW.cpp"
     "src/osgPlugins/ReaderWriterSNO.cpp"
     "src/osgPlugins/ReaderWriterASP.cpp"
+    "src/osgPlugins/ReaderWriterPRS.cpp"
     "src/osgPlugins/ReaderWriterFont.cpp"
     "src/osgPlugins/ReaderWriterSiegeNodeList.cpp"
 

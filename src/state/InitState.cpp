@@ -14,6 +14,7 @@
 #include "osgPlugins/ReaderWriterFont.hpp"
 #include "osgPlugins/ReaderWriterSiegeNodeList.hpp"
 #include "osgPlugins/ReaderWriterASP.hpp"
+#include "osgPlugins/ReaderWriterPRS.hpp"
 
 #include "ui/ImageFont.hpp"
 #include "ContentDb.hpp"
@@ -45,6 +46,7 @@ namespace ehb
             osgDB::Registry::instance()->addReaderWriter(new ReaderWriterRAW(fileSys));
             osgDB::Registry::instance()->addReaderWriter(new ReaderWriterSNO(fileSys));
             osgDB::Registry::instance()->addReaderWriter(new ReaderWriterASP(fileSys));
+            osgDB::Registry::instance()->addReaderWriter(new ReaderWriterPRS(fileSys));
             osgDB::Registry::instance()->addReaderWriter(new ReaderWriterFont(fileSys));
             osgDB::Registry::instance()->addReaderWriter(new ReaderWriterSiegeNodeList(fileSys));
             
