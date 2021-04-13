@@ -524,6 +524,9 @@ std::vector<std::string> TankFile::Reader::getFileList() const
 		fileList.push_back(entry.first);
 	}
 
+	// add this since visual studio debug iterators throw errors when trying to merge into a set
+	std::sort(std::begin(fileList), std::end(fileList));
+
 	return fileList;
 }
 
@@ -540,6 +543,9 @@ std::vector<std::string> TankFile::Reader::getDirectoryList() const
 		}
 		dirList.push_back(entry.first);
 	}
+
+	// add this since visual studio debug iterators throw errors when trying to merge into a set
+	std::sort(std::begin(dirList), std::end(dirList));
 
 	return dirList;
 }
