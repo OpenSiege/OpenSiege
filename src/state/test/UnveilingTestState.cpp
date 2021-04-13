@@ -135,6 +135,40 @@ namespace ehb
             }
         }
 
+        if (auto farmgirl = contentDb.getGameObjectTmpl("farmgirl")) 
+        {
+            if (auto mesh = dynamic_cast<Aspect*>(osgDB::readNodeFile(farmgirl->valueOf("aspect:model") + ".asp")); mesh != nullptr)
+            {
+                mesh->applySkeleton();
+
+                SiegePos position(0, 0, 0, targetNodeGuid);
+
+                osg::ref_ptr<osg::MatrixTransform> transform = new osg::MatrixTransform;
+                transform->addChild(mesh);
+
+                if (auto localNode = region->transformForGuid(position.guid); localNode != nullptr)
+                {
+                    osg::Matrix copy = localNode->getMatrix();
+                    copy.preMultTranslate(position.pos);
+                    transform->setMatrix(copy);
+                }
+                else
+                {
+                    log->critical("failed to find the local transformation for targetNode");
+                }
+
+                region->addChild(transform);
+            }
+            else
+            {
+                log->critical("failed to find asp model for farmgirl");
+            }
+        }
+        else
+        {
+            log->critical("failed to find farmgirl template");
+        }
+
         // collect all files under our object path for loading
 #if 0
         for (const auto& filename : { "non_interactive.gas", "actor.gas" })
