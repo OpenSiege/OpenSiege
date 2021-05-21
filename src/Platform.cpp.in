@@ -1,6 +1,11 @@
 
 #include "Platform.hpp"
 
+#include <osg/GraphicsContext>
+#include <osg/GL2Extensions>
+#include <osg/Version>
+#include <osgViewer/Version>
+
 #include <spdlog/spdlog.h>
 
 namespace ehb
@@ -23,8 +28,8 @@ namespace ehb
         return platform;
     }
 
-    // shamelessly from osgEarth: https://github.com/gwaldron/osgearth/blob/b928fa754bb64170566e2ce053186f7c6fac750c/src/osgEarth/Capabilities
-    void generateCapabilities()
+    // shamelessly from osgEarth: https://github.com/gwaldron/osgearth/blob/master/src/osgEarth/Capabilities.cpp
+    void Platform::generateCapabilities()
     {
         static bool hasBeenRun = false;
         if (!hasBeenRun)
@@ -32,7 +37,58 @@ namespace ehb
             // we could probably utilize the graphics context when we start the game
             auto log = spdlog::get("game");
 
-            log->info("Generating capabilities of graphics card");
+            capabilities.numProcessors = std::thread::hardware_concurrency();
+
+            osg::GraphicsContext::ScreenIdentifier si;
+	        si.readDISPLAY();
+	        si.setUndefinedScreenDetailsToDefaultScreen();
+
+            osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits;
+    	    traits->hostName = si.hostName;
+	        traits->displayNum = si.displayNum;
+	        traits->screenNum = si.screenNum;
+            traits->x = 0;
+            traits->y = 0;
+            traits->width = 1;
+            traits->height = 1;
+            traits->windowDecoration = false;
+            traits->doubleBuffer = false;
+            traits->sharedContext = 0;
+            traits->pbuffer = false;
+            traits->glContextVersion = osg::DisplaySettings::instance()->getGLContextVersion();
+            traits->glContextProfileMask = osg::DisplaySettings::instance()->getGLContextProfileMask();
+
+            osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits.get());
+
+            if (gc.valid())
+            {
+                gc->realize();
+                gc->makeCurrent();
+
+                uint32_t id = gc->getState()->getContextID();
+
+                const osg::GL2Extensions* GL2 = osg::GL2Extensions::Get(id, true);
+
+                log->info("OSG Version:      {}", osgGetVersion());
+
+                log->info("Detected hardware capabilities:");
+
+                capabilities.vendor = std::string(reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
+                log->info("  Vendor = {}", capabilities.vendor);
+
+                capabilities.renderer = std::string(reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
+                log->info("  Renderer = {}", capabilities.renderer);
+
+                capabilities.version = std::string(reinterpret_cast<const char*>(glGetString(GL_VERSION)));
+                log->info("  Version = {}", capabilities.version);
+
+                capabilities.supportsGLSL = GL2->isGlslSupported;
+                if (capabilities.supportsGLSL)
+                {
+                    capabilities.GLSLversion = GL2->glslLanguageVersion;
+                    log->info("  GLSLVersion = {}", capabilities.GLSLversion);
+                }
+            }
 
             hasBeenRun = true;
         }
