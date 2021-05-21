@@ -8,6 +8,42 @@
 #include "world/WorldMapData.hpp"
 #include "osg/SiegeNodeMesh.hpp"
 
+#define GLSL400(src) "#version 400\n" #src
+
+namespace ehb
+{
+    const char* vertSource = GLSL400(
+        uniform mat4 ModelViewProjectionMatrix;
+    layout(location = 0) in vec4 Vertex;
+    void main(void)
+    {
+        gl_Position = ModelViewProjectionMatrix * Vertex;
+    }
+    );
+
+    const char* fragSource = GLSL400(
+        void main(void)
+    {
+        gl_FragColor = vec4(0, 1, 0, 1);
+    }
+    );
+
+    struct ModelViewProjectionMatrixCallback : public osg::Uniform::Callback {
+        ModelViewProjectionMatrixCallback(osg::Camera* camera) :
+            _camera(camera) {
+        }
+
+        virtual void operator()(osg::Uniform* uniform, osg::NodeVisitor* nv) {
+            osg::Matrixd viewMatrix = _camera->getViewMatrix();
+            osg::Matrixd modelMatrix = osg::computeLocalToWorld(nv->getNodePath());
+            osg::Matrixd modelViewProjectionMatrix = modelMatrix * viewMatrix * _camera->getProjectionMatrix();
+            uniform->set(modelViewProjectionMatrix);
+        }
+
+        osg::Camera* _camera;
+    };
+}
+
 namespace ehb
 {
     void FullMapTestState::enter()

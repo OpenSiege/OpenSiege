@@ -205,6 +205,8 @@ namespace ehb
             geometry->setColorArray(colors.get());
             geometry->setNormalArray(normals.get(), osg::Array::BIND_PER_VERTEX);
 
+            geometry->setVertexAttribArray(0, vertices, osg::Array::BIND_PER_VERTEX);
+
             // most nodes have 2 layers so we will map 2 units for now
             geometry->setTexCoordArray(0, tcoords.get());
             geometry->setTexCoordArray(1, tcoords.get());
