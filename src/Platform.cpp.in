@@ -1,6 +1,8 @@
 
 #include "Platform.hpp"
 
+#include <spdlog/spdlog.h>
+
 namespace ehb
 {
     const std::string Platform::Git::GIT_SHA1 = "@GIT_SHA1@";
@@ -19,6 +21,21 @@ namespace ehb
     {
         static Platform platform;
         return platform;
+    }
+
+    // shamelessly from osgEarth: https://github.com/gwaldron/osgearth/blob/b928fa754bb64170566e2ce053186f7c6fac750c/src/osgEarth/Capabilities
+    void generateCapabilities()
+    {
+        static bool hasBeenRun = false;
+        if (!hasBeenRun)
+        {
+            // we could probably utilize the graphics context when we start the game
+            auto log = spdlog::get("game");
+
+            log->info("Generating capabilities of graphics card");
+
+            hasBeenRun = true;
+        }
     }
 
     const std::string& Platform::getExecutablePath() const

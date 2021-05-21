@@ -18,6 +18,9 @@ namespace ehb
 
         static Platform& instance();
 
+        // not a huge fan of this
+        void generateCapabilities();
+
         const std::string& getExecutablePath() const;
 
     public:
@@ -27,6 +30,21 @@ namespace ehb
             static const std::string GIT_SHA1;
             static const std::string GIT_BRANCH;
         };
+
+        //! make sure the below are set to minimum spec defaults
+        struct Capabilities
+        {
+            std::string vendor;
+            std::string renderer;
+            std::string version;
+
+            int32_t numProcessors = 1;
+            
+            float GLSLversion = 1.0f;
+
+            bool supportsGLSL = false;
+
+        } capabilities;
 
     private:
 
