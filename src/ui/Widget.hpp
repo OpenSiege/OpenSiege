@@ -44,6 +44,8 @@ namespace ehb
         Rect rect;
         NormalizedRect uv;
 
+        struct { uint32_t layer = 0; uint32_t value = 0; } z;
+
     protected:
 
         WidgetComponent* baseComponent = nullptr;
@@ -52,6 +54,11 @@ namespace ehb
     inline const Rect& Widget::effectiveRect() const {
 
         return rect;
+    }
+
+    inline uint32_t Widget::drawOrder() const
+    {
+        return z.value;
     }
 
     inline uint32_t Widget::width() const
