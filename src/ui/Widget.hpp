@@ -9,11 +9,17 @@
 
 namespace ehb
 {
+    class Shell;
     class Widget : public osg::Group
     {
     public:
 
         Widget() = default;
+
+        //! before we can uncomment this I need to fix the console
+        // Widget(Shell& shell);
+
+        virtual ~Widget() = default;
 
         void setRect(int32_t left, int32_t top, int32_t right, int32_t bottom);
 
@@ -31,6 +37,11 @@ namespace ehb
         uint32_t screenHeight() const;
 
         void addDebugData();
+
+    protected:
+
+        // TODO: fix console
+        // Shell& shell;
 
     private:
 
