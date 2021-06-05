@@ -19,9 +19,16 @@ namespace ehb
 
         void setUVRect(float left, float top, float right, float bottom);
 
-        const Rect& effectiveRect() const { return rect; }
+        const Rect& effectiveRect() const;
+        uint32_t drawOrder() const;
 
         void loadTexture(const std::string& textureFileName, bool resizeWidget);
+
+        uint32_t width() const;
+        uint32_t height() const;
+
+        uint32_t screenWidth() const;
+        uint32_t screenHeight() const;
 
         void addDebugData();
 
@@ -34,4 +41,19 @@ namespace ehb
 
         WidgetComponent* baseComponent = nullptr;
     };
+
+    inline const Rect& Widget::effectiveRect() const {
+
+        return rect;
+    }
+
+    inline uint32_t Widget::width() const
+    {
+        return rect.width();
+    }
+
+    inline uint32_t Widget::height() const
+    {
+        return rect.height();
+    }
 }
