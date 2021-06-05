@@ -16,7 +16,9 @@ namespace ehb
     class IConfig;
     class IFileSys;
     class IGameStateMgr;
-    class Console : public Widget
+
+    //! the console cannot rely on the Widget system as its to needs to exist before most subsystems
+    class Console : public osg::Group
     {
     public:
 
@@ -35,6 +37,12 @@ namespace ehb
         void toggle();
 
         void resetCaret();
+
+        //! copied from Widget
+        void setRect(int32_t left, int32_t top, int32_t right, int32_t bottom);
+
+        //! copied from Widget
+        void addDebugData();
 
     private:
 
@@ -71,5 +79,9 @@ namespace ehb
         std::vector<std::unique_ptr<TextLine>> history;
 
         ConsoleContext context;
+
+        // this mimics the behavior in the widget but contained here as Widgets rely on Shell and console is special
+        // TODO: do we even need this?
+        Rect rect;
     };
 }
