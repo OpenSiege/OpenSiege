@@ -2,12 +2,13 @@
 #include "UITestState.hpp"
 
 #include <osgDB/ReadFile>
-#include <ui/ImageFont.hpp>
 #include <state/GameStateMgr.hpp>
 
+#include "ui/ImageFont.hpp"
 #include "ui/TextLine.hpp"
 #include "ui/Widget.hpp"
 #include "ui/Shell.hpp"
+#include "IFileSys.hpp"
 
 #include <spdlog/spdlog.h>
 
@@ -38,27 +39,56 @@ namespace ehb
         }
 #endif
 
-        auto data_bar = new Widget(shell);
-        data_bar->setName("data_bar");
-        data_bar->setRect(0, 449, 640, 480);
-        data_bar->loadTexture("b_gui_ig_mnu_statusbar", false);
-        // data_bar->addDebugData();
+        if (auto stream = fileSys.createInputStream("/ui/interfaces/backend/data_bar/data_bar.gas"))
+        {
+            log->debug("opened data_bar.gas");
 
-        auto dwidth = data_bar->width(); auto dheight = data_bar->height();
-        log->info("{} width is {} and height is {}", data_bar->getName(), data_bar->width(), data_bar->height());        
+            if (Fuel doc; doc.load(*stream))
+            {
+                if (auto gas = doc.child("data_bar:data_bar"))
+                {
+                    log->debug("reading in health potion gas block");
 
-        auto hp_button = new Widget(shell);
-        hp_button->setName("hp_button");
-        hp_button->setRect(45, 439, 67, 471);
-        hp_button->loadTexture("b_gui_ig_mnu_icon_health_up", false);
-        hp_button->setUVRect(0.000000, 0.000000, 0.687500, 1.000000);
-        // hp_button->addDebugData();
+                    // shell is required for all widgets
+                    auto data_bar = new Widget(shell);
 
-        auto hpwidth = hp_button->width(); auto hpheight = hp_button->height();
-        log->info("{} width is {} and height is {}", hp_button->getName(), hpwidth, hpheight);
+                    // test our name setting
+                    data_bar->setName(gas->name());
 
-        shell.addWidget(data_bar);
-        shell.addWidget(hp_button);
+                    // im trying to keep custom types out of the gas parser
+                    auto rectValue = gas->valueAsInt4("rect");
+                    data_bar->setRect(rectValue[0], rectValue[1], rectValue[2], rectValue[3]);
+                    log->debug("{} {} {} {}", rectValue[0], rectValue[1], rectValue[2], rectValue[3]);
+
+                    data_bar->loadTexture(gas->valueOf("texture"), false);
+
+                    // data_bar->addDebugData();
+
+                    auto dwidth = data_bar->width(); auto dheight = data_bar->height();
+                    log->info("{} width is {} and height is {}", data_bar->getName(), data_bar->width(), data_bar->height());
+
+                    shell.addWidget(data_bar);
+                }
+
+                if (auto gas = doc.child("data_bar:button_health_potions"))
+                {
+                    auto hp_button = new Widget(shell);
+                    hp_button->setName(gas->name());
+                    auto rectValue = gas->valueAsInt4("rect");
+                    hp_button->setRect(rectValue[0], rectValue[1], rectValue[2], rectValue[3]);
+                    hp_button->loadTexture(gas->valueOf("texture"), false);
+                    auto uvRectValue = gas->valueAsFloat4("uvcoords");
+                    hp_button->setUVRect(uvRectValue[0], uvRectValue[1], uvRectValue[2], uvRectValue[3]);
+
+                    // hp_button->addDebugData();
+
+                    auto hpwidth = hp_button->width(); auto hpheight = hp_button->height();
+                    log->info("{} width is {} and height is {}", hp_button->getName(), hpwidth, hpheight);
+
+                    shell.addWidget(hp_button);
+                }
+            }
+        }
     }
 
     void UITestState::leave()

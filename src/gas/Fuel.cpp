@@ -254,6 +254,35 @@ namespace ehb
         return defaultValue;
     }
 
+    std::array<int, 4> FuelBlock::valueAsInt4(const std::string& name, std::array<int, 4> defaultValue) const
+    {
+        if (const Attribute* attr = attribute(name))
+        {
+            const std::string& value = valueOf(name);
+
+            if (value.empty())
+            {
+                return defaultValue;
+            }
+
+            const auto itr1 = value.find(',');
+            const auto itr2 = value.find(',', itr1 + 1);
+            const auto itr3 = value.find(',', itr2 + 1);
+            const auto itr4 = value.find(',', itr3 + 1);
+
+            // don't read into these variable names too much
+            int x = std::stoi(value.substr(0, itr1));
+            int y = std::stoi(value.substr(itr1 + 1, itr2 - itr1 - 1));
+            int z = std::stoi(value.substr(itr2 + 1, itr3 - itr2 - 1));
+            int w = std::stoi(value.substr(itr3 + 1, itr4 - itr3 - 1));
+
+            return std::array<int, 4> {x, y, z, w};
+        }
+
+        return defaultValue;
+    }
+
+
     unsigned int FuelBlock::valueAsUInt(const std::string & name, unsigned int defaultValue) const
     {
         if (const Attribute * attr = attribute(name))
@@ -321,6 +350,34 @@ namespace ehb
             float z = std::stof(value.substr(itr2 + 1, itr3 - itr2 - 1));
 
             return std::array<float, 3> {x, y, z};
+        }
+
+        return defaultValue;
+    }
+
+    std::array<float, 4> FuelBlock::valueAsFloat4(const std::string& name, std::array<float, 4> defaultValue) const
+    {
+        if (const Attribute* attr = attribute(name))
+        {
+            const std::string& value = valueOf(name);
+
+            if (value.empty())
+            {
+                return defaultValue;
+            }
+
+            const auto itr1 = value.find(',');
+            const auto itr2 = value.find(',', itr1 + 1);
+            const auto itr3 = value.find(',', itr2 + 1);
+            const auto itr4 = value.find(',', itr3 + 1);
+
+            // don't read into these variable names too much
+            float x = std::stof(value.substr(0, itr1));
+            float y = std::stof(value.substr(itr1 + 1, itr2 - itr1 - 1));
+            float z = std::stof(value.substr(itr2 + 1, itr3 - itr2 - 1));
+            float w = std::stof(value.substr(itr3 + 1, itr4 - itr3 - 1));
+
+            return std::array<float, 4> {x, y, z, w};
         }
 
         return defaultValue;

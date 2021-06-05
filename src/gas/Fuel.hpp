@@ -103,12 +103,14 @@ namespace ehb
              */
             bool valueAsBool(const std::string & name, bool defaultValue = false) const;
             int valueAsInt(const std::string & name, int defaultValue = 0) const;
+            std::array<int, 4> valueAsInt4(const std::string& name, const std::array<int, 4> defaultValue = { 0, 0, 0, 0 }) const;
             unsigned int valueAsUInt(const std::string & name, unsigned int defaultValue = 0) const;
             float valueAsFloat(const std::string & name, float defaultValue = 0.f) const;
             std::string valueAsString(const std::string & name, const std::string & defaultValue = "") const;
 
             // extra types...
             std::array<float, 3> valueAsFloat3(const std::string & name, const std::array<float, 3> defaultValue = { 1.0, 1.0, 1.0 }) const;
+            std::array<float, 4> valueAsFloat4(const std::string& name, const std::array<float, 4> defaultValue = { 1.0, 1.0, 1.0, 1.0 }) const;
             osg::Vec3 valueAsVec3(const std::string & name, const osg::Vec3 & defaultValue = { 1.0, 1.0, 1.0 }) const; // don't use 1.f as osg::Vec3 could be doubles
             osg::Vec4 valueAsColor(const std::string & name, const osg::Vec4 & defaultValue = { 1.f, 1.f, 1.f, 1.f }) const;
             //SiegeRot valueAsSiegeRot(const std::string & name, const SiegeRot & defaultValue = { 0.0, 0.0, 0.0, 0.0, 0}) const;
