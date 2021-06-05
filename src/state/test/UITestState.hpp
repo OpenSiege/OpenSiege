@@ -12,11 +12,12 @@ namespace ehb
 {
     class IConfig;
     class IFileSys;
+    class Shell;
     class UITestState : public IGameState
     {
     public:
 
-        UITestState(IGameStateMgr & gameStateMgr, osgViewer::Viewer& viewer, IFileSys& fileSys, osg::Group& scene);
+        UITestState(IGameStateMgr & gameStateMgr, osgViewer::Viewer& viewer, IFileSys& fileSys, Shell& shell);
 
         virtual ~UITestState() = default;
 
@@ -30,11 +31,10 @@ namespace ehb
         IGameStateMgr & gameStateMgr;
         IFileSys& fileSys;
         osgViewer::Viewer& viewer;
-
-        osg::Group& scene;
+        Shell& shell;
     };
 
-    inline UITestState::UITestState(IGameStateMgr& gameStateMgr, osgViewer::Viewer &viewer, IFileSys& fileSys, osg::Group& scene) : gameStateMgr(gameStateMgr), viewer(viewer), fileSys(fileSys), scene(scene)
+    inline UITestState::UITestState(IGameStateMgr& gameStateMgr, osgViewer::Viewer &viewer, IFileSys& fileSys, Shell& shell) : gameStateMgr(gameStateMgr), viewer(viewer), fileSys(fileSys), shell(shell)
     {
     }
 }

@@ -1,16 +1,13 @@
 
 #include "UITestState.hpp"
 
-#include <osgViewer/Viewer>
 #include <osgDB/ReadFile>
-#include <osg/Group>
 #include <ui/ImageFont.hpp>
-#include <osg/PositionAttitudeTransform>
 #include <state/GameStateMgr.hpp>
 
 #include "ui/TextLine.hpp"
 #include "ui/Widget.hpp"
-#include "console/Console.hpp"
+#include "ui/Shell.hpp"
 
 #include <spdlog/spdlog.h>
 
@@ -20,12 +17,6 @@ namespace ehb
     {
         auto log = spdlog::get("log");
         log->info("UITestState::enter()");
-
-        //viewer.getCamera()->setClearColor(osg::Vec4(0.f, 0.f, 0.f, 1.f));
-
-        // remove this once widgets are in
-        scene.getOrCreateStateSet()->setMode(GL_DEPTH_TEST, false);
-        scene.getOrCreateStateSet()->setMode(GL_BLEND, true);
 
         std::string font = "b_gui_fnt_12p_copperplate-light";
 
@@ -59,13 +50,13 @@ namespace ehb
         hp_button->setUVRect(0.000000, 0.000000, 0.687500, 1.000000);
         //hp_button->addDebugData();
 
-        scene.addChild(data_bar);
-        scene.addChild(hp_button);
+        shell.addWidget(data_bar);
+        shell.addWidget(hp_button);
     }
 
     void UITestState::leave()
     {
-        scene.removeChildren(0, scene.getNumChildren());
+        shell.removeAllWidgets();
     }
 
     void UITestState::update(double deltaTime)

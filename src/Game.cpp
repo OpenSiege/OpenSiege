@@ -149,7 +149,7 @@ namespace ehb
         }
         else if (gameStateType == "UITestState")
         {
-            return new UITestState(gameStateMgr, viewer, fileSys, *scene2d);
+            return new UITestState(gameStateMgr, viewer, fileSys, shell);
         }
         else if (gameStateType == "RegionTestState")
         {

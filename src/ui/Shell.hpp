@@ -2,6 +2,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <vector>
 
 #include <spdlog/spdlog.h>
 
@@ -19,6 +20,7 @@ namespace osgGA
 namespace ehb
 {
     class IFileSys;
+    class Widget;
     class Shell
     {
     public:
@@ -33,13 +35,21 @@ namespace ehb
         uint32_t screenWidth() const;
         uint32_t screenHeight() const;
 
+        void addWidget(Widget* widget);
+
+        // TODO: remove
+        void removeAllWidgets();
+
     private:
 
         // observer pointer?
         osg::Group* scene2d = nullptr;
 
-        struct { int32_t x, y; } mouse;
-        struct { uint32_t width, height; } screen;
+        struct { int32_t x = 0, y = 0; } mouse;
+        struct { uint32_t width = 0, height = 0; } screen;
+
+        //! this contains all the widgets that are loaded and sorted by their ds z order back to front
+        std::vector<Widget*> backToFront;
 
         std::shared_ptr<spdlog::logger> log;
     };

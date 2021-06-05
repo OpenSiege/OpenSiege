@@ -1,6 +1,8 @@
 
 #include "Shell.hpp"
 
+#include "Widget.hpp"
+
 #include <osgGA/GUIEventAdapter>
 
 namespace ehb
@@ -24,6 +26,12 @@ namespace ehb
         if (root != nullptr)
         {
             scene2d = root;
+
+            // turn off depth testing since we will be using DS z order sorting
+            scene2d->getOrCreateStateSet()->setMode(GL_DEPTH_TEST, false);
+
+            // ensure proper blending for the entire shell
+            scene2d->getOrCreateStateSet()->setMode(GL_BLEND, true);
 
             log->debug("scene2d has been setup correctly for the shell");
         }
@@ -102,5 +110,20 @@ namespace ehb
         }
 
         return false;
+    }
+
+    void Shell::addWidget(Widget* widget)
+    {
+        if (widget != nullptr)
+        {
+            scene2d->addChild(widget);
+            
+            // TODO: sort widgets
+        }
+    }
+
+    void Shell::removeAllWidgets()
+    {
+        scene2d->removeChildren(0, scene2d->getNumChildren());
     }
 }
