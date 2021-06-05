@@ -91,6 +91,8 @@ namespace ehb
         {
             setName(fuel->name());
 
+            z.value = fuel->valueAsInt("draw_order");
+
             auto rectValue = fuel->valueAsInt4("rect");
             setRect(rectValue[0], rectValue[1], rectValue[2], rectValue[3]);
 

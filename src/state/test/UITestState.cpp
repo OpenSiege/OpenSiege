@@ -49,12 +49,11 @@ namespace ehb
                 // the health potion button should end up on top of the data_bar
 
                 auto hp_button = new Widget(shell); hp_button->buildWidgetFromFuelBlock(doc.child("data_bar:button_health_potions"));
-                log->info("{} width is {} and height is {}", hp_button->getName(), hp_button->width(), hp_button->height());
+                log->info("{} width is {} and height is {} and draw_order is {}", hp_button->getName(), hp_button->width(), hp_button->height(), hp_button->drawOrder());
                 shell.addWidget(hp_button);
 
-                auto data_bar = new Widget(shell);
-                data_bar->buildWidgetFromFuelBlock(doc.child("data_bar:data_bar"));
-                log->info("{} width is {} and height is {}", data_bar->getName(), data_bar->width(), data_bar->height());
+                auto data_bar = new Widget(shell); data_bar->buildWidgetFromFuelBlock(doc.child("data_bar:data_bar"));
+                log->info("{} width is {} and height is {} and draw_order is {}", data_bar->getName(), data_bar->width(), data_bar->height(), data_bar->drawOrder());
 
                 shell.addWidget(data_bar);
             }
