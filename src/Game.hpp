@@ -6,6 +6,7 @@
 #include "filesystem/LocalFileSys.hpp"
 #include "filesystem/TankFileSys.hpp"
 #include "ContentDb.hpp"
+#include "ui/Shell.hpp"
 
 #include "console/Console.hpp"
 
@@ -36,11 +37,17 @@ namespace ehb
 
         void setupScene();
 
+        /* could some of the below could better be served as pointers?
+         * we have to call init on a lot the below subsystem but that also gets a bit finer control
+         * for intialization
+         * */
+
         IConfig& config;
         GameStateMgr gameStateMgr;
         // LocalFileSys fileSys; // TODO: remove local file system in favor of tank file system
         TankFileSys fileSys;
         ContentDb contentDb;
+        Shell shell;
 
         osgViewer::Viewer viewer;
 

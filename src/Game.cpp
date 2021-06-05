@@ -133,7 +133,7 @@ namespace ehb
     {
         if (gameStateType == "InitState")
         {
-            return new InitState(gameStateMgr, config, fileSys, contentDb, *console);
+            return new InitState(gameStateMgr, config, fileSys, contentDb, *console, shell, scene3d, scene2d);
         }
         else if (gameStateType == "ExitState")
         {
@@ -198,7 +198,8 @@ namespace ehb
             return console->handle(event, action);
         }
 
-        return gameStateMgr.handle(event, action);
+        // forward the events to the correct game state and ui shell
+        return gameStateMgr.handle(event, action) || shell.handle(event, action);
     }
 
     void Game::setupScene()

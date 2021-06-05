@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#include <spdlog/spdlog.h>
+
 namespace osg
 {
     class Group;
@@ -38,6 +40,8 @@ namespace ehb
 
         struct { int32_t x, y; } mouse;
         struct { uint32_t width, height; } screen;
+
+        std::shared_ptr<spdlog::logger> log;
     };
 
     inline int32_t Shell::mouseX() const
@@ -48,5 +52,15 @@ namespace ehb
     inline int32_t Shell::mouseY() const
     {
         return mouse.y;
+    }
+
+    inline uint32_t Shell::screenWidth() const
+    {
+        return screen.width;
+    }
+
+    inline uint32_t Shell::screenHeight() const
+    {
+        return screen.height;
     }
 }

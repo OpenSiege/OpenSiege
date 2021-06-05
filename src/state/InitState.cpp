@@ -17,6 +17,7 @@
 #include "osgPlugins/ReaderWriterPRS.hpp"
 
 #include "ui/ImageFont.hpp"
+#include "ui/Shell.hpp"
 #include "ContentDb.hpp"
 #include "console/Console.hpp"
 
@@ -76,6 +77,8 @@ namespace ehb
         osg::ref_ptr<ImageFont> imageFont = osgDB::readRefFile<ImageFont>("/ui/fonts/fonts.gas", options);
         console.font = imageFont;
         console.resetCaret();
+
+        shell.init(fileSys, scene2d, 800, 600);
 
         // TODO: go to the next state
         if (const std::string state = config.getString("state"); !state.empty())

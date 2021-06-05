@@ -3,17 +3,24 @@
 
 #include "IGameState.hpp"
 
+namespace osg
+{
+    class Group;
+}
+
 namespace ehb
 {
     class IConfig;
     class IFileSys;
     class ContentDb;
     class Console;
+    class Shell;
     class InitState : public IGameState
     {
     public:
 
-        InitState(IGameStateMgr & gameStateMgr, IConfig & config, IFileSys & fileSys, ContentDb& contentDb, Console& console);
+        //! im not a huge fan of passing through the pointers for the 2 osg groups. these need to be elvated to a subsystem somewhere
+        InitState(IGameStateMgr & gameStateMgr, IConfig & config, IFileSys & fileSys, ContentDb& contentDb, Console& console, Shell& shell, osg::Group* scene3d, osg::Group* scene2d);
 
         virtual ~InitState() = default;
 
@@ -29,9 +36,13 @@ namespace ehb
         IFileSys& fileSys;
         ContentDb& contentDb;
         Console& console;
+        Shell& shell;
+
+        // seems hacky
+        osg::Group* scene3d = nullptr, *scene2d = nullptr;
     };
 
-    inline InitState::InitState(IGameStateMgr& gameStateMgr, IConfig& config, IFileSys& fileSys, ContentDb& contentDb, Console& console) : gameStateMgr(gameStateMgr), config(config), fileSys(fileSys), contentDb(contentDb), console(console)
+    inline InitState::InitState(IGameStateMgr& gameStateMgr, IConfig& config, IFileSys& fileSys, ContentDb& contentDb, Console& console, Shell& shell, osg::Group* scene3d, osg::Group* scene2d) : gameStateMgr(gameStateMgr), config(config), fileSys(fileSys), contentDb(contentDb), console(console), shell(shell), scene3d(scene3d), scene2d(scene2d)
     {
     }
 }
