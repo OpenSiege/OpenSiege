@@ -47,32 +47,16 @@ namespace ehb
             {
                 // intentionally add the hp button first so we can test that our z sorting is working
                 // the health potion button should end up on top of the data_bar
-                if (auto gas = doc.child("data_bar:button_health_potions"))
-                {
-                    auto hp_button = new Widget(shell);
-                    hp_button->buildWidgetFromFuelBlock(gas);
-                    // hp_button->addDebugData();
 
-                    auto hpwidth = hp_button->width(); auto hpheight = hp_button->height();
-                    log->info("{} width is {} and height is {}", hp_button->getName(), hpwidth, hpheight);
+                auto hp_button = new Widget(shell); hp_button->buildWidgetFromFuelBlock(doc.child("data_bar:button_health_potions"));
+                log->info("{} width is {} and height is {}", hp_button->getName(), hp_button->width(), hp_button->height());
+                shell.addWidget(hp_button);
 
-                    shell.addWidget(hp_button);
-                }
+                auto data_bar = new Widget(shell);
+                data_bar->buildWidgetFromFuelBlock(doc.child("data_bar:data_bar"));
+                log->info("{} width is {} and height is {}", data_bar->getName(), data_bar->width(), data_bar->height());
 
-                if (auto gas = doc.child("data_bar:data_bar"))
-                {
-                    log->debug("reading in health potion gas block");
-
-                    // shell is required for all widgets
-                    auto data_bar = new Widget(shell);
-
-                    data_bar->buildWidgetFromFuelBlock(gas);
-
-                    auto dwidth = data_bar->width(); auto dheight = data_bar->height();
-                    log->info("{} width is {} and height is {}", data_bar->getName(), data_bar->width(), data_bar->height());
-
-                    shell.addWidget(data_bar);
-                }
+                shell.addWidget(data_bar);
             }
         }
     }
