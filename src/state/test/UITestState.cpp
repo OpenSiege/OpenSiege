@@ -45,6 +45,26 @@ namespace ehb
 
             if (Fuel doc; doc.load(*stream))
             {
+                // intentionally add the hp button first so we can test that our z sorting is working
+                // the health potion button should end up on top of the data_bar
+                if (auto gas = doc.child("data_bar:button_health_potions"))
+                {
+                    auto hp_button = new Widget(shell);
+                    hp_button->setName(gas->name());
+                    auto rectValue = gas->valueAsInt4("rect");
+                    hp_button->setRect(rectValue[0], rectValue[1], rectValue[2], rectValue[3]);
+                    hp_button->loadTexture(gas->valueOf("texture"), false);
+                    auto uvRectValue = gas->valueAsFloat4("uvcoords");
+                    hp_button->setUVRect(uvRectValue[0], uvRectValue[1], uvRectValue[2], uvRectValue[3]);
+
+                    // hp_button->addDebugData();
+
+                    auto hpwidth = hp_button->width(); auto hpheight = hp_button->height();
+                    log->info("{} width is {} and height is {}", hp_button->getName(), hpwidth, hpheight);
+
+                    shell.addWidget(hp_button);
+                }
+
                 if (auto gas = doc.child("data_bar:data_bar"))
                 {
                     log->debug("reading in health potion gas block");
@@ -68,24 +88,6 @@ namespace ehb
                     log->info("{} width is {} and height is {}", data_bar->getName(), data_bar->width(), data_bar->height());
 
                     shell.addWidget(data_bar);
-                }
-
-                if (auto gas = doc.child("data_bar:button_health_potions"))
-                {
-                    auto hp_button = new Widget(shell);
-                    hp_button->setName(gas->name());
-                    auto rectValue = gas->valueAsInt4("rect");
-                    hp_button->setRect(rectValue[0], rectValue[1], rectValue[2], rectValue[3]);
-                    hp_button->loadTexture(gas->valueOf("texture"), false);
-                    auto uvRectValue = gas->valueAsFloat4("uvcoords");
-                    hp_button->setUVRect(uvRectValue[0], uvRectValue[1], uvRectValue[2], uvRectValue[3]);
-
-                    // hp_button->addDebugData();
-
-                    auto hpwidth = hp_button->width(); auto hpheight = hp_button->height();
-                    log->info("{} width is {} and height is {}", hp_button->getName(), hpwidth, hpheight);
-
-                    shell.addWidget(hp_button);
                 }
             }
         }
