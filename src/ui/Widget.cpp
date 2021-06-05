@@ -11,13 +11,10 @@
 
 namespace ehb
 {
-    //! need to fix console before we can do this
-#if 0
     Widget::Widget(Shell& shell) : shell(shell)
     {
 
     }
-#endif
 
     void Widget::setRect(int32_t left, int32_t top, int32_t right, int32_t bottom)
     {
@@ -77,8 +74,6 @@ namespace ehb
         }
     }
 
-    //! before we can uncomment this I need to fix the console
-#if 0
     inline uint32_t Widget::screenWidth() const
     {
         return shell.screenWidth();
@@ -88,7 +83,6 @@ namespace ehb
     {
         return shell.screenHeight();
     }
-#endif
 
     void Widget::addDebugData()
     {

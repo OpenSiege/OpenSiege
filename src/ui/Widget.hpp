@@ -14,10 +14,7 @@ namespace ehb
     {
     public:
 
-        Widget() = default;
-
-        //! before we can uncomment this I need to fix the console
-        // Widget(Shell& shell);
+        Widget(Shell& shell);
 
         virtual ~Widget() = default;
 
@@ -40,8 +37,7 @@ namespace ehb
 
     protected:
 
-        // TODO: fix console
-        // Shell& shell;
+        Shell& shell;
 
     private:
 
