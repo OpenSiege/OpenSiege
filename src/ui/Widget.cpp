@@ -2,6 +2,7 @@
 #include "Widget.hpp"
 
 #include "Shell.hpp"
+#include "gas/Fuel.hpp"
 
 #include <osg/Geometry>
 #include <osgDB/ReadFile>
@@ -82,6 +83,29 @@ namespace ehb
     inline uint32_t Widget::screenHeight() const
     {
         return shell.screenHeight();
+    }
+
+    void Widget::buildWidgetFromFuelBlock(FuelBlock* fuel)
+    {
+        if (fuel != nullptr) // check if type of widget?
+        {
+            setName(fuel->name());
+
+            auto rectValue = fuel->valueAsInt4("rect");
+            setRect(rectValue[0], rectValue[1], rectValue[2], rectValue[3]);
+
+            if (auto textureName = fuel->valueOf("texture"); !textureName.empty())
+            {
+                loadTexture(textureName);
+
+                auto uvRectValue = fuel->valueAsFloat4("uvcoords");
+                setUVRect(uvRectValue[0], uvRectValue[1], uvRectValue[2], uvRectValue[3]);
+            }
+        }
+        else
+        {
+            spdlog::get("log")->critical("Somebody is trying to use a FuelBlock to construct a widget but the block is null");
+        }
     }
 
     void Widget::addDebugData()

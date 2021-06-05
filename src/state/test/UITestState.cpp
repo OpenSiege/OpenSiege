@@ -50,13 +50,7 @@ namespace ehb
                 if (auto gas = doc.child("data_bar:button_health_potions"))
                 {
                     auto hp_button = new Widget(shell);
-                    hp_button->setName(gas->name());
-                    auto rectValue = gas->valueAsInt4("rect");
-                    hp_button->setRect(rectValue[0], rectValue[1], rectValue[2], rectValue[3]);
-                    hp_button->loadTexture(gas->valueOf("texture"), false);
-                    auto uvRectValue = gas->valueAsFloat4("uvcoords");
-                    hp_button->setUVRect(uvRectValue[0], uvRectValue[1], uvRectValue[2], uvRectValue[3]);
-
+                    hp_button->buildWidgetFromFuelBlock(gas);
                     // hp_button->addDebugData();
 
                     auto hpwidth = hp_button->width(); auto hpheight = hp_button->height();
@@ -72,17 +66,7 @@ namespace ehb
                     // shell is required for all widgets
                     auto data_bar = new Widget(shell);
 
-                    // test our name setting
-                    data_bar->setName(gas->name());
-
-                    // im trying to keep custom types out of the gas parser
-                    auto rectValue = gas->valueAsInt4("rect");
-                    data_bar->setRect(rectValue[0], rectValue[1], rectValue[2], rectValue[3]);
-                    log->debug("{} {} {} {}", rectValue[0], rectValue[1], rectValue[2], rectValue[3]);
-
-                    data_bar->loadTexture(gas->valueOf("texture"), false);
-
-                    // data_bar->addDebugData();
+                    data_bar->buildWidgetFromFuelBlock(gas);
 
                     auto dwidth = data_bar->width(); auto dheight = data_bar->height();
                     log->info("{} width is {} and height is {}", data_bar->getName(), data_bar->width(), data_bar->height());

@@ -9,6 +9,7 @@
 
 namespace ehb
 {
+    class FuelBlock;
     class Shell;
     class Widget : public osg::Group
     {
@@ -35,6 +36,9 @@ namespace ehb
 
         uint32_t screenWidth() const;
         uint32_t screenHeight() const;
+
+        // TODO: remove in favour of a ReaderWriter?
+        void buildWidgetFromFuelBlock(FuelBlock* fuel);
 
         void addDebugData();
 
