@@ -25,7 +25,10 @@ namespace ehb
         const Rect& effectiveRect() const;
         uint32_t drawOrder() const;
 
-        void loadTexture(const std::string& textureFileName, bool resizeWidget);
+        void setLayer(uint32_t value) { z.layer = value; }
+        uint32_t layer() const { return z.layer; }
+
+        void loadTexture(const std::string& textureFileName, bool resizeWidget = false);
 
         uint32_t width() const;
         uint32_t height() const;
