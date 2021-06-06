@@ -30,6 +30,8 @@ namespace ehb
         void setLayer(uint32_t value) { z.layer = value; }
         uint32_t layer() const { return z.layer; }
 
+        bool isTopMost() const;
+
         void loadTexture(const std::string& textureFileName, bool resizeWidget = false);
 
         uint32_t width() const;
@@ -67,6 +69,11 @@ namespace ehb
     inline uint32_t Widget::drawOrder() const
     {
         return z.value;
+    }
+
+    inline bool Widget::isTopMost() const
+    {
+        return z.layer == 1;
     }
 
     inline uint32_t Widget::width() const

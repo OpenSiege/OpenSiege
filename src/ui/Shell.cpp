@@ -4,6 +4,38 @@
 #include "Widget.hpp"
 
 #include <osgGA/GUIEventAdapter>
+#include <osgUtil/RenderBin>
+
+#include <spdlog/spdlog.h>
+
+namespace ehb
+{
+    // working from https://github.com/gwaldron/osgearth/blob/master/src/osgEarth/ScreenSpaceLayout.cpp
+    struct SortCallback : public osgUtil::RenderBin::SortCallback
+    {
+        virtual void sortImplementation(osgUtil::RenderBin* bin) override
+        {
+            auto& renderLeafList = bin->getRenderLeafList();
+
+            bin->copyLeavesFromStateGraphListToRenderLeafList();
+
+            std::sort(renderLeafList.begin(), renderLeafList.end(), [](const osgUtil::RenderLeaf* lhs, const osgUtil::RenderLeaf* rhs)
+                {
+                    uint32_t l1 = 0, l2 = 0;
+                    uint32_t z1 = 0, z2 = 0;
+
+                    lhs->getDrawable()->getUserValue("layer", l1);
+                    rhs->getDrawable()->getUserValue("layer", l2);
+
+                    lhs->getDrawable()->getUserValue("draw_order", z1);
+                    rhs->getDrawable()->getUserValue("draw_order", z2);
+
+                    if (l1 == l2) return z1 < z2;
+                    return l1 < l2;
+                });
+        }
+    };
+}
 
 namespace ehb
 {
@@ -32,6 +64,12 @@ namespace ehb
 
             // ensure proper blending for the entire shell
             scene2d->getOrCreateStateSet()->setMode(GL_BLEND, true);
+
+            // ds style z order sorting
+            osg::ref_ptr<osgUtil::RenderBin> renderBin = osgUtil::RenderBin::createRenderBin("UIShell");
+            renderBin->setSortCallback(new SortCallback);
+
+            osgUtil::RenderBin::addRenderBinPrototype("UIShell", renderBin);
 
             log->debug("scene2d has been setup correctly for the shell");
         }
@@ -118,8 +156,36 @@ namespace ehb
         {
             scene2d->addChild(widget);
             
-            // TODO: sort widgets
+            updateBackToFront();
         }
+    }
+
+    void Shell::updateBackToFront()
+    {
+        backToFront.clear();
+
+        for (unsigned int i = 0; i < scene2d->getNumChildren(); i++)
+        {
+            if (auto group = scene2d->getChild(i)->asGroup())
+            {
+                if (group->getNodeMask() != 0)
+                {
+                    for (unsigned int j = 0; j < group->getNumChildren(); j++)
+                    {
+                        if (auto widget = dynamic_cast<Widget*>(group->getChild(j)))
+                        {
+                            backToFront.emplace_back(widget);
+                        }
+                    }
+                }
+            }
+        }
+
+        std::sort(backToFront.begin(), backToFront.end(), [](const auto& lhs, const auto& rhs)
+            {
+                if (lhs->isTopMost() == rhs->isTopMost()) return lhs->drawOrder() < rhs->drawOrder();
+                return rhs->isTopMost();
+            });
     }
 
     void Shell::removeAllWidgets()

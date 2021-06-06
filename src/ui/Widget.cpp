@@ -89,8 +89,11 @@ namespace ehb
     {
         if (fuel != nullptr) // check if type of widget?
         {
+            getOrCreateStateSet()->setRenderBinDetails(999, "UIShell");
+
             setName(fuel->name());
 
+            // its important this is setup immediately as when applying textures or resizes this value will be used
             z.value = fuel->valueAsInt("draw_order");
 
             auto rectValue = fuel->valueAsInt4("rect");

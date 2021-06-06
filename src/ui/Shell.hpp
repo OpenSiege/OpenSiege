@@ -52,6 +52,8 @@ namespace ehb
         std::vector<Widget*> backToFront;
 
         std::shared_ptr<spdlog::logger> log;
+
+        void updateBackToFront();
     };
 
     inline int32_t Shell::mouseX() const
