@@ -38,7 +38,7 @@ namespace ehb
         setScale(osg::Vec3(newRect.width(), newRect.height(), 1));
 
         // used for draw order sorting
-        //getChild(0)->setUserValue("draw_order", widget.drawOrder());
-        //getChild(0)->setUserValue("layer", widget.layer());
+        getChild(0)->setUserValue("draw_order", widget.drawOrder());
+        getChild(0)->setUserValue("layer", widget.layer());
     }
 }
