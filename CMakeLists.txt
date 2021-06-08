@@ -4,23 +4,30 @@ project(OpenSiege)
 # add custom cmake modules
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup(TARGETS)
+option(DISABLE_MSVC_DEBUG_ITERATOR "Disable the debug iterator for MSVC. All libraries must be built with the same option. This will also turn off Conan." OFF)
+
+# if we want to disable debug iterators then we need to make sure Conan doesn't do its thing
+# this should probably be fixed in all the upstream packages to include a debug iterator flag
+if(DISABLE_MSVC_DEBUG_ITERATOR)
+
+    # make sure we set the option globally for all imported projects since some will be built during compilation
+    add_compile_definitions("_ITERATOR_DEBUG_LEVEL=0")
+
+    # required since we are no longer using Conan to find our dependencies
+    find_package(OpenSceneGraph REQUIRED COMPONENTS osg osgDB osgViewer osgGA osgText osgAnimation osgUtil)
+    find_package(Threads REQUIRED)
+    
+    # quiet config since we will be downloading and building from scratch
+    find_package(spdlog CONFIG QUIET)
+else()
+    include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+    conan_basic_setup(TARGETS)
+endif()
 
 if (UNIX)
     find_package(PkgConfig)
     pkg_check_modules(XDGBASEDIR REQUIRED libxdg-basedir)
 endif(UNIX)
-
-# windows specific - DO NOT ENABLE UNLESS ABSOLUTELY NECESSARY
-option(DISABLE_MSVC_DEBUG_ITERATOR "Disable the debug iterator for MSVC. All libraries must be built with the same option" OFF)
-
-if(MSVC)
-    if(DISABLE_MSVC_DEBUG_ITERATOR)
-        # global compile definition to make sure the definition propagates to external projects
-        add_compile_definitions("_ITERATOR_DEBUG_LEVEL=0")
-    endif()
-endif()
 
 add_subdirectory(extern)
 
@@ -140,8 +147,13 @@ if(MSVC)
     ASSIGN_SOURCE_GROUPS("Source Files" "${CMAKE_CURRENT_SOURCE_DIR}" ${SIEGE_SOURCES})
 endif()
 
-target_include_directories(OpenSiege PUBLIC src ${EXTERN_INCLUDE_PATHS} ${CMAKE_CURRENT_BINARY_DIR}/fuel)
-target_link_libraries(OpenSiege PRIVATE CONAN_PKG::openscenegraph CONAN_PKG::spdlog)
+if(DISABLE_MSVC_DEBUG_ITERATOR)
+    target_include_directories(OpenSiege PUBLIC src ${OPENSCENEGRAPH_INCLUDE_DIRS} ${EXTERN_INCLUDE_PATHS} ${CMAKE_CURRENT_BINARY_DIR}/fuel)
+    target_link_libraries(OpenSiege PRIVATE ${OPENSCENEGRAPH_LIBRARIES} Threads::Threads "$<$<CXX_COMPILER_ID:GNU>:stdc++fs;${XDGBASEDIR_LIBRARIES}>" spdlog::spdlog)
+else()
+    target_include_directories(OpenSiege PUBLIC src ${EXTERN_INCLUDE_PATHS} ${CMAKE_CURRENT_BINARY_DIR}/fuel)
+    target_link_libraries(OpenSiege PRIVATE CONAN_PKG::openscenegraph CONAN_PKG::spdlog)
+endif()
 
 
 install(TARGETS OpenSiege RUNTIME DESTINATION bin)

@@ -4,6 +4,15 @@ include(FetchContent)
 # we are not importing ValveFileVDF here as it causes a test
 # project to be imported
 
+if(DISABLE_MSVC_DEBUG_ITERATOR)
+    FetchContent_Declare(
+        spdlog
+        GIT_REPOSITORY https://github.com/gabime/spdlog.git
+        GIT_TAG v1.x
+    )
+    FetchContent_MakeAvailable(spdlog)
+endif()
+
 FetchContent_Declare(
     whereami
     GIT_REPOSITORY https://github.com/gpakosz/whereami.git
