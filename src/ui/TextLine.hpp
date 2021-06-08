@@ -8,7 +8,7 @@
 namespace ehb
 {
     class Font;
-    struct TextLine
+    struct TextLine final
     {
         std::string text;
         osg::Vec4 color = { 1.f, 1.f, 1.f, 1.f };

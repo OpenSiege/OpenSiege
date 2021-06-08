@@ -12,7 +12,7 @@ namespace ehb
 {
     struct FourCC final
     {
-        uint8_t c0, c1, c2, c3;
+        uint8_t c0 = 0, c1 = 0, c2 = 0, c3 = 0;
     };
 
     bool operator == (FourCC a, FourCC b) noexcept;

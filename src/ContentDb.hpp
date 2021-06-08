@@ -14,7 +14,7 @@ namespace gas
 namespace ehb
 {
     class IFileSys;
-    class ContentDb
+    class ContentDb final
     {
     public:
 

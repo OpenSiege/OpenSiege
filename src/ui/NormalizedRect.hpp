@@ -5,19 +5,15 @@
 
 namespace ehb
 {
-    struct NormalizedRect
+    struct NormalizedRect final
     {
-        float left, right, top, bottom;
+        float left = 0.0f, right = 0.0f, top = 0.0f, bottom = 0.0f;
 
     public:
 
-        NormalizedRect();
+        NormalizedRect() = default;
         NormalizedRect(float left, float top, float right, float bottom);
     };
-
-    inline NormalizedRect::NormalizedRect() : left(0), top(0), right(0), bottom(0)
-    {
-    }
 
     inline NormalizedRect::NormalizedRect(float left, float top, float right, float bottom) : left(left), top(top), right(right), bottom(bottom)
     {

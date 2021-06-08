@@ -15,11 +15,11 @@ namespace ehb
     class ContentDb;
     class Console;
     class Shell;
-    class InitState : public IGameState
+    class InitState final : public IGameState
     {
     public:
 
-        //! im not a huge fan of passing through the pointers for the 2 osg groups. these need to be elvated to a subsystem somewhere
+        //! I'm not a huge fan of passing through the pointers for the 2 osg groups. these need to be elevated to a subsystem somewhere
         InitState(IGameStateMgr & gameStateMgr, IConfig & config, IFileSys & fileSys, ContentDb& contentDb, Console& console, Shell& shell, osg::Group* scene3d, osg::Group* scene2d);
 
         virtual ~InitState() = default;

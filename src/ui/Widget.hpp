@@ -12,7 +12,7 @@ namespace ehb
     class FuelBlock;
     class Shell;
     class WidgetComponent;
-    class Widget : public osg::Group
+    class Widget final : public osg::Group
     {
     public:
 

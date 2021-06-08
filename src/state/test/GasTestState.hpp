@@ -7,7 +7,7 @@ namespace ehb
 {
     class IConfig;
     class IFileSys;
-    class GasTestState : public IGameState
+    class GasTestState final : public IGameState
     {
     public:
 

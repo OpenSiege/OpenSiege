@@ -14,15 +14,15 @@ namespace ehb
 {
     struct Glyph
     {
-        uint32_t width;
-        float uv1, uv2, uv3, uv4;
+        uint32_t width = 0;
+        float uv1 = 0.0f, uv2 = 0.0f, uv3 = 0.0f, uv4 = 0.0f;
     };
 
-    class ImageFont : public Font
+    class ImageFont final : public Font
     {
     public:
 
-        ImageFont(osg::ref_ptr<osg::Texture2D> texture, uint32_t height);
+        ImageFont(osg::ref_ptr<osg::Texture2D> texture, uint32_t height = 0);
 
         virtual ~ImageFont() = default;
 
@@ -36,7 +36,7 @@ namespace ehb
     private:
 
         std::optional<Glyph> eachGlyph[0xff];
-        osg::ref_ptr<osg::Texture2D> texture;
-        uint32_t height;
+        osg::ref_ptr<osg::Texture2D> texture = nullptr;
+        uint32_t height = 0;
     };
 }

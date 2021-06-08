@@ -21,7 +21,7 @@ namespace ehb
 {
     class IFileSys;
     class Widget;
-    class Shell
+    class Shell final
     {
     public:
 

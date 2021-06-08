@@ -9,13 +9,13 @@
 
 namespace ehb
 {
-    struct Rect
+    struct Rect final
     {
-        uint32_t left, top, right, bottom;
+        uint32_t left = 0.0f, top = 0.0f, right = 0.0f, bottom = 0.0f;
 
     public:
 
-        Rect();
+        Rect() = default;
         Rect(uint32_t x1, uint32_t x2, uint32_t y1, uint32_t y2);
         Rect(const Rect& rect);
 
@@ -29,10 +29,10 @@ namespace ehb
         bool contains(uint32_t x, uint32_t y) const;
         bool contains(const Rect& other) const;
 
-        osg::Vec3 topLeft() const;
-        osg::Vec3 topRight() const;
-        osg::Vec3 bottomLeft() const;
-        osg::Vec3 bottomRight() const;
+        const osg::Vec3 topLeft() const;
+        const osg::Vec3 topRight() const;
+        const osg::Vec3 bottomLeft() const;
+        const osg::Vec3 bottomRight() const;
 
         template<typename ostream>
         friend ostream& operator<<(ostream& os, const Rect& rect)
@@ -40,10 +40,6 @@ namespace ehb
             return os << "rect: " << rect.left << ", " << rect.top << ", " << rect.right << ", " << rect.bottom;
         }
     };
-
-    inline Rect::Rect() : left(0), top(0), right(0), bottom(0)
-    {
-    }
 
     inline Rect::Rect(uint32_t x1, uint32_t x2, uint32_t y1, uint32_t y2) : left(x1), top(x2), right(y1), bottom(y2)
     {
@@ -93,22 +89,22 @@ namespace ehb
         return other.left >= left && other.top <= top && other.right >= right && other.bottom <= bottom;
     }
 
-    inline osg::Vec3 Rect::topLeft() const
+    inline const osg::Vec3 Rect::topLeft() const
     {
         return osg::Vec3(left, top, 0);
     }
 
-    inline osg::Vec3 Rect::topRight() const
+    inline const osg::Vec3 Rect::topRight() const
     {
         return osg::Vec3(right, top, 0);
     }
 
-    inline osg::Vec3 Rect::bottomLeft() const
+    inline const osg::Vec3 Rect::bottomLeft() const
     {
         return osg::Vec3(left, bottom, 0);
     }
 
-    inline osg::Vec3 Rect::bottomRight() const
+    inline const osg::Vec3 Rect::bottomRight() const
     {
         return osg::Vec3(right, bottom, 0);
     }
