@@ -19,9 +19,9 @@ namespace ehb
 
         // "Raw" version numbers of the ASP sections.
         // There are also alternate versions that can be fetched by 'versionOf()'.
-        struct Version
+        struct Version final
         {
-            enum Enum
+            enum class Value : uint32_t
             {
                 null = 0,
                 v1_2 = 513,
@@ -45,21 +45,21 @@ namespace ehb
             // The question to ask here is, why didn't
             // they save these numbers in the file, instead
             // of the wacky version constants?
-            switch (v)
+            switch (static_cast<Version::Value>(v))
             {
-            case Version::v1_2: return 12;
-            case Version::v1_3: return 13;
-            case Version::v2_0: return 20;
-            case Version::v2_1: return 21;
-            case Version::v2_2: return 22;
-            case Version::v2_3: return 23;
-            case Version::v2_4: return 24;
-            case Version::v2_5: return 25;
-            case Version::v3_0:  return 30;
-            case Version::v4_0: return 40;
-            case Version::v4_1: return 41;
-            case Version::v5_0: return 50;
-            default: return Version::null;
+            case Version::Value::v1_2: return 12;
+            case Version::Value::v1_3: return 13;
+            case Version::Value::v2_0: return 20;
+            case Version::Value::v2_1: return 21;
+            case Version::Value::v2_2: return 22;
+            case Version::Value::v2_3: return 23;
+            case Version::Value::v2_4: return 24;
+            case Version::Value::v2_5: return 25;
+            case Version::Value::v3_0:  return 30;
+            case Version::Value::v4_0: return 40;
+            case Version::Value::v4_1: return 41;
+            case Version::Value::v5_0: return 50;
+            default: return 0;
             } // switch (v)
         }
 

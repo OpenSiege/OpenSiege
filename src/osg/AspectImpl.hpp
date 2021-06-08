@@ -59,7 +59,7 @@ namespace ehb
         // Indexes into the shared corner (vertex) array for a face triangle.
         struct TriIndex
         {
-            uint32_t index[3];
+            uint32_t index[3] = { 0, 0, 0 };
         };
 
         // A model vertex, which can be thought of as a "corner"...
@@ -82,7 +82,7 @@ namespace ehb
             osg::Vec3  position{ 0, 0, 0 };
             osg::Vec3  normal{ 0, 0, 0 };
             osg::Vec2  texCoord{ 0, 0 };
-            uint8_t color[4];
+            uint8_t color[4] = { 0, 0, 0, 0};
         };
 
         struct MatInfo

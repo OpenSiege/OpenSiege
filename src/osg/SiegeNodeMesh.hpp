@@ -5,30 +5,30 @@
 
 namespace ehb
 {
-    class SiegeNodeMesh : public osg::Group
+    class SiegeNodeMesh final : public osg::Group
     {
         friend class ReaderWriterSNO;
 
     public:
 
-        struct Face
+        struct Face final
         {
-            osg::Vec3 a, b, c, normal;
+            osg::Vec3 a{ 0, 0, 0 }, b{ 0, 0, 0 }, c{ 0, 0, 0 }, normal{ 0, 0, 0 };
         };
 
-        enum FloorFlag
+        enum class FloorFlag : uint32_t
         {
             FLOOR_IGNORED = 536870912,
             FLOOR_FLOOR = 1073741825,
             FLOOR_WATER = 2147483648
         };
 
-        struct LogicalNodeGrouping : public osg::Group
+        struct LogicalNodeGrouping final : public osg::Group
         {
-            uint8_t id;
-            uint32_t triangleCount;
+            uint8_t id = 0;
+            uint32_t triangleCount = 0;
 
-            FloorFlag flag;
+            FloorFlag flag = FloorFlag::FLOOR_IGNORED;
 
             osg::BoundingBox bbox;
 
