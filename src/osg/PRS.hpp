@@ -68,14 +68,14 @@ namespace ehb
         {
             struct RotKey
             {
-                float time;
-                osg::Quat rotation;
+                float time = 0.0f;
+                osg::Quat rotation { 0, 0, 0, 1 };
             };
 
             struct PosKey
             {
-                float time;
-                osg::Vec3 position;
+                float time = 0.0f;
+                osg::Vec3 position { 0, 0, 0 };
             };
 
             std::vector<RotKey> rotKeys;
@@ -83,10 +83,10 @@ namespace ehb
         };
 
         struct BoneInfo { std::string boneName; };
-        struct NoteInfo { float time; uint32_t mark; };
+        struct NoteInfo { float time = 0.0f; uint32_t mark = 0; };
         struct TrcrInfo { float unk[12]; };
 
-        float duration = 0.0; // this should match the osgAnimation value
+        float duration = 0.0f; // this should match the osgAnimation value
 
         std::vector<BoneInfo> boneInfos;
 

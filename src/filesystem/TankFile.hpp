@@ -521,17 +521,17 @@ public:
 			} ptr;
 
 			// Type tag to select from the pointers above.
-			enum Type
+			enum class Type
 			{
 				TypeDir,
 				TypeFile
 			} type;
 
 			TankEntry(const DirEntry * d)
-				: type(TypeDir) { ptr.dir = d; }
+				: type(Type::TypeDir) { ptr.dir = d; }
 
 			TankEntry(const FileEntry * f)
-				: type(TypeFile) { ptr.file = f; }
+				: type(Type::TypeFile) { ptr.file = f; }
 
 			TankEntry() = default;
 		};

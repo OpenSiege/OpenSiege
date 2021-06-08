@@ -45,7 +45,7 @@ namespace ehb
         osgViewer::Viewer& viewer;
         osg::Group& scene;
 
-        Region* region;
+        Region* region = nullptr;
         SiegeNodeMesh* selectedSiegeNode = nullptr;
         
         std::shared_ptr<spdlog::logger> log;

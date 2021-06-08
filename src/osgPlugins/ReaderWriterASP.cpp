@@ -268,7 +268,7 @@ namespace ehb
             else if (chunkId == "BTRI")
             {
                 // version
-                const unsigned int version = reader.readUInt32();
+                const auto version = reader.readUInt32();
 
                 // skip faceCount
                 reader.skipBytes(4);
