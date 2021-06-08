@@ -37,9 +37,9 @@ namespace ehb
         osg::ref_ptr<osg::Geometry> drawable = new osg::Geometry;
 
         // setup drawable data
-        osg::Vec3Array * vertices = new osg::Vec3Array(6 * text.size());
-        osg::Vec2Array * tcoords = new osg::Vec2Array(6 * text.size());
-        osg::Vec4Array * colors = new osg::Vec4Array(6 * text.size());
+        osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array(6 * text.size());
+        osg::ref_ptr<osg::Vec2Array> tcoords = new osg::Vec2Array(6 * text.size());
+        osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array(6 * text.size());
 
         uint32_t x = 0;
 

@@ -59,36 +59,36 @@ namespace ehb
         // Indexes into the shared corner (vertex) array for a face triangle.
         struct TriIndex
         {
-            uint32_t index[3];
+            uint32_t index[3] = { 0, 0, 0 };
         };
 
         // A model vertex, which can be thought of as a "corner"...
         // "Corner" is the term used in the 3DMax export scripts.
         struct WCornerInfo
         {
-            osg::Vec3  pos;
-            osg::Vec3  normal;
-            osg::Quat  weight;
-            osg::Vec2  texCoord;
-            unsigned char color[4];
-            unsigned char bone[4];
+            osg::Vec3  pos{ 0, 0, 0 };
+            osg::Vec3  normal{ 0, 0, 0 };
+            osg::Quat  weight{ 0, 0, 0, 1 };
+            osg::Vec2  texCoord{ 0, 0 };
+            uint8_t color[4] = { 0, 0, 0, 0 };
+            uint8_t bone[4] = { 0, 0, 0, 0 };
         };
 
         // A simpler model vertex (corner), without animation data.
         // This was probably used for static geometry.
         struct CornerInfo
         {
-            uint32_t vtxIndex;
-            osg::Vec3  position;
-            osg::Vec3  normal;
-            osg::Vec2  texCoord;
-            unsigned char color[4];
+            uint32_t vtxIndex = 0;
+            osg::Vec3  position{ 0, 0, 0 };
+            osg::Vec3  normal{ 0, 0, 0 };
+            osg::Vec2  texCoord{ 0, 0 };
+            uint8_t color[4] = { 0, 0, 0, 0};
         };
 
         struct MatInfo
         {
-            uint32_t textureIndex;
-            uint32_t faceSpan;
+            uint32_t textureIndex = 0;
+            uint32_t faceSpan = 0;
         };
 
         struct FaceInfo
@@ -100,15 +100,15 @@ namespace ehb
 
         struct BoneInfo
         {
-            uint32_t parentIndex;
-            uint32_t flags;
+            uint32_t parentIndex = 0;
+            uint32_t flags = 0;
             std::string name;
         };
 
         struct RPosInfo
         {
-            osg::Quat rotation;
-            osg::Vec3 position;
+            osg::Quat rotation{ 0, 0, 0, 1 };
+            osg::Vec3 position{ 0, 0, 0 };
         };
 
         struct SubMesh
@@ -126,12 +126,12 @@ namespace ehb
             FaceInfo                 faceInfo;  // BTRI
         };
 
-        unsigned int sizeTextField;
-        unsigned int boneCount;
-        unsigned int textureCount;
-        unsigned int vertexCount;
-        unsigned int subMeshCount;
-        unsigned int renderFlags;
+        uint32_t sizeTextField = 0;
+        uint32_t boneCount = 0;
+        uint32_t textureCount = 0;
+        uint32_t vertexCount = 0;
+        uint32_t subMeshCount = 0;
+        uint32_t renderFlags = 0;
 
         std::vector<SubMesh>     subMeshes;
         std::vector<BoneInfo>    boneInfos;

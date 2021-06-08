@@ -7,7 +7,7 @@
 
 namespace ehb
 {
-    class Region : public osg::MatrixTransform
+    class Region final : public osg::MatrixTransform
     {
         friend class ReaderWriterSiegeNodeList;
 

@@ -386,7 +386,7 @@ ByteArray TankFile::Reader::extractResourceToMemory(TankFile & tank, const std::
 	assert(it->first == resourcePath);
 	const Reader::TankEntry & entry = it->second;
 
-	if (entry.type != TankEntry::TypeFile)
+	if (entry.type != TankEntry::Type::TypeFile)
 	{
 		log->critical("Resource {} in Tank file is a directory and cannot be decompressed to file!", resourcePath);
 		return {};
@@ -517,7 +517,7 @@ std::vector<std::string> TankFile::Reader::getFileList() const
 
 	for (const auto & entry : fileTable)
 	{
-		if (entry.second.type == TankEntry::TypeDir)
+		if (entry.second.type == TankEntry::Type::TypeDir)
 		{
 			continue;
 		}
@@ -537,7 +537,7 @@ std::vector<std::string> TankFile::Reader::getDirectoryList() const
 
 	for (const auto & entry : fileTable)
 	{
-		if (entry.second.type == TankEntry::TypeFile)
+		if (entry.second.type == TankEntry::Type::TypeFile)
 		{
 			continue;
 		}

@@ -22,7 +22,7 @@ namespace ehb
     class ContentDb;
     class Region;
     class SiegeNodeMesh;
-    class RegionTestState : public IGameState
+    class RegionTestState final : public IGameState
     {
     public:
 
@@ -45,7 +45,7 @@ namespace ehb
         osgViewer::Viewer& viewer;
         osg::Group& scene;
 
-        Region* region;
+        Region* region = nullptr;
         SiegeNodeMesh* selectedSiegeNode = nullptr;
         
         std::shared_ptr<spdlog::logger> log;

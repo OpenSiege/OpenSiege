@@ -10,7 +10,7 @@ namespace ehb
 {
     class IConfig;
     class IFileSys;
-    class TankTestState : public IGameState
+    class TankTestState final : public IGameState
     {
     public:
 

@@ -13,7 +13,7 @@ namespace ehb
     class IConfig;
     class IFileSys;
     class SiegeNodeMesh;
-    class SiegeNodeTestState : public IGameState
+    class SiegeNodeTestState final : public IGameState
     {
     public:
 

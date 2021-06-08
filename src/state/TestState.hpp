@@ -3,10 +3,12 @@
 
 #include "state/IGameState.hpp"
 
+//! The below state is used for rapid copy and paste prototyping - don't call it
+
 namespace ehb
 {
     class IConfig;
-    class TestState : public IGameState
+    class TestState final : public IGameState
     {
     public:
 

@@ -12,7 +12,7 @@ namespace ehb
 {
     struct FourCC final
     {
-        unsigned char c0, c1, c2, c3;
+        uint8_t c0 = 0, c1 = 0, c2 = 0, c3 = 0;
     };
 
     bool operator == (FourCC a, FourCC b) noexcept;
@@ -57,7 +57,7 @@ namespace ehb
 
     using ByteArray = std::vector<uint8_t>;
 
-    class BinaryReader
+    class BinaryReader final
     {
     public:
 
@@ -83,9 +83,9 @@ namespace ehb
 
     private:
 
-        bool swap;
+        bool swap = false;
 
-        size_t readPosition;
+        size_t readPosition = -1;
         const ByteArray fileContents;
     };
 }

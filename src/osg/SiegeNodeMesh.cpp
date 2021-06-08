@@ -119,15 +119,15 @@ namespace ehb
 
                 for (const auto& entry : doorXform)
                 {
-                    auto text = new osgText::Text;
+                    osg::ref_ptr<osgText::Text> text = new osgText::Text;
                     text->setAxisAlignment(osgText::Text::SCREEN);
                     text->setCharacterSize(1);
                     text->setText(std::to_string(entry.first));
                     text->getOrCreateStateSet()->setMode(GL_DEPTH_TEST, osg::StateAttribute::OFF);
 
-                    auto doorXform = getMatrixForDoorId(entry.first);
+                    const auto doorXform = getMatrixForDoorId(entry.first);
 
-                    auto doorMatTransform = new osg::MatrixTransform(doorXform);
+                    osg::ref_ptr<osg::MatrixTransform> doorMatTransform = new osg::MatrixTransform(doorXform);
                     doorMatTransform->addChild(text);
 
                     debugDrawingGroups[0]->addChild(doorMatTransform);
@@ -192,33 +192,33 @@ namespace ehb
             {
                 debugDrawingGroups[2] = new osg::Group;
 
-                for (auto& logicalFlags : logicalNodeGroupings)
+                for (const auto& logicalFlags : logicalNodeGroupings)
                 {
                     osg::Vec4 color;
 
                     switch (logicalFlags.flag)
                     {
-                        case SiegeNodeMesh::FLOOR_FLOOR: color.set(0.0f, 1.0f, 0.0f, 0.5f); break;
-                        case SiegeNodeMesh::FLOOR_IGNORED: color.set(1.0f, 0.0f, 0.0f, 0.5f); break;
-                        case SiegeNodeMesh::FLOOR_WATER: color.set(0.0f, 0.0f, 1.0f, 0.5f); break;
-                        default: color.set(1.0f, 1.0f, 1.0f, 1.0f); break;
+                    case SiegeNodeMesh::FloorFlag::FLOOR_FLOOR: color.set(0.0f, 1.0f, 0.0f, 0.5f); break;
+                    case SiegeNodeMesh::FloorFlag::FLOOR_IGNORED: color.set(1.0f, 0.0f, 0.0f, 0.5f); break;
+                    case SiegeNodeMesh::FloorFlag::FLOOR_WATER: color.set(0.0f, 0.0f, 1.0f, 0.5f); break;
+                    default: color.set(1.0f, 1.0f, 1.0f, 1.0f); break;
                     }
 
 
-                    for (auto& face : logicalFlags.logicalNodeFaces)
+                    for (const auto& face : logicalFlags.logicalNodeFaces)
                     {
-                        osg::Vec3Array* vertices = new osg::Vec3Array(3);
+                        osg::ref_ptr<osg::Vec3Array> vertices = new osg::Vec3Array(3);
                         (*vertices)[0] = face.a;
                         (*vertices)[1] = face.b;
                         (*vertices)[2] = face.c;
 
-                        osg::Vec4Array* colors = new osg::Vec4Array(3);
+                        osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array(3);
                         (*colors)[0] = color;
                         (*colors)[1] = color;
                         (*colors)[2] = color;
 
                         // generate our geometry for our triangles
-                        osg::Geometry* geometry = new osg::Geometry;
+                        osg::ref_ptr<osg::Geometry> geometry = new osg::Geometry;
                         geometry->setVertexArray(vertices);
                         geometry->setColorArray(colors, osg::Array::BIND_PER_VERTEX);
                         geometry->addPrimitiveSet(new osg::DrawArrays(GL_TRIANGLES, 0, vertices->size()));

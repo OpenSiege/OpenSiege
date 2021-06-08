@@ -24,7 +24,7 @@ namespace ehb
     class IFileSys;
     class ContentDb;
     class Aspect;
-    class AspectMeshTestState : public IGameState
+    class AspectMeshTestState final : public IGameState
     {
 
     public:

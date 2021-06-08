@@ -14,7 +14,7 @@
 #include <osgAnimation/StackedQuaternionElement>
 #include <osg/PolygonMode>
 
-#include "spdlog/spdlog.h"
+#include <spdlog/spdlog.h>
 
 namespace ehb
 {
@@ -136,7 +136,7 @@ namespace ehb
 
                 if (image != nullptr)
                 {
-                    osg::Texture2D* texture = new osg::Texture2D(image);
+                    osg::ref_ptr<osg::Texture2D> texture = new osg::Texture2D(image);
                     geometry->getOrCreateStateSet()->setTextureAttributeAndModes(0, texture);
                     geometry->getOrCreateStateSet()->setMode(GL_BLEND, osg::StateAttribute::ON);
 
@@ -223,7 +223,7 @@ namespace ehb
 
         boneNames.emplace(root->getName());
 
-        // generate our bone heirarchy - start from 1 since we already handled the root bone
+        // generate our bone hierarchy - start from 1 since we already handled the root bone
         for (uint32_t i = 1; i < d->boneInfos.size(); ++i)
         {
             osg::ref_ptr<osgAnimation::Bone> bone = new osgAnimation::Bone(d->boneInfos[i].name);
@@ -266,7 +266,7 @@ namespace ehb
 
         root->setUpdateCallback(updater);
 
-        // lets force the intial position of the bone to be our stacked transform
+        // lets force the initial position of the bone to be our stacked transform
         // with this we don't require the UpdateBone updaters to run at all
         pseudoRoot->setMatrix(bind);
         root->setMatrix(bind);
@@ -289,7 +289,7 @@ namespace ehb
             updater->getStackedTransforms().push_back(new osgAnimation::StackedQuaternionElement("rotation", d->rposInfoRel[i].rotation));
             bone->setUpdateCallback(updater);
 
-            // lets force the intial position of the bone to be our stacked transform
+            // lets force the initial position of the bone to be our stacked transform
             // with this we don't require the UpdateBone updaters to run at all
             bone->setMatrix(osg::Matrix(d->rposInfoRel[i].rotation) * osg::Matrix::translate(d->rposInfoRel[i].position));
             bone->setMatrixInSkeletonSpace(osg::Matrix(d->rposInfoRel[i].rotation) * osg::Matrix::translate(d->rposInfoRel[i].position) * parent->getMatrixInSkeletonSpace());
@@ -348,7 +348,7 @@ namespace ehb
         return new Aspect(*this, copyop);
     }
 
-    osg::Geometry* Aspect::geometry(unsigned int index)
+    osg::Geometry* Aspect::geometry(uint32_t index)
     {
         return geometryVec[index];
     }

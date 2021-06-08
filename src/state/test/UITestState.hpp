@@ -13,7 +13,7 @@ namespace ehb
     class IConfig;
     class IFileSys;
     class Shell;
-    class UITestState : public IGameState
+    class UITestState final : public IGameState
     {
     public:
 

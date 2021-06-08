@@ -11,7 +11,7 @@ namespace osgViewer
 namespace ehb
 {
     class IConfig;
-    class ExitState : public IGameState
+    class ExitState final : public IGameState
     {
     public:
 
