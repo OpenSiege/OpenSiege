@@ -163,6 +163,7 @@ option(BUILD_DSMOD_TARGET "Setup a target to launch DSMOD with custom bits path"
 if(BUILD_DSMOD_TARGET)
     set(DS_INSTALL_PATH "<path>" CACHE STRING "Path to DS Install directory")
     set(DSMOD_PATH "<path>" CACHE STRING "Path to DSMod executable")
+    file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/DSModUserPath)
     execute_process(COMMAND powershell -ExecutionPolicy Bypass -File ${CMAKE_SOURCE_DIR}/cmake/GenerateDSModShortcut.ps1 ${DS_INSTALL_PATH} ${DSMOD_PATH} ${CMAKE_SOURCE_DIR}/bits
                     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     )
