@@ -1,0 +1,8 @@
+[hotpoints]
+{
+	[t:hotpoint_directional,n:0x00000001]
+	{
+		direction = 1.000000,0.000000,0.000000;
+	  x id = 0x00000001;
+	}
+}

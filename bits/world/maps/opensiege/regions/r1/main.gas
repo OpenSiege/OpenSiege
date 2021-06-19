@@ -1,0 +1,11 @@
+[t:region,n:region]
+{
+	created = SAMPC,sambr;
+	description = none;
+  x guid = 0x00000001;
+	lastmodified = SAMPC,sambr;
+  x mesh_range = 0x00000001;
+	notes = none;
+  x scid_range = 0x00000001;
+	se_version = 1.70.0.4;
+}
