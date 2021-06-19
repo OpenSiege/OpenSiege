@@ -1,0 +1,12 @@
+[logical_flags]
+{
+	[t:lf_snode,n:0xcf30116d]
+	{
+		[t:lf_lnode,n:0]
+		{
+			* = lf_human_player;
+			* = lf_computer_player;
+			* = lf_dirt;
+		}
+	}
+}

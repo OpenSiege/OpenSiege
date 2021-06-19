@@ -1,0 +1,5 @@
+[stitch_helper_data]
+{
+	source_region_guid = 0x00000001;
+	source_region_name = r1;
+}

@@ -155,5 +155,15 @@ else()
     target_link_libraries(OpenSiege PRIVATE CONAN_PKG::openscenegraph CONAN_PKG::spdlog)
 endif()
 
-
 install(TARGETS OpenSiege RUNTIME DESTINATION bin)
+
+# Should the below be an actual CMake target that is launched via some cpp code? this seems pretty nasty
+# We could use existing registry lookups to populate all this
+option(BUILD_DSMOD_TARGET "Setup a target to launch DSMOD with custom bits path" OFF)
+if(BUILD_DSMOD_TARGET)
+    set(DS_INSTALL_PATH "<path>" CACHE STRING "Path to DS Install directory")
+    set(DSMOD_PATH "<path>" CACHE STRING "Path to DSMod executable")
+    execute_process(COMMAND powershell -ExecutionPolicy Bypass -File ${CMAKE_SOURCE_DIR}/cmake/GenerateDSModShortcut.ps1 ${DS_INSTALL_PATH} ${DSMOD_PATH} ${CMAKE_SOURCE_DIR}/bits
+                    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    )
+endif()

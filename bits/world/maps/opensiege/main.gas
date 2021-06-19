@@ -1,0 +1,25 @@
+[t:map,n:map]
+{
+	description = "Open Siege Testing Map";
+  b dev_only = false;
+	screen_name = "Open Siege Test Map";
+	timeofday = 0h0m;
+  b use_node_mesh_index = true;
+  b use_player_journal = false;
+  f world_frustum_radius = 45.000000;
+  f world_interest_radius = 4.000000;
+	[camera]
+	{
+	  f azimuth = 70.000000;
+	  f distance = 13.000000;
+	  f farclip = 70.000000;
+	  f fov = 60.000000;
+	  f max_azimuth = 85.000000;
+	  f max_distance = 18.000000;
+	  f min_azimuth = 32.000000;
+	  f min_distance = 3.000000;
+	  f nearclip = 1.000000;
+	  f orbit = 0.000000;
+		position = 0.000000,0.000000,0.000000,0x00000000;
+	}
+}
