@@ -93,6 +93,7 @@ set(SIEGE_SOURCES
     "src/osgPlugins/ReaderWriterPRS.cpp"
     "src/osgPlugins/ReaderWriterFont.cpp"
     "src/osgPlugins/ReaderWriterSiegeNodeList.cpp"
+    "src/osgPlugins/ReaderWriterUI.cpp"
 
     "src/filesystem/TankFile.cpp"
     "src/filesystem/TankFileReader.cpp"
@@ -107,6 +108,10 @@ set(SIEGE_SOURCES
     "src/ui/WidgetComponent.cpp"
     "src/ui/Widget.cpp"
     "src/ui/TextLine.cpp"
+    "src/ui/Button.cpp"
+    "src/ui/DialogBox.cpp"
+    "src/ui/Justification.cpp"
+    "src/ui/Text.cpp"
     "src/ui/Shell.cpp"
 
     "src/console/ConsoleSignatureScanner.cpp"

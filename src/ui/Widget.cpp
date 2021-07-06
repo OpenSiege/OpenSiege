@@ -12,17 +12,50 @@
 
 namespace ehb
 {
+    class ResizeWidgetVisitor : public osg::NodeVisitor
+    {
+    public:
+
+        ResizeWidgetVisitor(Widget* widget) : NodeVisitor(NodeVisitor::TRAVERSE_ALL_CHILDREN), widget(widget)
+        {
+        }
+
+        virtual ~ResizeWidgetVisitor() = default;
+
+        virtual void apply(osg::Node& node)
+        {
+            if (auto component = dynamic_cast<WidgetComponent*>(&node))
+            {
+                component->resizeToWidget(*widget);
+            }
+            else
+            {
+                traverse(node);
+            }
+        }
+
+    private:
+
+        Widget* widget;
+    };
+}
+
+namespace ehb
+{
     Widget::Widget(Shell& shell) : shell(shell)
     {
 
     }
 
-    void Widget::setRect(int32_t left, int32_t top, int32_t right, int32_t bottom)
+    void Widget::setRect(uint32_t left, uint32_t top, uint32_t right, uint32_t bottom)
     {
-        rect.top = top;
         rect.left = left;
+        rect.top = top;
         rect.right = right;
         rect.bottom = bottom;
+
+        // when we set our rect we have to respect a lot of UI rules
+        resizeToScreenResolution(shell.screenWidth(), shell.screenHeight());
     }
 
     void Widget::loadTexture(const std::string& textureFileName, bool resizeWidget)
@@ -43,7 +76,7 @@ namespace ehb
             }
             else
             {
-                auto texture = new osg::Texture2D(image);
+                osg::ref_ptr<osg::Texture2D> texture = new osg::Texture2D(image);
                 auto geometry = static_cast<osg::Geometry*>(baseComponent->getChild(0));
                 geometry->getOrCreateStateSet()->setTextureAttributeAndModes(0, texture, osg::StateAttribute::ON);
             }
@@ -52,65 +85,153 @@ namespace ehb
         }
     }
 
+    /**
+    * Define our UV rect for this widget
+    * 
+    * The ReaderWriterUI will read in all the parameters for this widget so
+    */
     void Widget::setUVRect(float left, float top, float right, float bottom)
     {
         uv.left = left;
-        uv.right = right;
         uv.top = top;
+        uv.right = right;
         uv.bottom = bottom;
 
+        // there are instances where the uv will be set before the base component gets created
+        // this is okay and it will be picked up on the resize
         if (baseComponent)
         {
             if (auto data = dynamic_cast<osg::Vec2Array*>(baseComponent->getChild(0)->asGeometry()->getTexCoordArray(0)))
             {
-                (*data)[0].set(left, bottom);
-                (*data)[1].set(left, top);
-                (*data)[2].set(right, top);
-                (*data)[3].set(right, bottom);
+                (*data)[0].set(left, 1 - top);
+                (*data)[1].set(left, 1 - bottom);
+                (*data)[2].set(right, 1 - bottom);
+                (*data)[3].set(right, 1 - top);
             }
-        }
-        else
-        {
-            spdlog::get("log")->error("you tried to set the rect on a widget before setting the texture");
         }
     }
 
-    inline uint32_t Widget::screenWidth() const
+    uint32_t Widget::screenWidth() const
     {
         return shell.screenWidth();
     }
 
-    inline uint32_t Widget::screenHeight() const
+    uint32_t Widget::screenHeight() const
     {
         return shell.screenHeight();
     }
 
-    void Widget::buildWidgetFromFuelBlock(FuelBlock* fuel)
+    void Widget::createCommonCtrl(const std::string& value)
     {
-        if (fuel != nullptr) // check if type of widget?
+        // if this widget has a parent widget then change the template to widget::type + _value
+        if (attr.tmpl.empty() && !value.empty())
         {
-            getOrCreateStateSet()->setRenderBinDetails(999, "UIShell");
+            attr.tmpl = value;
 
-            setName(fuel->name());
+            resizeToScreenResolution(shell.screenWidth(), shell.screenHeight());
+        }
+    }
 
-            // its important this is setup immediately as when applying textures or resizes this value will be used
-            z.value = fuel->valueAsInt("draw_order");
+    void Widget::setTiledTexture(bool value)
+    {
+        if (tiled == value) return;
 
-            auto rectValue = fuel->valueAsInt4("rect");
-            setRect(rectValue[0], rectValue[1], rectValue[2], rectValue[3]);
+        // this assumes that loadTexture has already been called
+        if (baseComponent != nullptr)
+        {
+            tiled = value;
 
-            if (auto textureName = fuel->valueOf("texture"); !textureName.empty())
+            if (auto blah = baseComponent->getChild(0)->getOrCreateStateSet()->getTextureAttribute(0, osg::StateAttribute::TEXTURE))
             {
-                loadTexture(textureName);
+                if (osg::ref_ptr<osg::Texture2D> texture = dynamic_cast<osg::Texture2D*>(blah); texture != nullptr)
+                {
+                    if (tiled)
+                    {
+                        texture->setWrap(osg::Texture::WRAP_S, osg::Texture::REPEAT);
+                        texture->setWrap(osg::Texture::WRAP_T, osg::Texture::REPEAT);
+                    }
+                    else
+                    {
+                        texture->setWrap(osg::Texture::WRAP_S, osg::Texture::CLAMP);
+                        texture->setWrap(osg::Texture::WRAP_T, osg::Texture::CLAMP);
+                    }
+                }
+                else spdlog::get("log")->error("failed to retrieve texture on gui object {}", getName());
+            }
+            else spdlog::get("log")->error("failed to retrieve texture attribute on gui object {}", getName());
+        }
+        else spdlog::get("log")->error("failed to get a baseComponent on gui object {}", getName());
+    }
 
-                auto uvRectValue = fuel->valueAsFloat4("uvcoords");
-                setUVRect(uvRectValue[0], uvRectValue[1], uvRectValue[2], uvRectValue[3]);
+    void Widget::resizeToScreenResolution(uint32_t newScreenWidth, uint32_t newScreenHeight)
+    {
+        auto log = spdlog::get("log");
+
+        // resize based on our parent
+        if (parentWidget != nullptr)
+        {
+            log->info("{} is attempting to do a resize using its parent widget", getName());
+        }
+        else if (base) // resize based on the optional base rect
+        {
+            log->info("{} is attempting to do a resize using 'base' rect with starting size of {}", getName(), effectiveRect());
+
+            // const double stretchFactorX = resX && newScreenWidth > *resX ? static_cast<double>(newScreenWidth) / static_cast<double>(*resX) : 1.0;
+            // const double stretchFactorY = resY && newScreenHeight > *resY ? static_cast<double>(newScreenHeight) / static_cast<double>(*resY) : 1.0;
+            const double stretchFactorX = 1.0, stretchFactorY = 1.0;
+
+            log->info("prior to resize the width of {} is {} and the height is {}\n\t this was calculated from rect {}", getName(), base->width(), base->height(), *base);
+
+            uint32_t newWidgetWidth = stretch.x ? newScreenWidth : stretchFactorX * static_cast<double>(base->width());
+            uint32_t newWidgetHeight = stretch.y ? newScreenHeight : stretchFactorY * static_cast<double>(base->height());
+
+            if (stretch.x)
+            {
+                rect.left = 0;
+                rect.right = newScreenWidth;
+            }
+            else
+            {
+                if (center.x) rect.left = newScreenWidth > newWidgetWidth ? (newScreenWidth - newWidgetWidth) / 2 : (newWidgetWidth - newScreenWidth) / 2;
+                else if (anchor.left) rect.left = *anchor.left;
+                else if (anchor.right) rect.left = newScreenWidth - *anchor.right;
+                else rect.left = base->left;
+
+                rect.left += shift.x;
+            }
+
+            if (stretch.y)
+            {
+                rect.right = 0;
+                rect.bottom = newScreenHeight;
+            }
+            else
+            {
+                if (center.y) rect.top = newScreenHeight > newWidgetHeight ? (newScreenHeight - newWidgetHeight) / 2 : (newWidgetHeight - newScreenHeight) / 2;
+                else if (anchor.top) rect.top = *anchor.top;
+                else if (anchor.bottom) rect.top = newScreenHeight - *anchor.bottom;
+                else rect.top = base->top;
+
+                rect.top += shift.y;
+            }
+
+            rect.resize(newWidgetWidth, newWidgetHeight);
+        }
+
+        // TODO: cursor
+
+        // children resize
+        for (uint32_t i = 0; i < getNumChildren(); i++)
+        {
+            if (Widget* widget = dynamic_cast<Widget*>(getChild(i)))
+            {
+                widget->resizeToScreenResolution(newScreenWidth, newScreenHeight);
             }
         }
-        else
-        {
-            spdlog::get("log")->critical("Somebody is trying to use a FuelBlock to construct a widget but the block is null");
-        }
+
+        // resize all internal components of this widget
+        ResizeWidgetVisitor visitor(this);
+        accept(visitor);
     }
 
     void Widget::addDebugData()
@@ -120,7 +241,7 @@ namespace ehb
         // TODO: use a line loop?
         osg::ref_ptr<osg::Vec3Array> points = new osg::Vec3Array;
 
-        spdlog::get("log")->info("widget ({}) rect {} {} {} {}", getName(), rect.left, rect.top, rect.right, rect.bottom);
+        spdlog::get("log")->info("widget ({}) {}", getName(), rect);
 
         // top left to bottom left
         points->push_back(rect.topLeft());
@@ -138,7 +259,7 @@ namespace ehb
         points->push_back(rect.topRight());
         points->push_back(rect.topLeft());
 
-        const osg::Vec4 color(1, 1, 1, 1);
+        static osg::Vec4 color(1, 1, 1, 1);
 
         // per vertex coloring
         osg::ref_ptr<osg::Vec4Array> colors = new osg::Vec4Array;

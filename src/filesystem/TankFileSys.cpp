@@ -3,6 +3,8 @@
 
 #include "cfg/IConfig.hpp"
 
+#include <sstream>
+
 namespace ehb
 {
     InputStream TankFileSys::createInputStream(const std::string & filename_)

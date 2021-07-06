@@ -1,10 +1,17 @@
 
 #include "Shell.hpp"
 
+#include "IFileSys.hpp"
+#include "gas/Fuel.hpp"
+
 #include "Widget.hpp"
+#include "Button.hpp"
+#include "DialogBox.hpp"
+#include "Text.hpp"
 
 #include <osgGA/GUIEventAdapter>
 #include <osgUtil/RenderBin>
+#include <osgDB/ReadFile>
 
 #include <spdlog/spdlog.h>
 
@@ -42,14 +49,26 @@ namespace ehb
     void Shell::init(IFileSys& fileSys, osg::Group* root, uint32_t width, uint32_t height)
     {
         log = spdlog::get("log");
-        log->set_level(spdlog::level::debug);
+        // log->set_level(spdlog::level::debug);
 
         log->info("Shell is starting up");
 
         screen.width = width;
         screen.height = height;
         
-        // TODO: common control art
+        if (auto stream = fileSys.createInputStream("/ui/interfaces/common/common_control_art.gas"))
+        {
+            if (Fuel doc; doc.load(*stream))
+            {
+                if (const auto node = doc.child("common_control_art"))
+                {
+                    for (const auto attr : node->eachAttribute())
+                    {
+                        ctrlArt[attr.name] = attr.value;
+                    }
+                }
+            }
+        }
 
         // TOOD: edu tooltips
 
@@ -150,6 +169,227 @@ namespace ehb
         return false;
     }
 
+    std::string Shell::mapCtrlArt(const std::string& key) const
+    {
+        const auto itr = ctrlArt.find(key);
+        return itr != ctrlArt.end() ? itr->second : "";
+    }
+
+    Widget* Shell::findWidget(const std::string& name, const std::string& interface) const
+    {
+        for (uint32_t i = 0; i < scene2d->getNumChildren(); i++)
+        {
+            if (osg::Group* group = scene2d->getChild(i)->asGroup())
+            {
+                if (group->getName() == interface)
+                {
+                    for (uint32_t j = 0; j < group->getNumChildren(); j++)
+                    {
+                        if (group->getChild(j)->getName() == name)
+                        {
+                            return dynamic_cast<Widget*>(group->getChild(j));
+                        }
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        return nullptr;
+    }
+
+    Widget* Shell::findWidget(const std::string& name)
+    {
+        for (uint32_t i = 0; i < scene2d->getNumChildren(); i++)
+        {
+            if (osg::Group* group = scene2d->getChild(i)->asGroup())
+            {
+                for (uint32_t j = 0; j < group->getNumChildren(); j++)
+                {
+                    if (group->getChild(j)->getName() == name)
+                    {
+                        return dynamic_cast<Widget*>(group->getChild(j));
+
+                        break;
+                    }
+                }
+            }
+        }
+
+        return nullptr;
+    }
+
+    void Shell::activateInterface(const std::string& path, bool show)
+    {
+        auto log = spdlog::get("log");
+
+        if (const auto colon = path.find_last_of(':'); colon != std::string::npos && path.size() > colon + 1)
+        {
+            const std::string name = path.substr(colon + 1);
+
+            // check for an already loaded interface
+            for (uint32_t i = 0; i < scene2d->getNumChildren(); i++)
+            {
+                if (scene2d->getChild(i)->getName() == name)
+                {
+                    if (show) scene2d->getChild(i)->setNodeMask(~0);
+
+                    return;
+                }
+            }
+
+            // transform path into an actual file path
+            std::string interfaceFileName = path;
+            std::replace(interfaceFileName.begin(), interfaceFileName.end(), ':', '/');
+
+            if (path.find("ui:interfaces:multiplayer") == std::string::npos)
+            {
+                interfaceFileName += '/';
+                interfaceFileName += name;
+            }
+
+            interfaceFileName += ".gas";
+            interfaceFileName.insert(0, 1, '/');
+
+            if (auto node = osgDB::readRefNodeFile(interfaceFileName))
+            {
+                scene2d->setName(name);
+                scene2d->addChild(node);
+
+                if (auto group = node->asGroup())
+                {
+                    for (uint32_t i = 0; i < group->getNumChildren(); i++)
+                    {
+                        if (auto widget = dynamic_cast<Widget*>(group->getChild(i)))
+                        {
+                            widget->resizeToScreenResolution(screen.width, screen.height);
+                            // TODO: process messages
+                        }
+                    }
+
+                    std::optional<int> shiftX, shiftY;
+
+                    if (std::string value; group->getUserValue("centered", value))
+                    {
+                        if (Widget* widget = findWidget(value, group->getName()))
+                        {
+                            int32_t x = (screen.width - widget->width()) / 2;
+                            int32_t y = (screen.height - widget->height()) / 2;
+
+                            shiftX = x - widget->effectiveRect().left;
+                            shiftY = y - widget->effectiveRect().right;
+                        }
+                    }
+
+                    if (shiftX && shiftY)
+                    {
+                        for (uint32_t i = 0; i < group->getNumChildren(); i++)
+                        {
+                            if (auto widget = dynamic_cast<Widget*>(group->getChild(i)))
+                            {
+                                // TODO: drag widget
+                            }
+                        }
+                    }
+                }
+            }
+
+            if (show)
+            {
+                showInterface(name);
+            }
+            else
+            {
+                hideInterface(name);
+            }
+        }
+    }
+
+    void Shell::deactivateInterface(const std::string& interface)
+    {
+        for (uint32_t i = 0; i < scene2d->getNumChildren(); i++)
+        {
+            if (scene2d->getChild(i)->getName() == interface)
+            {
+                scene2d->removeChild(i);
+
+                break;
+            }
+        }
+
+        updateBackToFront();
+    }
+
+    void Shell::showInterface(const std::string& interface)
+    {
+        for (uint32_t i = 0; i < scene2d->getNumChildren(); i++)
+        {
+            if (scene2d->getChild(i)->getName() == interface)
+            {
+                scene2d->getChild(i)->setNodeMask(~0);
+
+                break;
+            }
+        }
+
+        updateBackToFront();
+    }
+
+    void Shell::hideInterface(const std::string& interface)
+    {
+        for (uint32_t i = 0; i < scene2d->getNumChildren(); i++)
+        {
+            if (scene2d->getChild(i)->getName() == interface)
+            {
+                scene2d->getChild(i)->setNodeMask(0);
+
+                break;
+            }
+        }
+
+        updateBackToFront();
+    }
+
+    Widget* Shell::createDefaultWidgetOfType(const std::string& type)
+    {
+        Widget* widget = nullptr;
+
+        if (type == "window") widget = new Widget(*this);
+        else if (type == "button") widget = new Button(*this);
+        else if (type == "checkbox") widget = new Widget(*this);
+        else if (type == "slider") widget = new Widget(*this);
+        else if (type == "listbox") widget = new Widget(*this);
+        else if (type == "radio_button") widget = new Widget(*this);
+        else if (type == "button_multistage") widget = new Widget(*this);
+        else if (type == "text") widget = new Text(*this);
+        // else if (type == "cursor") { widget = new Cursor(*this); widget->setLayer(0xffff); }
+        else if (type == "dockbar") widget = new Widget(*this);
+        else if (type == "gridbox") widget = new Widget(*this);
+        else if (type == "popupmenu") widget = new Widget(*this);
+        else if (type == "item") widget = new Widget(*this);
+        else if (type == "itemslot") widget = new Widget(*this);
+        else if (type == "infoslot") widget = new Widget(*this);
+        else if (type == "status_bar") widget = new Widget(*this);
+        else if (type == "edit_box") widget = new Widget(*this);
+        else if (type == "combo_box") widget = new Widget(*this);
+        else if (type == "listener") widget = new Widget(*this);
+        else if (type == "listreport") widget = new Widget(*this);
+        else if (type == "chat_box") widget = new Widget(*this);
+        else if (type == "text_box") widget = new Widget(*this);
+        else if (type == "dialog_box") widget = new DialogBox(*this);
+        else if (type == "tab") widget = new Widget(*this);
+
+        if (widget)
+        {
+            widget->getOrCreateStateSet()->setMode(GL_DEPTH_TEST, false);
+            widget->getOrCreateStateSet()->setMode(GL_BLEND, true);
+            widget->getOrCreateStateSet()->setRenderBinDetails(999, "UIShell");
+        }
+
+        return widget;
+    }
+
     void Shell::addWidget(Widget* widget)
     {
         if (widget != nullptr)
@@ -164,13 +404,13 @@ namespace ehb
     {
         backToFront.clear();
 
-        for (unsigned int i = 0; i < scene2d->getNumChildren(); i++)
+        for (uint32_t i = 0; i < scene2d->getNumChildren(); i++)
         {
             if (auto group = scene2d->getChild(i)->asGroup())
             {
                 if (group->getNodeMask() != 0)
                 {
-                    for (unsigned int j = 0; j < group->getNumChildren(); j++)
+                    for (uint32_t j = 0; j < group->getNumChildren(); j++)
                     {
                         if (auto widget = dynamic_cast<Widget*>(group->getChild(j)))
                         {

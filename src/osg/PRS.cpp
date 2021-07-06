@@ -1,6 +1,8 @@
 
 #include "PRS.hpp"
 
+#include <algorithm>
+
 namespace ehb
 {
     PRS::PRS(ByteArray fileContents, std::string filename)

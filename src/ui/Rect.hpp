@@ -9,6 +9,10 @@
 
 namespace ehb
 {
+    /**
+     * Rect assumes your viewport starts drawing (0,0) from the top left
+     * this is accomplished in OpenGL by using the ClipControl::UPPER_LEFT on the Shell camera StateSet (see Game.cpp)
+    */
     struct Rect final
     {
         uint32_t left = 0.0f, top = 0.0f, right = 0.0f, bottom = 0.0f;
@@ -16,8 +20,7 @@ namespace ehb
     public:
 
         Rect() = default;
-        Rect(uint32_t x1, uint32_t x2, uint32_t y1, uint32_t y2);
-        Rect(const Rect& rect);
+        Rect(uint32_t left, uint32_t top, uint32_t right, uint32_t bottom);
 
         uint32_t width() const;
         uint32_t height() const;
@@ -41,16 +44,8 @@ namespace ehb
         }
     };
 
-    inline Rect::Rect(uint32_t x1, uint32_t x2, uint32_t y1, uint32_t y2) : left(x1), top(x2), right(y1), bottom(y2)
+    inline Rect::Rect(uint32_t left, uint32_t top, uint32_t right, uint32_t bottom) : left(left), top(top), right(right), bottom(bottom)
     {
-    }
-
-    inline Rect::Rect(const Rect& rect)
-    {
-        left = rect.left;
-        top = rect.top;
-        right = rect.right;
-        bottom = rect.bottom;
     }
 
     inline uint32_t Rect::width() const
@@ -65,18 +60,28 @@ namespace ehb
 
     inline void Rect::resize(uint32_t w, uint32_t h)
     {
-        top = left + w;
-        bottom = right + h;
+        right = left + w;
+        bottom = top + h;
     }
 
+    /**
+     * Compute the new width of our rect
+     * It's important to remember DS GUI starts drawing from the top left of the viewport (0, 0).
+     * When calculating height we start at the "left" of the widget and add our value as that will move across the viewport
+    */
     inline void Rect::setWidth(uint32_t value)
     {
-        top = left + value;
+        right = left + value;
     }
 
+    /**
+     * Compute the new height of our rect
+     * It's important to remember DS GUI starts drawing from the top left of the viewport (0, 0).
+     * When calculating height we start at the "top" of the widget and add our value as that will move down the viewport
+    */
     inline void Rect::setHeight(uint32_t value)
     {
-        bottom = right + value;
+        bottom = top + value;
     }
 
     inline bool Rect::contains(uint32_t x, uint32_t y) const

@@ -10,6 +10,11 @@ namespace ehb
         parent.addChild(transform);
     }
 
+    TextLine::TextLine(osg::Group& parent, const std::string& text, const osg::Vec4& color) : text(text), color(color)
+    {
+        parent.addChild(transform);
+    }
+
     void TextLine::build(const Font& font)
     {
         if (drawable != nullptr)

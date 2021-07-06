@@ -7,12 +7,13 @@
 #include "IFileSys.hpp"
 #include "StringTool.hpp"
 #include "osg/SiegeNodeMesh.hpp"
+#include "ui/Shell.hpp"
 
 #include <spdlog/spdlog.h>
 
 namespace ehb
 {
-    Console::Console(IConfig& config, IFileSys& fileSys, IGameStateMgr& gameStateMgr, osg::Group& scene3d, osg::Group& scene2d) : config(config), fileSys(fileSys), gameStateMgr(gameStateMgr), scene3d(scene3d), scene2d(scene2d)
+    Console::Console(IConfig& config, IFileSys& fileSys, IGameStateMgr& gameStateMgr, osg::Group& scene3d, osg::Group& scene2d, Shell& shell) : config(config), fileSys(fileSys), gameStateMgr(gameStateMgr), scene3d(scene3d), scene2d(scene2d), shell(shell)
     {
         getOrCreateStateSet()->setMode(GL_DEPTH_TEST, false);
         getOrCreateStateSet()->setMode(GL_BLEND, true);
@@ -234,6 +235,17 @@ namespace ehb
                 }
 
                 log->info("FINISHED FILESYSTEM DUMP");
+            }
+            else if (scanner.accept("activateinterface"))
+            {
+                if (scanner.token(first, last))
+                {
+                    auto param = input.substr(first, last - first);
+
+                    spdlog::get("log")->info("attempting to activate interface {}", param);
+
+                    shell.activateInterface(param);
+                }
             }
 
             auto line = std::make_unique<TextLine>(*this);

@@ -57,9 +57,9 @@ namespace ehb
 
     osgDB::ReaderWriter::ReadResult ReaderWriterSiegeNodeList::readNode(const std::string& filename, const osgDB::Options* options) const
     {
-        // do an extension check just in case a file reaches a loader it's not supposed to
-        const std::string ext = osgDB::getLowerCaseFileExtension(filename);
-        if (!acceptsExtension(ext)) return ReadResult::FILE_NOT_HANDLED;
+        // do an filename check just in case a file reaches a loader it's not supposed to
+        const std::string simpleFileName = osgDB::getSimpleFileName(filename);
+        if (!osgDB::equalCaseInsensitive(simpleFileName, "nodes.gas")) return ReadResult::FILE_NOT_HANDLED;
 
         // try to find the file being requested
         const std::string fileName = osgDB::findDataFile(filename);

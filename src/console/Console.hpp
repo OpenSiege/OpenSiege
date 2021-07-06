@@ -16,6 +16,7 @@ namespace ehb
     class IConfig;
     class IFileSys;
     class IGameStateMgr;
+    class Shell;
 
     //! the console cannot rely on the Widget system as its to needs to exist before most subsystems
     class Console : public osg::Group
@@ -26,7 +27,7 @@ namespace ehb
         // TODO: disconnect the console from ImageFonts
         osg::ref_ptr<ImageFont> font = nullptr;
 
-        Console(IConfig& config, IFileSys& fileSys, IGameStateMgr& gameStateMgr, osg::Group& scene3d, osg::Group& scene2d);
+        Console(IConfig& config, IFileSys& fileSys, IGameStateMgr& gameStateMgr, osg::Group& scene3d, osg::Group& scene2d, Shell& shell);
 
         virtual ~Console() = default;
 
@@ -68,6 +69,7 @@ namespace ehb
         IGameStateMgr& gameStateMgr;
         osg::Group& scene3d;
         osg::Group& scene2d;
+        Shell& shell;
 
         int32_t characterSize = 12;
         int32_t maxLines = (height / characterSize);

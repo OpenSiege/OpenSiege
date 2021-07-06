@@ -2,21 +2,21 @@
 #include "UITestState.hpp"
 
 #include <osgDB/ReadFile>
-#include <state/GameStateMgr.hpp>
+#include <osgGA/GUIEventAdapter>
 
+#include "state/GameStateMgr.hpp"
 #include "ui/ImageFont.hpp"
 #include "ui/TextLine.hpp"
 #include "ui/Widget.hpp"
+#include "ui/Button.hpp"
 #include "ui/Shell.hpp"
 #include "IFileSys.hpp"
-
-#include <spdlog/spdlog.h>
 
 namespace ehb
 {
     void UITestState::enter()
     {
-        auto log = spdlog::get("log");
+        log = spdlog::get("log");
         log->info("UITestState::enter()");
 
         std::string font = "b_gui_fnt_12p_copperplate-light";
@@ -38,26 +38,6 @@ namespace ehb
             spdlog::get("log")->error("failed to load {}", font);
         }
 #endif
-
-        if (auto stream = fileSys.createInputStream("/ui/interfaces/backend/data_bar/data_bar.gas"))
-        {
-            log->debug("opened data_bar.gas");
-
-            if (Fuel doc; doc.load(*stream))
-            {
-                // intentionally add the hp button first so we can test that our z sorting is working
-                // the health potion button should end up on top of the data_bar
-
-                auto hp_button = new Widget(shell); hp_button->buildWidgetFromFuelBlock(doc.child("data_bar:button_health_potions"));
-                log->info("{} width is {} and height is {} and draw_order is {}", hp_button->getName(), hp_button->width(), hp_button->height(), hp_button->drawOrder());
-                shell.addWidget(hp_button);
-
-                auto data_bar = new Widget(shell); data_bar->buildWidgetFromFuelBlock(doc.child("data_bar:data_bar"));
-                log->info("{} width is {} and height is {} and draw_order is {}", data_bar->getName(), data_bar->width(), data_bar->height(), data_bar->drawOrder());
-
-                shell.addWidget(data_bar);
-            }
-        }
     }
 
     void UITestState::leave()
@@ -71,6 +51,67 @@ namespace ehb
 
     bool UITestState::handle(const osgGA::GUIEventAdapter& event, osgGA::GUIActionAdapter& action)
     {
+        switch (event.getEventType())
+        {
+        case (osgGA::GUIEventAdapter::KEYUP):
+        {
+            if (event.getKey() == '1')
+            {
+                shell.removeAllWidgets();
+            }
+            else if (event.getKey() == '2')
+            {
+                shell.removeAllWidgets();
+                shell.activateInterface("ui:interfaces:backend:data_bar");
+                shell.activateInterface("ui:interfaces:backend:character");
+                //shell.activateInterface("ui:interfaces:backend:defeat_dialog");
+
+                if (auto data_bar = shell.findWidget("data_bar", "data_bar"))
+                {
+                    spdlog::get("log")->debug("data_bar found");
+                    spdlog::get("log")->debug("{} width is {} and height is {} and draw_order is {}", data_bar->getName(), data_bar->width(), data_bar->height(), data_bar->drawOrder());
+                }
+            }
+        }
+        }
+
         return false;
+    }
+
+    bool UITestState::expectingWidthAndHeight(const Widget* widget, uint32_t expectedWidth, uint32_t expectedHeight)
+    {
+        if (widget == nullptr)
+        {
+            log->critical("expectingWidthAndHeight() is handling a null widget - break point me");
+
+            return false;
+        }
+
+        const auto name = widget->getName();
+        if (name == "")
+        {
+            // TODO: debug or dsmod only mode?
+            log->critical("we are loading a widget with an empty name, please set the name properly");
+
+            return false;
+        }
+
+        if (widget->width() != expectedWidth)
+        {
+            log->critical("{} is expecting to have a width of {} but has calculated a width of {} - very bad", name, expectedWidth, widget->width());
+
+            return false;
+        }
+
+        if (widget->height() != expectedHeight)
+        {
+            log->critical("{} is expecting to have a height of {} but has calculated a height of {} - very bad", name, expectedHeight, widget->height());
+
+            return false;
+        }
+
+        log->info("{} has been loaded with a width of {} and a height of {} calculated from {}", name, widget->width(), widget->height(), widget->effectiveRect());
+
+        return true;
     }
 }

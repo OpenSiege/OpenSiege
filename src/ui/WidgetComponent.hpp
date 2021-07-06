@@ -32,4 +32,56 @@ namespace ehb
 
         struct { uint32_t horizontal, vertical; } border;
     };
+
+    class CornerComponent : public WidgetComponent
+    {
+    public:
+
+        enum class Corner
+        {
+            TopLeft,
+            TopRight,
+            BottomLeft,
+            BottomRight
+        };
+
+    public:
+
+        CornerComponent(Corner corner, osg::Image* image);
+
+        virtual ~CornerComponent() = default;
+
+        virtual void resizeToWidget(const Widget& widget) override;
+
+    private:
+
+        Corner corner;
+        uint32_t width, height;
+    };
+
+    class SideComponent : public WidgetComponent
+    {
+    public:
+
+        enum class Side
+        {
+            Left,
+            Right,
+            Top,
+            Bottom
+        };
+
+    public:
+
+        SideComponent(Side side, osg::Image* image, uint32_t border = 0);
+
+        virtual ~SideComponent() = default;
+
+        virtual void resizeToWidget(const Widget& widget) override;
+
+    private:
+
+        Side side;
+        uint32_t border, width, height;
+    };
 }

@@ -15,6 +15,7 @@
 #include "osgPlugins/ReaderWriterSiegeNodeList.hpp"
 #include "osgPlugins/ReaderWriterASP.hpp"
 #include "osgPlugins/ReaderWriterPRS.hpp"
+#include "osgPlugins/ReaderWriterUI.hpp"
 
 #include "ui/ImageFont.hpp"
 #include "ui/Shell.hpp"
@@ -50,6 +51,7 @@ namespace ehb
             osgDB::Registry::instance()->addReaderWriter(new ReaderWriterPRS(fileSys));
             osgDB::Registry::instance()->addReaderWriter(new ReaderWriterFont(fileSys));
             osgDB::Registry::instance()->addReaderWriter(new ReaderWriterSiegeNodeList(fileSys));
+            osgDB::Registry::instance()->addReaderWriter(new ReaderWriterUI(fileSys, shell));
             
         }
 
@@ -78,7 +80,8 @@ namespace ehb
         console.font = imageFont;
         console.resetCaret();
 
-        shell.init(fileSys, scene2d, 800, 600);
+        // its important to note that when DS boots, the ortho view is always 640x480 to support the front end animations
+        shell.init(fileSys, scene2d, config.getInt("width", 640), config.getInt("height", 480));
 
         // TODO: go to the next state
         if (const std::string state = config.getString("state"); !state.empty())

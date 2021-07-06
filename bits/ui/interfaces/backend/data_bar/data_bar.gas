@@ -1,0 +1,397 @@
+[data_bar]
+{
+	intended_resolution_height = 480;
+	intended_resolution_width = 640;
+  b interface = true;
+  
+    skrit = [[
+    
+        owner = UIWindow;
+        
+        init$()
+        {
+            Report.ScreenF ("init$");
+        }
+        
+        debug_window$(string name$)
+        {
+            if (StringTool.IsEmpty(name$))
+            {
+                return;
+            }
+                
+            UIWindow window$ = UIShell.FindUIWindow(name$, "data_bar");
+            if (window$ == NULL)
+            {
+                Report.ScreenF ("failed to find %s in data_bar", name$);
+                return;
+            }
+            
+            report.screenf ("Found %s", name$);
+        }       
+        
+    ]];
+	
+	[t:button,n:button_health_potions]
+	{
+	  f alpha = 1.000000;
+		bottom_anchor = 41;
+	  b common_control = false;
+		common_template = ;
+		disable_color = 0xff5f5f5f;
+		dock_group = information_dockbar;
+	  i draw_order = 4;
+		group = information_dockbar;
+		is_bottom_anchor = true;
+		rect = 45,439,67,471;
+		rollover_help = button_health_potions;
+		texture = b_gui_ig_mnu_icon_health_up;
+		uvcoords = 0.000000,0.000000,0.687500,1.000000;
+		wrap_mode = clamp;
+		leftright_button = true;
+		[messages]
+		{
+			onbuttonpress = notify(drink_health_potions) & call(init$);
+			onlbuttondown = loadtexture(b_gui_ig_mnu_icon_health_dwn);
+			onlbuttonup = loadtexture(b_gui_ig_mnu_icon_health_up);
+			onrolloff = loadtexture(b_gui_ig_mnu_icon_health_up);
+			onrollover = loadtexture(b_gui_ig_mnu_icon_health_hov);
+		}
+	}
+	[t:button,n:button_mana_potions]
+	{
+	  f alpha = 1.000000;
+		bottom_anchor = 41;
+	  b common_control = false;
+		common_template = ;
+		disable_color = 0xff5f5f5f;
+		dock_group = information_dockbar;
+	  i draw_order = 5;
+		group = information_dockbar;
+		is_bottom_anchor = true;
+		rect = 71,439,93,471;
+		rollover_help = button_mana_potions;
+		texture = b_gui_ig_mnu_icon_mana_up;
+		uvcoords = 0.000000,0.000000,0.687500,1.000000;
+		wrap_mode = clamp;
+		leftright_button = true;
+		[messages]
+		{
+			onbuttonpress = notify(drink_mana_potions);
+			onlbuttondown = loadtexture(b_gui_ig_mnu_icon_mana_dwn);
+			onlbuttonup = loadtexture(b_gui_ig_mnu_icon_mana_up);
+			onrolloff = loadtexture(b_gui_ig_mnu_icon_mana_up);
+			onrollover = loadtexture(b_gui_ig_mnu_icon_mana_hov);
+		}
+	}
+	[t:checkbox,n:button_mega_map]
+	{
+	  f alpha = 1.000000;
+		bottom_anchor = 41;
+	  b common_control = false;
+		common_template = ;
+		dock_group = information_dockbar;
+	  i draw_order = 7;
+		group = information_dockbar;
+		is_bottom_anchor = true;
+		is_right_anchor = true;
+		rect = 541,439,568,470;
+		right_anchor = 99;
+		rollover_help = button_mega_map_on;
+		texture = b_gui_ig_mnu_icon_map_up;
+		uvcoords = 0.000000,0.031250,0.843750,1.000000;
+		wrap_mode = clamp;
+		[messages]
+		{			
+			onlbuttondown = loadtexture(b_gui_ig_mnu_icon_map_dwn);
+			onlbuttonup = loadtexture(b_gui_ig_mnu_icon_map_up);
+			onrolloff = loadtexture(b_gui_ig_mnu_icon_map_up);
+			onrollover = loadtexture(b_gui_ig_mnu_icon_map_hov);
+
+			oncheck = setrolloverhelp(button_mega_map_off) & notify(activate_mini_map) & playsound(s_e_gui_spell_book);
+
+			onlbuttondownchecked = loadtexture(b_gui_ig_mnu_icon_map_dwn);
+			onlbuttonupchecked = loadtexture(b_gui_ig_mnu_icon_map_up);
+			onrolloffchecked = loadtexture(b_gui_ig_mnu_icon_map_up);
+			onrolloverchecked = loadtexture(b_gui_ig_mnu_icon_map_hov);
+
+			onuncheck = setrolloverhelp(button_mega_map_on) & notify(activate_mini_map) & playsound(s_e_gui_spell_book);
+		}
+		leftright_button = true;
+	}
+	[t:button,n:button_menu]
+	{
+	  f alpha = 1.000000;
+		bottom_anchor = 41;
+	  b common_control = false;
+		common_template = ;
+		dock_group = information_dockbar;
+	  i draw_order = 8;
+		group = information_dockbar;
+		is_bottom_anchor = true;
+		is_right_anchor = true;
+		rect = 611,439,635,471;
+		right_anchor = 29;
+		rollover_help = button_menu;
+		texture = b_gui_ig_mnu_icon_door_up;
+		uvcoords = 0.000000,0.000000,0.750000,1.000000;
+		wrap_mode = clamp;
+		visible = true;
+		[messages]
+		{
+			onbuttonpress = notify(options_menu) & playsound(s_e_frontend_tiny_button);
+			onlbuttondown = loadtexture(b_gui_ig_mnu_icon_door_dwn);
+			onlbuttonup = loadtexture(b_gui_ig_mnu_icon_door_up);
+			onrolloff = loadtexture(b_gui_ig_mnu_icon_door_up);
+			onrollover = loadtexture(b_gui_ig_mnu_icon_door_hov);
+		}
+		leftright_button = true;
+	}
+	[t:button,n:button_pause]
+	{
+		is_bottom_anchor = true;		
+	  f alpha = 1.000000;
+	  b common_control = false;
+		common_template = ;
+	  i draw_order = 91;
+		rect = 10,441,37,469;
+		texture = b_gui_ig_mnu_icon_pause_up;
+		uvcoords = 0.000000,0.125000,0.843750,1.000000;
+		wrap_mode = clamp;
+		visible = true;
+		dock_group = information_dockbar;
+		group = information_dockbar;
+		bottom_anchor = 39;
+		rollover_help = button_play;
+
+		[messages]
+		{
+			onbuttonpress = notify(toggle_pause) & playsound(s_e_gui_element_button_SED);
+			onlbuttondown = loadtexture(b_gui_ig_mnu_icon_pause_down);
+			onlbuttonup = loadtexture(b_gui_ig_mnu_icon_pause_up);
+			onrolloff = loadtexture(b_gui_ig_mnu_icon_pause_up);
+			onrollover = loadtexture(b_gui_ig_mnu_icon_pause_hov);
+			onstartanim = flashanimation(0.35,true);
+		}
+		
+		leftright_button = true;
+	}
+	[t:button,n:button_play]
+	{
+		is_bottom_anchor = true;		
+	  f alpha = 1.000000;
+	  b common_control = false;
+		common_template = ;
+	  i draw_order = 46;
+		rect = 10,441,37,469;
+		texture = b_gui_ig_mnu_icon_play_up;
+		uvcoords = 0.000000,0.125000,0.843750,1.000000;
+		wrap_mode = clamp;
+		dock_group = information_dockbar;
+		group = information_dockbar;
+		bottom_anchor = 39;
+		visible = false;
+		
+		[messages]
+		{
+			onbuttonpress = notify(toggle_pause) & playsound(s_e_gui_element_button_SED);
+			onlbuttondown = loadtexture(b_gui_ig_mnu_icon_play_down);
+			onlbuttonup = loadtexture(b_gui_ig_mnu_icon_play_up);
+			onrolloff = loadtexture(b_gui_ig_mnu_icon_play_up);
+			onrollover = loadtexture(b_gui_ig_mnu_icon_play_hov);
+			onstartanim = flashanimation(0.35,true);
+		}
+
+		rollover_help = button_pause;		
+		leftright_button = true;
+	}
+ 
+	[t:checkbox,n:button_quest_log]
+	{
+	  f alpha = 1.000000;
+		bottom_anchor = 41;
+	  b common_control = false;
+		common_template = ;
+		dock_group = information_dockbar;
+	  i draw_order = 9;
+		group = information_dockbar;
+		is_bottom_anchor = true;
+		is_right_anchor = true;
+		rect = 575,439,603,471;
+		right_anchor = 65;
+		rollover_help = button_quest_log_open;
+		texture = b_gui_ig_mnu_icon_book_up;
+		uvcoords = 0.000000,0.000000,0.875000,1.000000;
+		wrap_mode = clamp;
+		[messages]
+		{
+			oncheck			= notify(toggle_quest_log) & setrolloverhelp(button_quest_log_close);
+			onlbuttondown	= loadtexture(b_gui_ig_mnu_icon_book_dwn);
+			onlbuttonup		= loadtexture(b_gui_ig_mnu_icon_book_up);
+			onrolloff		= loadtexture(b_gui_ig_mnu_icon_book_up);
+			onrollover		= loadtexture(b_gui_ig_mnu_icon_book_hov);
+
+			onuncheck			= notify(toggle_quest_log) & setrolloverhelp(button_quest_log_open);
+			onlbuttondownchecked= loadtexture(b_gui_ig_mnu_icon_book_dwn);
+			onlbuttonupchecked	= loadtexture(b_gui_ig_mnu_icon_book_up);
+			onrolloffchecked	= loadtexture(b_gui_ig_mnu_icon_book_up);
+			onrolloverchecked	= loadtexture(b_gui_ig_mnu_icon_book_hov);			
+		}
+	}
+	[t:window,n:window_quest_indicator]
+	{
+		is_bottom_anchor = true;
+		is_right_anchor = true;		
+	  f alpha = 1.000000;
+	  b common_control = false;
+		common_template = ;
+	  i draw_order = 8;
+		rect = 556,423,620,487;
+		right_anchor = 84;
+		bottom_anchor = 57;
+		texture = b_gui_ig_mnu_icon_book_red;
+		uvcoords = 0.000000,0.000000,1.000000,1.000000;
+		wrap_mode = clamp;
+		visible = false;
+		dock_group = information_dockbar;
+		group = information_dockbar;
+
+		[messages]
+		{
+			onstartanim = flashanimation(0.2,true,1);
+		}
+	}
+	[t:dockbar,n:data_bar]
+	{
+	  f alpha = 1.000000;
+	  i bottom_anchor = 31;
+	  b common_control = false;
+		common_template = ;
+		dock_group = information_dockbar;
+		dockbar_type = dockbar_screen_y;
+	  i draw_order = 1;
+		group = information_dockbar;
+	  b is_bottom_anchor = true;
+		pass_through = true;
+		rect = 0,449,640,480;
+	  b stretch_x = true;
+		texture = b_gui_ig_mnu_statusbar;
+		uvcoords = 0.000000,0.000000,1.000000,0.861111;
+		wrap_mode = clamp;
+	}
+	[t:text,n:defeated_escape]
+	{
+	  f alpha = 1.000000;
+		bottom_anchor = 150;
+		center_x = true;
+	  b common_control = false;
+		common_template = ;
+	  x draw_order = 40;
+	  x font_color = -1;
+	  x font_size = 0;
+		font_type = b_gui_fnt_12p_copperplate-light;
+		is_bottom_anchor = true;
+		justify = center;
+		rect = 70,330,570,348;
+		text = "Press escape for options.";
+		uvcoords = 0.000000,0.000000,1.000000,1.000000;
+		visible = false;
+		wrap_mode = clamp;
+	}
+	[t:text_box,n:text_box_info]
+	{
+	  f alpha = 1.000000;
+	  i bottom_anchor = 30;
+	  b center_height = false;
+	  b common_control = false;
+		common_template = ;
+		dock_group = information_dockbar;
+	  i draw_order = 12;
+	  b fixed_location = true;
+		font_type = b_gui_fnt_12p_copperplate-light;
+		group = information_dockbar;
+	  b has_slider = false;
+	  b is_bottom_anchor = true;
+		justify = center;
+	  i max_height = 240;
+	  i max_width = 320;
+	  b pass_through = true;
+		rect = 95,450,501,479;
+	  f scroll_rate = 0.000000;
+	  b stretch_x = true;
+		uvcoords = 0.000000,0.000000,1.000000,1.000000;
+		wrap_mode = clamp;
+	}
+	[t:checkbox,n:window_labels]
+	{
+	  f alpha = 1.000000;
+		bottom_anchor = 39;
+	  b common_control = false;
+		common_template = ;
+		dock_group = information_dockbar;
+	  i draw_order = 42;
+		is_bottom_anchor = true;
+		is_right_anchor = true;
+		right_anchor = 133;
+		rect = 507,439,539,471;
+		rollover_help = labels_indicator_on;
+		texture = b_gui_ig_mnu_label_up;
+		uvcoords = 0.000000,0.000000,1.000000,1.000000;
+		wrap_mode = clamp;
+		group = information_dockbar;
+		[messages]		
+		{
+			oncheck = notify(labels_on) & setrolloverhelp(labels_indicator_on) & loadtexture(b_gui_ig_mnu_label_up);
+			
+			onlbuttondown = loadtexture(b_gui_ig_mnu_label_off_down);
+			onlbuttonup	= loadtexture(b_gui_ig_mnu_label_off_up);
+			onbuttonpress =  playsound(s_e_gui_element_button_SED);
+			onrolloff = loadtexture(b_gui_ig_mnu_label_off_up);
+			onrollover = loadtexture(b_gui_ig_mnu_label_off_hov);
+
+			onlbuttondownchecked = loadtexture(b_gui_ig_mnu_label_down);
+			onlbuttonupchecked	= loadtexture(b_gui_ig_mnu_label_up);
+			onrolloffchecked	= loadtexture(b_gui_ig_mnu_label_up);
+			onrolloverchecked	= loadtexture(b_gui_ig_mnu_label_hov);
+						
+			onuncheck = notify(labels_off) & setrolloverhelp(labels_indicator_off) & loadtexture(b_gui_ig_mnu_label_off_up);			
+		}
+	}
+
+	[t:window,n:window_lag]
+	{
+	  f alpha = 1.000000;
+		bottom_anchor = 72;
+	  b common_control = false;
+		common_template = ;
+		dock_group = information_dockbar;
+	  i draw_order = 93;
+		group = information_dockbar;
+		is_bottom_anchor = true;
+		rect = 324,409,356,441;
+		texture = b_gui_ig_mnu_deadnet;
+		uvcoords = 0.000000,0.000000,1.000000,1.000000;
+		wrap_mode = clamp;
+		visible = false;
+		center_x = true;
+		rollover_help = slow_network;
+	}
+	[t:window,n:window_slownet]
+	{
+	  f alpha = 1.000000;
+		bottom_anchor = 72;
+	  b common_control = false;
+		common_template = ;
+		dock_group = information_dockbar;
+	  i draw_order = 93;
+		group = information_dockbar;
+		is_bottom_anchor = true;
+		rect = 286,409,318,441;
+		rollover_help = slow_network;
+		texture = b_gui_ig_mnu_slownet;
+		uvcoords = 0.000000,0.000000,1.000000,1.000000;
+		wrap_mode = clamp;
+		visible = false;
+		center_x = true;
+	}
+}
