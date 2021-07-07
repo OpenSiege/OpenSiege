@@ -8,6 +8,9 @@
 #include "ContentDb.hpp"
 #include "ui/Shell.hpp"
 
+// temp
+#include "GodDI.hpp"
+
 #include "console/Console.hpp"
 
 #include <osgGA/GUIEventHandler>
@@ -56,5 +59,7 @@ namespace ehb
 
         // console needs to be last to ensure all systems are booted
         osg::ref_ptr<Console> console;
+
+        GodDI godDI;
     };
 }

@@ -122,6 +122,9 @@ set(SIEGE_SOURCES
     "src/Game.cpp"
     "src/main.cpp"
     "src/ContentDb.cpp"
+
+    # TEMP
+    "src/GodDI.cpp"
 )
 
 # main open siege target
