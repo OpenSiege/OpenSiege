@@ -8,9 +8,17 @@
 #include "IFileSys.hpp"
 #include "gas/Fuel.hpp"
 
+<<<<<<< HEAD
 #define DOCTEST_CONFIG_IMPLEMENT
 #define DOCTEST_CONFIG_SUPER_FAST_ASSERTS
 #include "doctest.h"
+=======
+#include "ContentDb.hpp"
+
+#include <iostream>
+#include <fstream>
+#include <filesystem>
+>>>>>>> 639af0c (python binding work for gas library)
 
 namespace ehb
 {
@@ -400,6 +408,81 @@ namespace ehb
                 REQUIRE(new_wildcards != nullptr);
 
                 REQUIRE_EQ(new_wildcards->eachChild().size(), 4);
+            }
+        }
+
+        attemptMappingForFile("amr_body_chain");
+        attemptMappingForFile("amr_shield");
+    }
+
+    void GasTestState::attemptMappingForFile(const std::string& fileName)
+    {
+        auto log = spdlog::get("log");
+
+        auto filePath = "/world/contentdb/templates/regular/interactive/" + fileName + ".gas";
+        if (auto stream = fileSys.createInputStream(filePath))
+        {
+            if (Fuel doc; doc.load(*stream))
+            {
+                log->info("parsing {}", filePath);
+
+                // multiple fuel files
+                Fuel upbaseFuel, plus0Fuel;
+                for (auto sourceTmpl : doc.eachChild())
+                {
+                    if (sourceTmpl->name() == "base_body_armor_chain") continue;
+                    if (sourceTmpl->name() == "base_shield") continue;
+
+                    log->info("handling: {}", sourceTmpl->name());
+
+                    // deal with the base template
+                    auto baseTmpl = upbaseFuel.appendChild(sourceTmpl->name() + "_upgbase", "template");
+
+                    // copy over properties
+                    auto doc = sourceTmpl->valueOf("doc"); doc.pop_back();
+                    doc += " Upgradeable Base\"";
+                    baseTmpl->appendValue("doc", doc);
+                    baseTmpl->appendValue("specializes", sourceTmpl->valueOf("specializes"));
+
+                    // merge fuel blocks that should be 1:1
+                    auto common = baseTmpl->appendChild("common");
+                    sourceTmpl->child("common")->merge(common);
+                    common->appendValue("description", "\"Can be upgraded\"");
+
+                    auto defend = baseTmpl->appendChild("defend");
+                    sourceTmpl->child("defend")->merge(defend);
+
+                    auto gui = baseTmpl->appendChild("gui");
+                    sourceTmpl->child("gui")->merge(gui);
+
+                    // deal with our plus0 templates now
+                    auto plus0 = plus0Fuel.appendChild(sourceTmpl->name() + "-plus0", "template");
+
+                    // we use the original ds template to generate the plus0
+                    plus0->appendValue("specializes", sourceTmpl->name() + "_upgbase");
+
+                    // merge our pcontent data
+                    auto pcontent = plus0->appendChild("pcontent");
+                    sourceTmpl->child("pcontent")->merge(pcontent);
+
+                }
+
+                namespace fs = std::filesystem;
+                fs::path path = fs::current_path() / std::string(fileName + "_upbase.gas");
+                std::ofstream file(path.c_str());
+                std::time_t result = std::time(nullptr);
+                file << "// Generated on: " << std::asctime(std::localtime(&result));
+
+                upbaseFuel.save(file);
+                file.close();
+
+                fs::path path2 = fs::current_path() / std::string(fileName + "_plus0.gas");
+                std::ofstream file2(path2.c_str());
+                file2 << "// Generated on: " << std::asctime(std::localtime(&result));
+
+                plus0Fuel.save(file2);
+                file2.close();
+
             }
         }
     }

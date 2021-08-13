@@ -7,11 +7,12 @@ namespace ehb
 {
     class IConfig;
     class IFileSys;
+    class ContentDb;
     class GasTestState final : public IGameState
     {
     public:
 
-        GasTestState(IGameStateMgr & gameStateMgr, IConfig & config, IFileSys& fileSys);
+        GasTestState(IGameStateMgr & gameStateMgr, IConfig & config, IFileSys& fileSys, ContentDb& contentDb);
 
         virtual ~GasTestState() = default;
 
@@ -25,9 +26,12 @@ namespace ehb
         IGameStateMgr & gameStateMgr;
         IConfig & config;
         IFileSys& fileSys;
+        ContentDb& contentDb;
+
+        void attemptMappingForFile(const std::string& file);
     };
 
-    inline GasTestState::GasTestState(IGameStateMgr& gameStateMgr, IConfig& config, IFileSys& fileSys) : gameStateMgr(gameStateMgr), config(config), fileSys(fileSys)
+    inline GasTestState::GasTestState(IGameStateMgr& gameStateMgr, IConfig& config, IFileSys& fileSys, ContentDb& contentDb) : gameStateMgr(gameStateMgr), config(config), fileSys(fileSys), contentDb(contentDb)
     {
     }
 }

@@ -142,7 +142,7 @@ namespace ehb
         }
         else if (gameStateType == "GasTestState")
         {
-            return new GasTestState(gameStateMgr, config, fileSys);
+            return new GasTestState(gameStateMgr, config, fileSys, contentDb);
         }
         else if (gameStateType == "SiegeNodeTestState")
         {

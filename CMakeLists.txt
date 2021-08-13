@@ -32,6 +32,7 @@ endif(UNIX)
 add_subdirectory(extern)
 
 option(REGENERATE_FUEL_PARSER "Enable this option to regenerate the Fuel parser files" OFF)
+option(BUILD_FUEL_PYTHON_BINDINGS "Enable this option to build the python bindings for the Fuel parser" OFF)
 
 if(REGENERATE_FUEL_PARSER)
     # these are required due to having exes associated with them
@@ -40,6 +41,22 @@ if(REGENERATE_FUEL_PARSER)
 
     bison_target(FuelParser "${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelParser.y" "${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelParser.cpp" COMPILE_FLAGS "${YACC_FLAGS} --no-lines --defines=${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelParser.hpp")
     re2c_target(NAME FuelScanner INPUT "${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelScanner.r2c" OUTPUT "${CMAKE_CURRENT_LIST_DIR}/src/gas/FuelScanner.cpp" OPTIONS "--no-debug-info")
+endif()
+
+if(BUILD_FUEL_PYTHON_BINDINGS)
+    find_package(pybind11 REQUIRED)
+    file(GLOB FUEL_PYTHON_FILES "src/fuel/*.cpp" "src/fuel/*.hpp")
+    
+    set(FUEL_SOURCES
+        "src/fuel/Fuel.cpp"
+        "src/fuel/FuelPaser.cpp")
+    pybind11_add_module(gas
+        "src/gas/Fuel.cpp"
+        "src/gas/Fuel.hpp"
+        "src/gas/FuelParser.cpp"
+        "src/gas/FuelScanner.cpp")
+    target_include_directories(gas PUBLIC src ${CMAKE_CURRENT_BINARY_DIR}/fuel)
+    target_compile_definitions(gas PRIVATE -DBUILD_PYTHON_BINDINGS)
 endif()
 
 execute_process(

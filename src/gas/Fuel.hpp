@@ -24,10 +24,12 @@
 #include <string>
 #include <vector>
 #include <array>
-#include <osg/Vec3>
-#include <osg/Vec4>
+//include <osg/Vec3>
+//#include <osg/Vec4>
 //#include "SiegeRot.hpp"
 //#include "SiegePos.hpp"
+
+#include <iostream>
 
 namespace ehb
 {
@@ -79,6 +81,9 @@ namespace ehb
             //! @return the number of attributes in this node
             unsigned int valueCount() const;
 
+            //! @return the number of children in this node
+            unsigned int childCount() const;
+
             /**
              * @param name which attribute type or value to return
              * @param defaultValue the value to return if the attribute does not exist
@@ -111,8 +116,8 @@ namespace ehb
             // extra types...
             std::array<float, 3> valueAsFloat3(const std::string & name, const std::array<float, 3> defaultValue = { 1.0, 1.0, 1.0 }) const;
             std::array<float, 4> valueAsFloat4(const std::string& name, const std::array<float, 4> defaultValue = { 1.0, 1.0, 1.0, 1.0 }) const;
-            osg::Vec3 valueAsVec3(const std::string & name, const osg::Vec3 & defaultValue = { 1.0, 1.0, 1.0 }) const; // don't use 1.f as osg::Vec3 could be doubles
-            osg::Vec4 valueAsColor(const std::string & name, const osg::Vec4 & defaultValue = { 1.f, 1.f, 1.f, 1.f }) const;
+            //osg::Vec3 valueAsVec3(const std::string & name, const osg::Vec3 & defaultValue = { 1.0, 1.0, 1.0 }) const; // don't use 1.f as osg::Vec3 could be doubles
+            //osg::Vec4 valueAsColor(const std::string & name, const osg::Vec4 & defaultValue = { 1.f, 1.f, 1.f, 1.f }) const;
             //SiegeRot valueAsSiegeRot(const std::string & name, const SiegeRot & defaultValue = { 0.0, 0.0, 0.0, 0.0, 0}) const;
             //SiegePos valueAsSiegePos(const std::string & name, const SiegePos & defaultValue = { 0.0, 0.0, 0.0, 0 }) const;
 
@@ -209,6 +214,11 @@ namespace ehb
         return mAttributes.size();
     }
 
+    inline unsigned int FuelBlock::childCount() const
+    {
+        return mChildren.size();
+    }
+
     inline const std::string & FuelBlock::valueOf(const std::string & name, const std::string & defaultValue) const
     {
         if (const Attribute * attr = attribute(name))
@@ -263,11 +273,15 @@ namespace ehb
     {
         public:
 
+            explicit Fuel() = default;
+
             bool load(std::istream & stream);
             bool load(const std::string & filename);
 
             bool save(std::ostream & stream) const;
             bool save(const std::string & filename) const;
+
+            void print() const;
 
     };
 }

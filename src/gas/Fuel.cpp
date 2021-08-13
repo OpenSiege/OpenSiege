@@ -27,6 +27,11 @@
 #include "FuelParser.hpp"
 #include "FuelScanner.hpp"
 
+#ifdef BUILD_PYTHON_BINDINGS
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+#endif
+
 namespace ehb
 {
     static std::vector<std::string> split(const std::string & value, char delim)
@@ -374,6 +379,7 @@ namespace ehb
         return defaultValue;
     }
 
+#if 0
     osg::Vec3 FuelBlock::valueAsVec3(const std::string& name, const osg::Vec3& defaultValue) const
     {
         if (const Attribute * attr = attribute(name))
@@ -412,6 +418,7 @@ namespace ehb
 
         return defaultValue;
     }
+#endif
 
 #if 0
     SiegeRot FuelBlock::valueAsSiegeRot(const std::string & name, const SiegeRot & defaultValue) const
@@ -636,7 +643,8 @@ namespace ehb
 
         inline std::string indent() const
         {
-            return std::string(level * 4, ' ');
+            // return std::string(level * 4, ' ');
+            return std::string(level * 1, '\t');
         }
 
         std::ostream & stream;
@@ -675,4 +683,63 @@ namespace ehb
 
         f.write(this);
     }
+
+    void Fuel::print() const
+    {
+        std::ostringstream out;
+
+        write(out);
+
+        std::cout << out.str() << std::endl;
+    }
+
+#ifdef BUILD_PYTHON_BINDINGS
+
+    PYBIND11_MODULE(gas, m)
+    {
+        m.doc() = "Gas parsing library";
+
+        pybind11::class_<Attribute>(m, "attribute")
+            .def_readwrite("name", &Attribute::name)
+            .def_readwrite("name", &Attribute::name)
+            .def_readwrite("name", &Attribute::name);
+
+        pybind11::class_<FuelBlock>(m, "fuelBlock")
+            .def_property_readonly("name", &FuelBlock::name)
+            .def_property_readonly("type", &FuelBlock::type)
+            .def("valueCount", &FuelBlock::valueCount)
+            .def("childCount", &FuelBlock::childCount)
+            .def("child", static_cast<FuelBlock * (FuelBlock::*)(const std::string&) const>(&FuelBlock::child)) // overload_cast doesn't seem to be able to properly deduce the type
+            .def("eachChild", &FuelBlock::eachChild)
+            .def("appendChild", static_cast<FuelBlock * (FuelBlock::*)(const std::string&)>(&FuelBlock::appendChild))
+            .def("appendChild", static_cast<FuelBlock * (FuelBlock::*)(const std::string&, const std::string&)>(&FuelBlock::appendChild))
+            .def("valueOf", pybind11::overload_cast<const std::string&, const std::string&>(&FuelBlock::valueOf, pybind11::const_), pybind11::arg("name"), pybind11::arg("defaultValue") = "")
+            .def("appendValue", pybind11::overload_cast<const std::string&, const std::string&>(&FuelBlock::appendValue))
+            .def("eachAttrOf", &FuelBlock::eachAttrOf)
+            .def("__repr__", [](const FuelBlock& fb)
+                {
+                    return "<fuelBlock file report>";
+                }
+            );
+
+        pybind11::class_<Fuel, FuelBlock>(m, "fuel")
+            .def(pybind11::init<>())
+            .def("load", pybind11::overload_cast<const std::string&>(&Fuel::load), "Load file")
+            .def("print", &Fuel::print, "Print the entire file to console")
+            .def("__repr__", [](const Fuel& f)
+                {
+                    std::stringstream ss;
+
+                    ss << "<fuel file has '" + std::to_string(f.childCount()) + "' children count>:\n";
+
+                    for (auto children : f.eachChild())
+                    {
+                        ss << "    name:" << children->name() << " type:" << children->type() << "\n";
+                    }
+
+                    return ss.str();
+                }
+            );
+    }
+#endif
 }
