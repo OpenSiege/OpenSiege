@@ -148,6 +148,9 @@ namespace ehb
 
             const Attribute * attribute(const std::string & name) const;
 
+            //! create a deep copy of the node that must be deleted by the user
+            FuelBlock* clone(FuelBlock* parent = nullptr) const;
+
         private:
 
             std::string mName;
