@@ -265,18 +265,14 @@ namespace ehb
                 return defaultValue;
             }
 
-            const auto itr1 = value.find(',');
-            const auto itr2 = value.find(',', itr1 + 1);
-            const auto itr3 = value.find(',', itr2 + 1);
-            const auto itr4 = value.find(',', itr3 + 1);
+            const std::vector<std::string> values = split(value, ',');
 
-            // don't read into these variable names too much
-            int x = std::stoi(value.substr(0, itr1));
-            int y = std::stoi(value.substr(itr1 + 1, itr2 - itr1 - 1));
-            int z = std::stoi(value.substr(itr2 + 1, itr3 - itr2 - 1));
-            int w = std::stoi(value.substr(itr3 + 1, itr4 - itr3 - 1));
+            if (values.size() != 4)
+            {
+                return defaultValue;
+            }
 
-            return std::array<int, 4> {x, y, z, w};
+            return std::array<int, 4> { std::stoi(values[0]), std::stoi(values[1]), std::stoi(values[2]), std::stoi(values[3]) };
         }
 
         return defaultValue;
