@@ -9,7 +9,7 @@
 #include "Game.hpp"
 
 // TODO: move to a new Report class
-void registerSiegeLogger(const std::string& path, const std::string& name);
+void registerSiegeLogger(const std::string& path, const std::string& name, std::shared_ptr<spdlog::logger> logger = nullptr);
 
 int main(int argc, char * argv[])
 {
@@ -54,7 +54,7 @@ int main(int argc, char * argv[])
     return game->exec();
 }
 
-void registerSiegeLogger(const std::string& path, const std::string& name)
+void registerSiegeLogger(const std::string& path, const std::string& name, std::shared_ptr<spdlog::logger> log)
 {
     char dateTime[128] = { '\0' };
     std::time_t now = std::time(nullptr);
@@ -69,7 +69,7 @@ void registerSiegeLogger(const std::string& path, const std::string& name)
 
     try
     {
-        auto log = spdlog::basic_logger_mt(name, fullpath.string(), true);
+        if (log == nullptr) log = spdlog::basic_logger_mt(name, fullpath.string(), true);
 
         log->info("-==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==-");
         log->info("-== App          : Open Siege ({} - Retail)", ehb::Platform::instance().getExecutablePath());
