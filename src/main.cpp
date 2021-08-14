@@ -4,12 +4,13 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/basic_file_sink.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+#include <spdlog/pattern_formatter.h>
 #include "cfg/WritableConfig.hpp"
 #include "Platform.hpp"
 #include "Game.hpp"
 
 // TODO: move to a new Report class
-void registerSiegeLogger(const std::string& path, const std::string& name, std::shared_ptr<spdlog::logger> logger = nullptr);
+void registerSiegeLogger(const std::string& path, const std::string& name, spdlog::sinks_init_list slist = {});
 
 int main(int argc, char * argv[])
 {
@@ -49,12 +50,15 @@ int main(int argc, char * argv[])
     registerSiegeLogger(config.getString("logs_path", ""), "scene");
     registerSiegeLogger(config.getString("logs_path", ""), "world");
 
+    // TODO: put this behind some cmake option to disable unit testing
+    registerSiegeLogger(config.getString("logs_path", ""), "testing");
+
     osg::ref_ptr<Game> game = new Game(config);
 
     return game->exec();
 }
 
-void registerSiegeLogger(const std::string& path, const std::string& name, std::shared_ptr<spdlog::logger> log)
+void registerSiegeLogger(const std::string& path, const std::string& name, spdlog::sinks_init_list slist)
 {
     char dateTime[128] = { '\0' };
     std::time_t now = std::time(nullptr);
@@ -69,7 +73,7 @@ void registerSiegeLogger(const std::string& path, const std::string& name, std::
 
     try
     {
-        if (log == nullptr) log = spdlog::basic_logger_mt(name, fullpath.string(), true);
+        auto log = spdlog::basic_logger_mt(name, fullpath.string(), true);
 
         log->info("-==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==-");
         log->info("-== App          : Open Siege ({} - Retail)", ehb::Platform::instance().getExecutablePath());
@@ -79,8 +83,17 @@ void registerSiegeLogger(const std::string& path, const std::string& name, std::
         log->info("-== Git          : {} ({})", ehb::Platform::Git::GIT_BRANCH, ehb::Platform::Git::GIT_SHA1);
         log->info("-==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==--==-");
 
+        // get our console sink which is created by default
         auto console = spdlog::get("log")->sinks().back();
+
+        // make sure all logs also print out to our console
         log->sinks().push_back(console);
+
+        // add any custom sinks passed in to the function, should the console be passed in for clarity?
+        for (auto sink : slist)
+        {
+            log->sinks().push_back(sink);
+        }
     }
     catch (std::exception& e)
     {
