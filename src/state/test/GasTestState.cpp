@@ -50,15 +50,13 @@ namespace ehb
         context.setAsDefaultForAssertsOutOfTestCases();
         context.setAssertHandler(handler);
 
-        CHECK_EQ(true, false);
-
         auto stream = std::make_unique<std::stringstream>();
         *stream << "[t:template,n:actor]{doc=\"Generic brained objects\";}";
 
         if (Fuel doc; doc.load(*stream))
         {
-            assert(doc.child("actor")->name() == "actor");
-            assert(doc.child("actor")->type() == "template");
+            REQUIRE(doc.child("actor")->name() == "actor");
+            REQUIRE(doc.child("actor")->type() == "template");
         }
 
         std::stringstream().swap(*stream);
@@ -75,14 +73,13 @@ namespace ehb
         if (Fuel doc; doc.load(*stream))
         {
             auto readValuesBlock = doc.child("readValues");
-            assert(readValuesBlock != nullptr);
-            assert(readValuesBlock->name() == "readValues");
+            REQUIRE(readValuesBlock != nullptr);
 
             auto testValueAsInt4Block = readValuesBlock->child("testValueAsInt4");
-            assert(testValueAsInt4Block != nullptr);
+            CHECK(testValueAsInt4Block != nullptr);
 
             auto testValuesAsInt4 = testValueAsInt4Block->valueAsInt4("test");
-            assert(testValuesAsInt4[0] == 1); assert(testValuesAsInt4[1] == 9); assert(testValuesAsInt4[2] == 6); assert(testValuesAsInt4[3] == 2);
+            CHECK(testValuesAsInt4[0] == 1); CHECK(testValuesAsInt4[1] == 9); CHECK(testValuesAsInt4[2] == 6); CHECK(testValuesAsInt4[3] == 2);
         }
     }
 
