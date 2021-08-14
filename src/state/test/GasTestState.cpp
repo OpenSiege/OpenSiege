@@ -63,35 +63,35 @@ namespace ehb
         *stream << R"(
             [t:test,n:readValues]
             {
-                [testValueAsBool]
+                [ValueAsBool]
                 {
                     test = true;
                 }
-                [testValueAsInt]
+                [ValueAsInt]
                 {
                     test = -543;
                 }
-                [testValueAsInt4]
+                [ValueAsInt4]
                 {
                     test = 1, 9, 6, 2;
                 }
-                [testValueAsUInt]
+                [ValueAsUInt]
                 {
                     test = 534;
                 }
-                [testValueAsFloat]
+                [ValueAsFloat]
                 {
                     test = 3.141592654;
                 }
-                [testValueAsString]
+                [ValueAsString]
                 {
                     test = "this is a test string, with a , and a '";
                 }
-                [testValueAsFloat3]
+                [ValueAsFloat3]
                 {
                     test = 1.25, 3.67, 9.99;
                 }
-                [testValueAsFloat4]
+                [ValueAsFloat4]
                 {
                     test = 1.2, 3.6343, 9.1034, -99.324;
                 }
@@ -104,38 +104,38 @@ namespace ehb
             REQUIRE(readValuesBlock != nullptr);
 
             // bool
-            REQUIRE(readValuesBlock->child("testValueAsBool") != nullptr);
-            CHECK_EQ(readValuesBlock->child("testValueAsBool")->valueAsBool("test"), true);
+            REQUIRE(readValuesBlock->child("ValueAsBool") != nullptr);
+            CHECK_EQ(readValuesBlock->child("ValueAsBool")->valueAsBool("test"), true);
 
             // int
-            REQUIRE(readValuesBlock->child("testValueAsInt") != nullptr);
-            CHECK_EQ(readValuesBlock->child("testValueAsInt")->valueAsInt("test"), -543);
+            REQUIRE(readValuesBlock->child("ValueAsInt") != nullptr);
+            CHECK_EQ(readValuesBlock->child("ValueAsInt")->valueAsInt("test"), -543);
 
             // valueAsInt4
-            REQUIRE(readValuesBlock->child("testValueAsInt4") != nullptr);
-            auto testValues = readValuesBlock->child("testValueAsInt4")->valueAsInt4("test");
+            REQUIRE(readValuesBlock->child("ValueAsInt4") != nullptr);
+            auto testValues = readValuesBlock->child("ValueAsInt4")->valueAsInt4("test");
             CHECK(testValues[0] == 1); CHECK(testValues[1] == 9); CHECK(testValues[2] == 6); CHECK(testValues[3] == 2);
 
             // uint
-            REQUIRE(readValuesBlock->child("testValueAsUInt") != nullptr);
-            CHECK_EQ(readValuesBlock->child("testValueAsUInt")->valueAsInt("test"), 534);
+            REQUIRE(readValuesBlock->child("ValueAsUInt") != nullptr);
+            CHECK_EQ(readValuesBlock->child("ValueAsUInt")->valueAsInt("test"), 534);
 
             // float
-            REQUIRE(readValuesBlock->child("testValueAsFloat") != nullptr);
-            CHECK_EQ(readValuesBlock->child("testValueAsFloat")->valueAsFloat("test"), doctest::Approx(3.14159f));
+            REQUIRE(readValuesBlock->child("ValueAsFloat") != nullptr);
+            CHECK_EQ(readValuesBlock->child("ValueAsFloat")->valueAsFloat("test"), doctest::Approx(3.14159f));
 
             // string
-            REQUIRE(readValuesBlock->child("testValueAsString") != nullptr);
-            CHECK_EQ(readValuesBlock->child("testValueAsString")->valueAsString("test"), "this is a test string, with a , and a '");
+            REQUIRE(readValuesBlock->child("ValueAsString") != nullptr);
+            CHECK_EQ(readValuesBlock->child("ValueAsString")->valueAsString("test"), "this is a test string, with a , and a '");
 
             // valueAsFloat3
-            REQUIRE(readValuesBlock->child("testValueAsFloat3") != nullptr);
-            auto testValues3 = readValuesBlock->child("testValueAsFloat3")->valueAsFloat3("test");
+            REQUIRE(readValuesBlock->child("ValueAsFloat3") != nullptr);
+            auto testValues3 = readValuesBlock->child("ValueAsFloat3")->valueAsFloat3("test");
             CHECK(testValues3[0] == doctest::Approx(1.25)); CHECK(testValues3[1] == doctest::Approx(3.67)); CHECK(testValues3[2] == doctest::Approx(9.99));
 
             // valueAsFloat4
-            REQUIRE(readValuesBlock->child("testValueAsFloat4") != nullptr);
-            auto testValues4 = readValuesBlock->child("testValueAsFloat4")->valueAsFloat4("test");
+            REQUIRE(readValuesBlock->child("ValueAsFloat4") != nullptr);
+            auto testValues4 = readValuesBlock->child("ValueAsFloat4")->valueAsFloat4("test");
             CHECK(testValues4[0] == doctest::Approx(1.2)); CHECK(testValues4[1] == doctest::Approx(3.6343)); CHECK(testValues4[2] == doctest::Approx(9.1034)); CHECK(testValues4[3] == doctest::Approx(-99.324));
         }
     }
