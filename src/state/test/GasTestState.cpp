@@ -138,6 +138,167 @@ namespace ehb
             auto testValues4 = readValuesBlock->child("ValueAsFloat4")->valueAsFloat4("test");
             CHECK(testValues4[0] == doctest::Approx(1.2)); CHECK(testValues4[1] == doctest::Approx(3.6343)); CHECK(testValues4[2] == doctest::Approx(9.1034)); CHECK(testValues4[3] == doctest::Approx(-99.324));
         }
+
+        std::stringstream().swap(*stream);
+        *stream << R"(
+            [t:template,n:bd_ch_f_g_c_avg]
+            {
+	            doc = "Thick Chain";
+	            specializes = base_body_armor_chain;
+	            [common]
+	            {
+	              b allow_modifiers = false;
+		            screen_name = "Thick Chain";
+	            }
+	            [defend]
+	            {
+		            armor_style = 004;
+		            armor_type = a4;
+	              f defense = 135.000000;
+	            }
+	            [gui]
+	            {
+		            equip_requirements = strength:24;
+		            inventory_height = 3;
+		            inventory_icon = b_gui_ig_i_a_pos_a4_004;
+		            inventory_width = 2;
+	            }
+	            [pcontent]
+	            {
+		            [base]
+		            {
+		              f modifier_max = 0.000000;
+		              f modifier_min = 0.000000;
+		            }
+		            [c_fin]
+		            {
+			            armor_style = 027;
+			            armor_type = a3;
+		              f defense = 147.000000;
+			            equip_requirements = strength:25;
+			            inventory_height = 2;
+			            inventory_icon = b_gui_ig_i_a_pos_a3_027;
+			            inventory_width = 2;
+		              f modifier_max = 6.000000;
+		              f modifier_min = 1.000000;
+		            }
+		            [c_str]
+		            {
+			            armor_style = 007;
+			            armor_type = a3;
+		              f defense = 241.000000;
+			            equip_requirements = strength:34;
+			            inventory_icon = b_gui_ig_i_a_pos_a3_007;
+		              f modifier_max = 17.000000;
+		              f modifier_min = 9.000000;
+		            }
+		            [o_fin]
+		            {
+			            armor_style = 028;
+			            armor_type = a3;
+		              f defense = 204.000000;
+			            equip_requirements = strength:31;
+			            inventory_height = 2;
+			            inventory_icon = b_gui_ig_i_a_pos_a3_028;
+			            inventory_width = 2;
+		              f modifier_max = 14.000000;
+		              f modifier_min = 7.000000;
+			            pcontent_special_type = rare, unique, normal;
+		            }
+	            }
+            }
+        )";
+
+        if (Fuel doc; doc.load(*stream))
+        {
+            auto bd_ch_f_g_c_avg = doc.child("bd_ch_f_g_c_avg");
+            REQUIRE(bd_ch_f_g_c_avg != nullptr);
+
+            Fuel newFuelDoc;
+            auto new_test_doc = newFuelDoc.appendChild("new_test_doc");
+
+            // merge will overwrite properties that already exist
+            bd_ch_f_g_c_avg->merge(new_test_doc);
+
+            CHECK_EQ(new_test_doc->name(), "bd_ch_f_g_c_avg");
+            CHECK_EQ(new_test_doc->type(), "template");
+
+            auto common = new_test_doc->child("common");
+            REQUIRE(common != nullptr);
+            {
+                CHECK_EQ(common->valueAsBool("allow_modifiers"), false);
+                CHECK_EQ(common->valueAsString("screen_name"), "Thick Chain");
+            }
+
+            auto defend = new_test_doc->child("defend");
+            REQUIRE(defend != nullptr);
+            {
+                CHECK_EQ(defend->valueOf("armor_style"), "004");
+                CHECK_EQ(defend->valueOf("armor_type"), "a4");
+                CHECK(defend->valueAsFloat("defense") == doctest::Approx(135.0f));
+            }
+
+            auto gui = new_test_doc->child("gui");
+            REQUIRE(gui != nullptr);
+            {
+                CHECK_EQ(gui->valueOf("equip_requirements"), "strength:24");
+                CHECK_EQ(gui->valueAsUInt("inventory_height"), 3);
+                CHECK_EQ(gui->valueOf("inventory_icon"), "b_gui_ig_i_a_pos_a4_004");
+                CHECK_EQ(gui->valueAsUInt("inventory_width"), 2);
+            }
+
+            auto pcontent = new_test_doc->child("pcontent");
+            REQUIRE(pcontent != nullptr);
+            {
+                auto base = pcontent->child("base");
+                REQUIRE(base != nullptr);
+                {
+                    CHECK(base->valueAsFloat("modifier_max") == doctest::Approx(0.0f));
+                    CHECK(base->valueAsFloat("modifier_min") == doctest::Approx(0.0f));
+                }
+
+                auto c_fin = pcontent->child("c_fin");
+                REQUIRE(c_fin != nullptr);
+                {
+                    CHECK_EQ(c_fin->valueOf("armor_style"), "027");
+                    CHECK_EQ(c_fin->valueOf("armor_type"), "a3");
+                    CHECK(c_fin->valueAsFloat("defense") == doctest::Approx(147.0f));
+                    CHECK_EQ(c_fin->valueOf("equip_requirements"), "strength:25");
+                    CHECK_EQ(c_fin->valueAsUInt("inventory_height"), 2);
+                    CHECK_EQ(c_fin->valueOf("inventory_icon"), "b_gui_ig_i_a_pos_a3_027");
+                    CHECK_EQ(c_fin->valueAsUInt("inventory_width"), 2);
+                    CHECK(c_fin->valueAsFloat("modifier_max") == doctest::Approx(6.0f));
+                    CHECK(c_fin->valueAsFloat("modifier_min") == doctest::Approx(1.0f));
+                }
+
+                auto c_str = pcontent->child("c_str");
+                REQUIRE(c_str != nullptr);
+                {
+                    CHECK_EQ(c_str->valueOf("armor_style"), "007");
+                    CHECK_EQ(c_str->valueOf("armor_type"), "a3");
+                    CHECK(c_str->valueAsFloat("defense") == doctest::Approx(241.0f));
+                    CHECK_EQ(c_str->valueOf("equip_requirements"), "strength:34");
+                    CHECK_EQ(c_str->valueOf("inventory_icon"), "b_gui_ig_i_a_pos_a3_007");
+                    CHECK(c_str->valueAsFloat("modifier_max") == doctest::Approx(17.0f));
+                    CHECK(c_str->valueAsFloat("modifier_min") == doctest::Approx(9.0f));
+                }
+
+                auto o_fin = pcontent->child("o_fin");
+                REQUIRE(o_fin != nullptr);
+                {
+                    CHECK_EQ(o_fin->valueOf("armor_style"), "028");
+                    CHECK_EQ(o_fin->valueOf("armor_type"), "a3");
+                    CHECK(o_fin->valueAsFloat("defense") == doctest::Approx(204.0f));
+                    CHECK_EQ(o_fin->valueOf("equip_requirements"), "strength:31");
+                    CHECK_EQ(o_fin->valueAsUInt("inventory_height"), 2);
+                    CHECK_EQ(o_fin->valueOf("inventory_icon"), "b_gui_ig_i_a_pos_a3_028");
+                    CHECK_EQ(o_fin->valueAsUInt("inventory_width"), 2);
+                    CHECK(o_fin->valueAsFloat("modifier_max") == doctest::Approx(14.0f));
+                    CHECK(o_fin->valueAsFloat("modifier_min") == doctest::Approx(7.0f));
+                    CHECK_EQ(o_fin->valueOf("pcontent_special_type"), "rare, unique, normal");
+                }
+            }
+        }
     }
 
     void GasTestState::leave()
