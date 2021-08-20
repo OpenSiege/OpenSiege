@@ -127,6 +127,12 @@ namespace ehb
              */
             void merge(FuelBlock * result) const;
 
+            /**
+             * integrate a fuelblock into an existing fuelblock
+             * this is essentially the same as merge except it will handle the creation of the proper fuel blocks for you
+             */
+            void integrate(FuelBlock * source);
+
             void write(std::ostream & stream) const;
 
         protected:

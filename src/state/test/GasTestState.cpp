@@ -391,7 +391,16 @@ namespace ehb
                 REQUIRE_EQ(test_block->eachChild().size(), 4);
             }
 
-            int foo = 55;
+            new_test_doc = newFuelDoc.appendChild("multiple_wildcard_integrate");
+            new_test_doc->integrate(multiple_wildcard_merge);
+
+            // re-run the above test
+            {
+                auto new_wildcards = new_test_doc->child("magic:enchantments");
+                REQUIRE(new_wildcards != nullptr);
+
+                REQUIRE_EQ(new_wildcards->eachChild().size(), 4);
+            }
         }
     }
 

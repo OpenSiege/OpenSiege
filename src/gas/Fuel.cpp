@@ -543,6 +543,14 @@ namespace ehb
         }
     }
 
+    void FuelBlock::integrate(FuelBlock * source)
+    {
+        if (source != nullptr)
+        {
+            source->merge(this);
+        }
+    }
+
     const Attribute * FuelBlock::attribute(const std::string & name) const
     {
         const auto index = name.find_last_of(':');
