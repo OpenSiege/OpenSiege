@@ -116,9 +116,6 @@ namespace ehb
             //SiegeRot valueAsSiegeRot(const std::string & name, const SiegeRot & defaultValue = { 0.0, 0.0, 0.0, 0.0, 0}) const;
             //SiegePos valueAsSiegePos(const std::string & name, const SiegePos & defaultValue = { 0.0, 0.0, 0.0, 0 }) const;
 
-            //! create a deep copy of the node that must be deleted by the user
-            FuelBlock * clone(FuelBlock * parent = nullptr) const;
-
             /**
              * merge the contents of this node into the result node
              * NOTE: empty children from this node will entirely overwrite
@@ -127,6 +124,12 @@ namespace ehb
              */
             void merge(FuelBlock * result) const;
 
+            /**
+             * integrate a fuelblock into an existing fuelblock
+             * this is essentially the same as merge except it will handle the creation of the proper fuel blocks for you
+             */
+            void integrate(FuelBlock * source);
+
             void write(std::ostream & stream) const;
 
         protected:
@@ -134,6 +137,9 @@ namespace ehb
             FuelBlock(FuelBlock * parent = nullptr);
 
         private:
+
+            //! create a deep copy of the node that must be deleted by the user
+            FuelBlock* clone(FuelBlock* parent = nullptr) const;
 
             const Attribute * attribute(const std::string & name) const;
 

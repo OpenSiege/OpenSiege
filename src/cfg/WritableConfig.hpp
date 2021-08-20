@@ -16,10 +16,10 @@ namespace ehb
 
         WritableConfig(int argc, char * argv[]);
 
-        virtual bool getBool(const std::string & key, bool defaultValue) const override;
-        virtual float getFloat(const std::string & key, float defaultValue) const override;
-        virtual int getInt(const std::string & key, int defaultValue) const override;
-        virtual const std::string & getString(const std::string & key, const std::string & defaultValue) const override;
+        virtual bool getBool(const std::string& key, bool defaultValue = false) const override;
+        virtual float getFloat(const std::string & key, float defaultValue = 0.f) const override;
+        virtual int getInt(const std::string & key, int defaultValue = 0) const override;
+        virtual const std::string & getString(const std::string & key, const std::string & defaultValue = "") const override;
 
         void setBool(const std::string & key, bool value);
         void setFloat(const std::string & key, float value);
