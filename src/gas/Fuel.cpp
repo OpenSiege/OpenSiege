@@ -504,7 +504,8 @@ namespace ehb
 
                     for (FuelBlock * j : result->mChildren)
                     {
-                        if (i->name() == j->name())
+                        // gas files can have wildcard blocks so make sure we don't overwrite them
+                        if (i->name() == j->name() && i->name() != "*")
                         {
                             found = true;
                             i->merge(j);
