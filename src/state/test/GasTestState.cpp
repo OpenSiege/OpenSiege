@@ -299,6 +299,100 @@ namespace ehb
                 }
             }
         }
+
+        // multiple wild card block test
+        std::stringstream().swap(*stream);
+        *stream << R"(
+            [t:unit_test,n:multiple_wildcard_merge]
+            {
+                [magic]
+                {
+                    [enchantments]
+                    {
+                        [*]
+                        {
+                            alteration = alter_life_recovery_unit;
+                            description = "+1 to Health Regeneration";
+                            duration = #infinite;
+                            is_permanent = true;
+                            is_single_instance = false;
+                            value = 0.65;
+                        }
+                        [*]
+                        {
+                            alteration = alter_mana_recovery_unit;
+                            description = "+1 to Mana Regeneration";
+                            duration = #infinite;
+                            is_permanent = true;
+                            is_single_instance = false;
+                            value = 0.4;
+                        }
+                        [*]
+                        {
+                            alteration = alter_intelligence;
+                            description = "Adds 2 to Intelligence";
+                            duration = #infinite;
+                            is_permanent = true;
+                            is_single_instance = false;
+                            value = 2;
+                        }
+                        [*]
+                        {
+                            alteration = alter_armor;
+                            description = "Adds 20 to Armor";
+                            duration = #infinite;
+                            is_permanent = true;
+                            is_single_instance = false;
+                            value = 20;
+                        }
+                    }
+                }
+            }
+        )";
+
+        if (Fuel doc; doc.load(*stream))
+        {
+            auto multiple_wildcard_merge = doc.child("multiple_wildcard_merge");
+            REQUIRE(multiple_wildcard_merge != nullptr);
+
+            // quick asserts to make sure the appropriate blocks got loaded
+            auto wildcards = multiple_wildcard_merge->child("magic:enchantments");
+            REQUIRE(wildcards != nullptr);
+            {
+                REQUIRE_EQ(wildcards->eachChild().size(), 4);
+            }
+
+            Fuel newFuelDoc;
+            auto new_test_doc = newFuelDoc.appendChild("multiple_wildcard_merge_clone");
+
+            // since we are using an empty block merge actually becomes a clone so you will get the correct result
+            multiple_wildcard_merge->merge(new_test_doc);
+            {
+                auto new_wildcards = new_test_doc->child("magic:enchantments");
+                REQUIRE(new_wildcards != nullptr);
+
+                REQUIRE_EQ(new_wildcards->eachChild().size(), 4);
+            }
+
+            new_test_doc = newFuelDoc.appendChild("multiple_wildcard_merge_append");
+            auto magic = new_test_doc->appendChild("magic"); // add magic to parent
+            auto enchantments = magic->appendChild("enchantments"); // enchantments to parent
+            auto test_block = new_test_doc->child("magic:enchantments"); // re-grab just to ensure everything is setup properly
+            REQUIRE(test_block != nullptr);
+            {
+                // loop each enchantment and attempt to merge it
+                // this will make sure when multiple wildcard characters are encountered we get unique blocks
+                // we are reading from the original fuel string here
+                if (!multiple_wildcard_merge->eachChildOf("magic").empty())
+                {
+                    multiple_wildcard_merge->child("magic")->merge(magic);
+                }
+
+                REQUIRE_EQ(test_block->eachChild().size(), 4);
+            }
+
+            int foo = 55;
+        }
     }
 
     void GasTestState::leave()
