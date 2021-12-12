@@ -41,7 +41,7 @@ int main(int argc, char * argv[])
     config.dump();
 
     bool hasPath = !config.getString("ds-install-path", "").empty();
-    if (!hasBits) log->info("No Bits directory detected.");
+    //if (!hasBits) log->info("No Bits directory detected.");
     if (!hasPath) log->warn("No DS Install path detected.");
 
     // we can survive just on bits or just on the path 

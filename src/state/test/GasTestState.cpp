@@ -402,7 +402,6 @@ namespace ehb
                 REQUIRE_EQ(new_wildcards->eachChild().size(), 4);
             }
         }
-    }
 
         {
             std::string tmpl = R"(
