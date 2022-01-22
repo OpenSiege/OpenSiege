@@ -137,7 +137,7 @@ namespace ehb
         }
 
         // collect all files under our object path for loading
-#if 1
+#if 0
         for (const auto& filename : { "non_interactive.gas", "actor.gas" })
         {
             if (auto stream = fileSys.createInputStream(objectsPath + filename))

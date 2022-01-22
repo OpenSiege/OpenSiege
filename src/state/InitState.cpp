@@ -37,6 +37,10 @@ namespace ehb
             return;
         }
 
+        auto cacheOptions = new osgDB::ReaderWriter::Options;
+        cacheOptions->setObjectCacheHint(osgDB::ReaderWriter::Options::CACHE_ALL);
+        osgDB::Registry::instance()->setOptions(cacheOptions);
+
         // setup the NNK system and register it with OSG
         auto callback = new FileNameMap(fileSys);
         osgDB::Registry::instance()->setFindFileCallback(callback);
