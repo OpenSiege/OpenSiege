@@ -31,6 +31,7 @@ namespace ehb
     // shamelessly from osgEarth: https://github.com/gwaldron/osgearth/blob/master/src/osgEarth/Capabilities.cpp
     void Platform::generateCapabilities()
     {
+    #if 0
         static bool hasBeenRun = false;
         if (!hasBeenRun)
         {
@@ -92,6 +93,7 @@ namespace ehb
 
             hasBeenRun = true;
         }
+    #endif
     }
 
     const std::string& Platform::getExecutablePath() const

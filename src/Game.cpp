@@ -53,7 +53,7 @@ namespace ehb
             viewer.setUpViewInWindow(config.getInt("x", defaultX), config.getInt("y", defaultY), actualWidth, actualHeight);
         }
 
-        Platform::instance().generateCapabilities();
+        // Platform::instance().generateCapabilities();
 
         // set the title and disable the mouse cursor for the window
         osg::ref_ptr<osg::GraphicsContext::Traits> traits = new osg::GraphicsContext::Traits(*viewer.getCamera()->getGraphicsContext()->getTraits());

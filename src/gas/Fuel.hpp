@@ -132,14 +132,14 @@ namespace ehb
 
             void write(std::ostream & stream) const;
 
+            //! create a deep copy of the node that must be deleted by the user
+            FuelBlock* clone(FuelBlock* parent = nullptr) const;
+
         protected:
 
             FuelBlock(FuelBlock * parent = nullptr);
 
         private:
-
-            //! create a deep copy of the node that must be deleted by the user
-            FuelBlock* clone(FuelBlock* parent = nullptr) const;
 
             const Attribute * attribute(const std::string & name) const;
 
