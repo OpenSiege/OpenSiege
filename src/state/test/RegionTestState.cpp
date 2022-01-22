@@ -118,10 +118,6 @@ namespace ehb
         const osg::MatrixTransform* targetNodeXform = region->targetNode();
         uint32_t targetNodeGuid = region->targetNodeGuid();
 
-        osgDB::writeNodeFile(*region->asMatrixTransform(), regionName + ".osg");
-        osgDB::writeNodeFile(*region->asMatrixTransform(), regionName + ".osgt");
-        osgDB::writeNodeFile(*region->asMatrixTransform(), regionName + ".osgb");
-
         // TODO: is there a better way to do this?
         // re-position the camera based on the size of the target node and orient it up a little bit get a birds eye-view
         if (auto manipulator = viewer.getCameraManipulator())
@@ -210,6 +206,10 @@ namespace ehb
 
         osgUtil::Optimizer optimizer;
         optimizer.optimize(region);
+
+        osgDB::writeNodeFile(*region->asMatrixTransform(), regionName + ".osg");
+        osgDB::writeNodeFile(*region->asMatrixTransform(), regionName + ".osgt");
+        osgDB::writeNodeFile(*region->asMatrixTransform(), regionName + ".osgb");
 
         scene.addChild(region);
     }
