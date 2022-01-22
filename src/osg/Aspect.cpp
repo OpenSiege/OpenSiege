@@ -85,11 +85,16 @@ namespace ehb
         return group.release();
     }
 
+#define APPLY_ANIMATION_CODE 0
+
     Aspect::Aspect(std::shared_ptr<Impl> impl) : d(std::move(impl))
     {
         auto log = spdlog::get("log");
 
         debugDrawingGroups.resize(3);
+
+        osg::Matrix bind = osg::Matrix::rotate(d->rposInfoRel[0].rotation) * osg::Matrix::translate(d->rposInfoRel[0].position);
+        osg::Matrix inverseBind = osg::Matrix::rotate(d->rposInfoAbI[0].rotation) * osg::Matrix::translate(d->rposInfoAbI[0].position);
 
         skeleton = new osgAnimation::Skeleton;
 
@@ -97,7 +102,7 @@ namespace ehb
         pseudoRoot = new osg::MatrixTransform;
         addChild(pseudoRoot);
 
-        // put the root bone as the first child of skeleton for easy acces
+        // put the root bone as the first child of skeleton for easy access
         skeleton->addChild(new osgAnimation::Bone(d->boneInfos[0].name));
 
         // it looks like the skeleton callback just validates the skeleton and then stays in the callbacks
@@ -166,6 +171,13 @@ namespace ehb
                     normals->push_back(c.normal);
                     colors->push_back(osg::Vec4(c.color[0], c.color[1], c.color[2], c.color[3]));
 
+#if APPLY_ANIMATION_CODE
+#else
+                    //! TEMP
+                    if (d->boneInfos.size() == 1)
+                        (*vertices)[cornerCounter] = c.position * bind;
+#endif
+
                     osgAnimation::VertexInfluenceMap& influenceMap = *rigGeometry->getInfluenceMap();
 
                     // There are 4 weights per bone
@@ -201,8 +213,10 @@ namespace ehb
                 // by default we draw static geometry
                 pseudoRoot->addChild(geometry);
 
+#if APPLY_ANIMATION_CODE
                 // make sure the skeleton is ready to go if we need it
                 skeleton->addChild(rigGeometry);
+#endif
             }
         }
 
@@ -212,6 +226,7 @@ namespace ehb
         // both pseudoRoot and skeleton should contain the same geometry information but pseudo root should take less time to traverse
         setInitialBound(cb.getBoundingBox());
 
+#if APPLY_ANIMATION_CODE
         // setup our root bone
         osg::ref_ptr<osgAnimation::Bone> root = static_cast<osgAnimation::Bone*>(skeleton->getChild(0));
         bones.push_back(root);
@@ -245,9 +260,6 @@ namespace ehb
             parent->addChild(bone);
             bones.push_back(bone);
         }
-
-        osg::Matrix bind = osg::Matrix::rotate(d->rposInfoRel[0].rotation) * osg::Matrix::translate(d->rposInfoRel[0].position);
-        osg::Matrix inverseBind = osg::Matrix::rotate(d->rposInfoAbI[0].rotation) * osg::Matrix::translate(d->rposInfoAbI[0].position);
 
         // this is totally wrong, i think
         if (d->boneInfos.size() > 1)
@@ -294,6 +306,7 @@ namespace ehb
             bone->setMatrix(osg::Matrix(d->rposInfoRel[i].rotation) * osg::Matrix::translate(d->rposInfoRel[i].position));
             bone->setMatrixInSkeletonSpace(osg::Matrix(d->rposInfoRel[i].rotation) * osg::Matrix::translate(d->rposInfoRel[i].position) * parent->getMatrixInSkeletonSpace());
         }
+#endif
     }
 
     Aspect::Aspect(const Aspect& aspect, const osg::CopyOp& copyop) : osg::Group(aspect, copyop)
