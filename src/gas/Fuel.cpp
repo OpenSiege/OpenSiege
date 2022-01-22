@@ -413,6 +413,18 @@ namespace ehb
         return defaultValue;
     }
 
+    osg::Quat FuelBlock::valueAsQuat(const std::string& name, const osg::Quat& defaultValue) const
+    {
+        if (const Attribute* attr = attribute(name))
+        {
+            auto value = valueAsFloat4(name);
+
+            return osg::Quat(value[0], value[1], value[2], value[3]);
+        }
+
+        return defaultValue;
+    }
+
 #if 0
     SiegeRot FuelBlock::valueAsSiegeRot(const std::string & name, const SiegeRot & defaultValue) const
     {

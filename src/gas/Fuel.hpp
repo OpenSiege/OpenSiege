@@ -26,6 +26,7 @@
 #include <array>
 #include <osg/Vec3>
 #include <osg/Vec4>
+#include <osg/Quat>
 //#include "SiegeRot.hpp"
 //#include "SiegePos.hpp"
 
@@ -113,6 +114,7 @@ namespace ehb
             std::array<float, 4> valueAsFloat4(const std::string& name, const std::array<float, 4> defaultValue = { 1.0, 1.0, 1.0, 1.0 }) const;
             osg::Vec3 valueAsVec3(const std::string & name, const osg::Vec3 & defaultValue = { 1.0, 1.0, 1.0 }) const; // don't use 1.f as osg::Vec3 could be doubles
             osg::Vec4 valueAsColor(const std::string & name, const osg::Vec4 & defaultValue = { 1.f, 1.f, 1.f, 1.f }) const;
+            osg::Quat valueAsQuat(const std::string& name, const osg::Quat& defaultValue = { 0.0f, 0.0f, 0.0f, 1.f }) const;
             //SiegeRot valueAsSiegeRot(const std::string & name, const SiegeRot & defaultValue = { 0.0, 0.0, 0.0, 0.0, 0}) const;
             //SiegePos valueAsSiegePos(const std::string & name, const SiegePos & defaultValue = { 0.0, 0.0, 0.0, 0 }) const;
 

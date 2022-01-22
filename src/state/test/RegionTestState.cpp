@@ -155,6 +155,7 @@ namespace ehb
                         if (auto placement = node->child("placement"))
                         {
                             auto position = valueAsSiegePos(placement->valueOf("position"));
+                            auto orientation = placement->valueAsQuat("orientation");
 
                             auto go = contentDb.getGameObjectTmpl(tmpl);
 
@@ -173,6 +174,7 @@ namespace ehb
                                 {
                                     osg::Matrix copy = localNode->getMatrix();
                                     copy.preMultTranslate(position.pos);
+                                    copy.preMultRotate(orientation);
                                     transform->setMatrix(copy);
                                 }
                                 else
