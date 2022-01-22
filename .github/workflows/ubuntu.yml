@@ -1,0 +1,28 @@
+name: Ubuntu CI
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+  workflow_dispatch:
+  
+env:
+  BUILD_TYPE: RelWithDebInfo
+
+jobs:
+  Ubuntu:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Install Deps
+      run: sudo apt-get install libopenscenegraph-dev libxdg-basedir-dev
+      
+    - name: Configure
+      run: cmake -S . -B . -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DDISABLE_MSVC_DEBUG_ITERATOR=ON
+      
+    - name: Build
+      run: cmake --build . --config ${{env.BUILD_TYPE}} --parallel 3
+
