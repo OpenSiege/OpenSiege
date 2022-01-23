@@ -115,8 +115,8 @@ namespace ehb
 
         region = static_cast<Region*> (osgDB::readNodeFile(nodesDotGas));
 
-        const osg::MatrixTransform* targetNodeXform = region->targetNode();
-        uint32_t targetNodeGuid = region->targetNodeGuid();
+        const osg::MatrixTransform* targetNodeXform = region->targetNode;
+        uint32_t targetNodeGuid = region->targetNodeGuid;
 
         // TODO: is there a better way to do this?
         // re-position the camera based on the size of the target node and orient it up a little bit get a birds eye-view

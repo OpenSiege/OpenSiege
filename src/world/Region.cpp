@@ -3,6 +3,8 @@
 
 namespace ehb
 {
+
+#if 0
     const osg::MatrixTransform* Region::targetNode() const
     {
         return static_cast<const osg::MatrixTransform*>(getUserDataContainer()->getUserObject(8));
@@ -24,6 +26,7 @@ namespace ehb
 
         return 0;
     }
+#endif
 
     const osg::MatrixTransform* Region::transformForGuid(const uint32_t guid) const
     {

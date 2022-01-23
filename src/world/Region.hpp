@@ -15,8 +15,12 @@ namespace ehb
 
         Region() = default;
 
+        osg::MatrixTransform* targetNode;
+        uint32_t targetNodeGuid = 0;
+#if 0
         const osg::MatrixTransform* targetNode() const;
         const uint32_t targetNodeGuid() const;
+#endif
 
         const osg::MatrixTransform* transformForGuid(const uint32_t guid) const;
 

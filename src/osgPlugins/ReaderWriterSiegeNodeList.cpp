@@ -13,6 +13,9 @@
 
 namespace ehb
 {
+
+    #define ENABLE_USERDATA 0
+
     ReaderWriterSiegeNodeList::ReaderWriterSiegeNodeList(IFileSys& fileSys) : fileSys(fileSys)
     {
         log = spdlog::get("log");
@@ -88,6 +91,10 @@ namespace ehb
         {
             osg::ref_ptr<Region> regionGroup = new Region;
 
+            const uint32_t targetnode = doc.valueAsUInt("siege_node_list:targetnode");
+            regionGroup->targetNodeGuid = targetnode;
+
+#if ENABLE_USERDATA
             // region properties
             regionGroup->setUserValue<uint32_t>("actor_ambient_color", doc.valueAsUInt("siege_node_list:actor_ambient_color"));
             regionGroup->setUserValue<float>("actor_ambient_intensity", doc.valueAsFloat("siege_node_list:actor_ambient_intensity"));
@@ -97,8 +104,8 @@ namespace ehb
             regionGroup->setUserValue<uint32_t>("object_ambient_color", doc.valueAsUInt("siege_node_list:object_ambient_color"));
             regionGroup->setUserValue<float>("object_ambient_intensity", doc.valueAsFloat("siege_node_list:object_ambient_intensity"));
 
-            const uint32_t targetnode = doc.valueAsUInt("siege_node_list:targetnode");
             regionGroup->setUserValue<uint32_t>("targetnode", targetnode);
+#endif
 
             for (const auto node : doc.eachChildOf("siege_node_list"))
             {
@@ -131,6 +138,7 @@ namespace ehb
 
                         osg::ref_ptr<osg::MatrixTransform> xform = new osg::MatrixTransform;
 
+#if ENABLE_USERDATA
                         xform->setUserValue("bounds_camera", node->valueAsBool("bounds_camera"));
                         xform->setUserValue("camera_fade", node->valueAsBool("camera_fade"));
                         xform->setUserValue<uint32_t>("guid", node->valueAsUInt("guid"));
@@ -139,6 +147,7 @@ namespace ehb
                         xform->setUserValue<uint32_t>("nodesection", node->valueAsUInt("nodesection"));
                         xform->setUserValue("occludes_camera", node->valueAsBool("occludes_camera"));
                         xform->setUserValue("occludes_light", node->valueAsBool("occludes_light"));
+#endif
 
                         regionGroup->addChild(xform);
                         xform->addChild(mesh);
@@ -156,9 +165,11 @@ namespace ehb
                 }
             }
 
+#if ENABLE_USERDATA
             // easy access to targetGuid later on. though this is only valid when the region is initially loaded. not sure if
             // it will remain valid in future frames (pathfinding?)
             regionGroup->setUserValue("targetnode", targetnode);
+#endif
 
             // recursive function to place every node in the region
             std::function<void(const uint32_t)> func = [&func, &doorMap, &regionGroup, &completeSet](const uint32_t guid)
@@ -188,7 +199,11 @@ namespace ehb
             // index 8 of the user data container will contain our target node xform for now
             if (osg::MatrixTransform* targetNodeXform = regionGroup->nodeMap.at(targetnode))
             {
+#if ENABLE_USERDATA
                 regionGroup->getOrCreateUserDataContainer()->addUserObject(targetNodeXform);
+#else
+                regionGroup->targetNode = targetNodeXform;
+#endif
             }
             else
             {
