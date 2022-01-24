@@ -102,8 +102,13 @@ namespace ehb
         log->info("RegionTestState::enter()");
 
         // variablizing these out as it helps my brain think about the world class a bit more
+#if 1
         const std::string worldName = "multiplayer_world";
         const std::string regionName = "town_center";
+#else
+        const std::string worldName = "opensiege";
+        const std::string regionName = "r1";
+#endif
 
         // man it would be really nice to convert these to fuel paths...
         const std::string worldPath = "/world/maps/" + worldName;
@@ -113,7 +118,11 @@ namespace ehb
         const std::string nodesDotGas = regionPath + "/terrain_nodes/nodes.gas";
         const std::string objectsPath = regionPath + "/objects/regular/";
 
-        region = static_cast<Region*> (osgDB::readNodeFile(nodesDotGas));
+        auto options = new osgDB::Options();
+        options->setUserValue("worldPath", worldPath);
+        options->setUserValue("regionPath", regionPath);
+
+        region = static_cast<Region*> (osgDB::readNodeFile(nodesDotGas, options));
 
         const osg::MatrixTransform* targetNodeXform = region->targetNode;
         uint32_t targetNodeGuid = region->targetNodeGuid;
@@ -135,6 +144,8 @@ namespace ehb
                 log->error("failed to find siegenodemesh attached to transform with guid: {}", targetNodeGuid);
             }
         }
+
+
 
         // collect all files under our object path for loading
 #if 0

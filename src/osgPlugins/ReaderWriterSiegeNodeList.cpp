@@ -76,6 +76,10 @@ namespace ehb
 
     osgDB::ReaderWriter::ReadResult ReaderWriterSiegeNodeList::readNode(std::istream& stream, const osgDB::Options* options) const
     {
+        // required for local node mesh indexes
+        std::string worldPath; options->getUserValue("worldPath", worldPath);
+        std::string regionPath; options->getUserValue("regionPath", regionPath);
+
         // struct to hold each entry defined in [door*]
         struct DoorEntry
         {
@@ -86,6 +90,28 @@ namespace ehb
 
         std::unordered_multimap<uint32_t, DoorEntry> doorMap;
         std::set<uint32_t> completeSet;
+
+        //! holds onto local node mesh indexes that are per region and not based in the global index
+        std::unordered_map<std::string, std::string> localNodeMeshIndex;
+
+        // this isn't required for all maps - might be based on the version of siege editor
+        const std::string& localNodeMeshIndexFile = regionPath + "/index/node_mesh_index.gas";
+        if (InputStream stream = fileSys.createInputStream(localNodeMeshIndexFile))
+        {
+            if (Fuel doc; doc.load(*stream))
+            {
+                log->info("Loading internal node mesh index @ {}", localNodeMeshIndexFile);
+
+                // first set of children is going to be [t:siege_nodes,n:*]
+                for (const FuelBlock* root : doc.eachChild())
+                {
+                    for (const auto attribs : root->eachAttribute())
+                    {
+                        localNodeMeshIndex.emplace(attribs.name, attribs.value);
+                    }
+                }
+            }
+        }
 
         if (Fuel doc; doc.load(stream))
         {
@@ -127,7 +153,17 @@ namespace ehb
                     doorMap.emplace(nodeGuid, std::move(e));
                 }
 
-                if (const std::string meshFileName = resolveFileName(meshGuid); meshFileName != meshGuid)
+                std::string meshFileName;
+                if (auto localMeshFindItr = localNodeMeshIndex.find(meshGuid); localMeshFindItr != localNodeMeshIndex.end())
+                {
+                    meshFileName = localMeshFindItr->second;
+                }
+                else
+                {
+                    meshFileName = resolveFileName(meshGuid);
+                }
+
+                if (meshFileName != meshGuid)
                 {
                     osg::ref_ptr<osgDB::ReaderWriter::Options> localOptions = options ? options->cloneOptions() : new osgDB::ReaderWriter::Options;
                     localOptions->setOptionString("texsetabbr=" + texSetAbbr);
