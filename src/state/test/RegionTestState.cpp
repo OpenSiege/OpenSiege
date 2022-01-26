@@ -136,7 +136,7 @@ namespace ehb
         }
 
         // collect all files under our object path for loading
-#if 1
+#if 0
         for (const auto& filename : { "non_interactive.gas", "actor.gas" })
         {
             if (auto stream = fileSys.createInputStream(objectsPath + filename))
@@ -202,6 +202,55 @@ namespace ehb
             }
         }
 #endif
+
+
+        if (InputStream testStream = fileSys.createInputStream(objectsPath + "test.gas"); testStream != nullptr)
+        {
+            if (Fuel doc; doc.load(*testStream))
+            {
+                auto go = contentDb.getGameObjectTmpl("dev_path_point");
+
+                if (go != nullptr)
+                {
+                    for (auto dev_path_point : doc.eachChild())
+                    {
+                        dev_path_point->write(std::cout);
+
+                        if (auto placement = dev_path_point->child("placement"))
+                        {
+                            // dev_path_point is a gizmo
+                            auto model = go->valueOf("gizmo:model") + ".asp";
+                            auto position = valueAsSiegePos(placement->valueOf("position"));
+
+                            if (auto mesh = dynamic_cast<Aspect*>(osgDB::readNodeFile(model)); mesh != nullptr)
+                            {
+                                auto transform = new osg::MatrixTransform;
+
+                                transform->addChild(mesh);
+
+                                if (auto localNode = region->transformForGuid(position.guid); localNode != nullptr)
+                                {
+                                    osg::Matrix copy = localNode->getMatrix();
+                                    copy.preMultTranslate(position.pos);
+                                    //copy.preMultRotate(orientation);
+                                    transform->setMatrix(copy);
+                                }
+                                else
+                                {
+                                    //log->debug("failed to find local node for {}", tmpl);
+                                }
+
+                                region->addChild(transform);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    log->error("attempting to visualize path points but 'dev_path_point' is not available");
+                }
+            }
+        }
 
         osgUtil::Optimizer optimizer;
         optimizer.optimize(region);
