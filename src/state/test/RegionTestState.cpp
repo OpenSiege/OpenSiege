@@ -48,6 +48,19 @@ namespace ehb
 
         return SiegePos(x, y, z, node);
     }
+
+    using Scid = uint32_t;
+
+    // TODO: skrit object
+    struct DevPathPoint : public osg::Referenced
+    {
+        Scid next_scid = 0;
+        std::string path_name;
+        float radius = 0.0f;
+    };
+
+    // scid
+    std::unordered_map<Scid, osg::ref_ptr<DevPathPoint>> devPathPoints;
 }
 
 static std::ostream& operator << (std::ostream& s, const ehb::SiegePos& pos)
@@ -216,33 +229,39 @@ namespace ehb
                     {
                         dev_path_point->write(std::cout);
 
-                        if (auto placement = dev_path_point->child("placement"))
+                        auto my_scid = std::stoul(dev_path_point->name(), nullptr, 16);
+
+                        // dev_path_point is a gizmo
+                        auto model = go->valueOf("gizmo:model") + ".asp";
+
+                        auto placement = dev_path_point->child("placement");
+                        auto position = valueAsSiegePos(placement->valueOf("position"));
+
+                        auto mesh = dynamic_cast<Aspect*>(osgDB::readNodeFile(model));
+
+                        auto dev_path_point_component = dev_path_point->child("dev_path_point");
+                        osg::ref_ptr<DevPathPoint> point = new DevPathPoint;
+                        point->next_scid = dev_path_point_component->valueAsUInt("next_scid");
+                        point->path_name = dev_path_point_component->valueAsString("path_name");
+                        point->radius = dev_path_point_component->valueAsFloat("radius");
+
+                        devPathPoints.emplace(my_scid, point);
+
+                        auto transform = new osg::MatrixTransform;
+                        transform->addChild(mesh);
+
+                        if (auto localNode = region->transformForGuid(position.guid); localNode != nullptr)
                         {
-                            // dev_path_point is a gizmo
-                            auto model = go->valueOf("gizmo:model") + ".asp";
-                            auto position = valueAsSiegePos(placement->valueOf("position"));
-
-                            if (auto mesh = dynamic_cast<Aspect*>(osgDB::readNodeFile(model)); mesh != nullptr)
-                            {
-                                auto transform = new osg::MatrixTransform;
-
-                                transform->addChild(mesh);
-
-                                if (auto localNode = region->transformForGuid(position.guid); localNode != nullptr)
-                                {
-                                    osg::Matrix copy = localNode->getMatrix();
-                                    copy.preMultTranslate(position.pos);
-                                    //copy.preMultRotate(orientation);
-                                    transform->setMatrix(copy);
-                                }
-                                else
-                                {
-                                    //log->debug("failed to find local node for {}", tmpl);
-                                }
-
-                                region->addChild(transform);
-                            }
+                            osg::Matrix copy = localNode->getMatrix();
+                            copy.preMultTranslate(position.pos);
+                            transform->setMatrix(copy);
                         }
+                        else
+                        {
+                            // log->debug("failed to find local node for scud {}", tmpl);
+                        }
+
+                        region->addChild(transform);
                     }
                 }
                 else
