@@ -236,6 +236,7 @@ namespace ehb
 
                         auto placement = dev_path_point->child("placement");
                         auto position = valueAsSiegePos(placement->valueOf("position"));
+                        auto orientation = placement->valueAsQuat("orientation");
 
                         auto mesh = dynamic_cast<Aspect*>(osgDB::readNodeFile(model));
 
@@ -254,6 +255,7 @@ namespace ehb
                         {
                             osg::Matrix copy = localNode->getMatrix();
                             copy.preMultTranslate(position.pos);
+                            copy.preMultRotate(orientation);
                             transform->setMatrix(copy);
                         }
                         else
