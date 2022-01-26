@@ -16,6 +16,8 @@
 #include <osgDB/Options>
 #include <osg/ComputeBoundsVisitor>
 #include <osgViewer/Viewer>
+#include <osg/AnimationPath>
+#include <osgGA/AnimationPathManipulator>
 
 #include <osgUtil/Optimizer>
 
@@ -114,8 +116,13 @@ namespace ehb
         log->info("RegionTestState::enter()");
 
         // variablizing these out as it helps my brain think about the world class a bit more
+#if 1
         const std::string worldName = "multiplayer_world";
         const std::string regionName = "town_center";
+#else
+        const std::string worldName = "opensiege";
+        const std::string regionName = "r1";
+#endif
 
         // man it would be really nice to convert these to fuel paths...
         const std::string worldPath = "/world/maps/" + worldName;
@@ -124,6 +131,7 @@ namespace ehb
         // man it would be really nice to convert these to fuel paths...
         const std::string nodesDotGas = regionPath + "/terrain_nodes/nodes.gas";
         const std::string objectsPath = regionPath + "/objects/regular/";
+        //const std::string objectsPath = regionPath + "/objects/";
 
         region = static_cast<Region*> (osgDB::readNodeFile(nodesDotGas));
 
@@ -247,7 +255,7 @@ namespace ehb
 }
         
         */
-
+#if 1
         if (InputStream testStream = fileSys.createInputStream(objectsPath + "test.gas"); testStream != nullptr)
         {
             if (Fuel doc; doc.load(*testStream))
@@ -256,6 +264,9 @@ namespace ehb
 
                 if (go != nullptr)
                 {
+                    osg::ref_ptr<osg::AnimationPath> osgAnimationPath = new osg::AnimationPath;
+                    auto manipulator = new osgGA::AnimationPathManipulator(osgAnimationPath);
+
                     for (auto dev_path_point : doc.eachChild())
                     {
                         dev_path_point->write(std::cout);
@@ -288,6 +299,18 @@ namespace ehb
                             copy.preMultTranslate(position.pos);
                             copy.preMultRotate(orientation);
                             transform->setMatrix(copy);
+
+                            osg::Vec3 translation;
+                            osg::Quat rotation;
+                            copy.decompose(translation, osg::Quat(), osg::Vec3(), osg::Quat());
+
+                            translation.set(translation.x(), translation.y() + 5, translation.z());
+
+                            double deltaTime = 6 / 2;
+                            auto size = osgAnimationPath->getTimeControlPointMap().size();
+                            osgAnimationPath->insert(deltaTime * osgAnimationPath->getTimeControlPointMap().size(), osg::AnimationPath::ControlPoint(translation, rotation));
+
+                            log->info("inserted control point with delta {}", deltaTime * osgAnimationPath->getTimeControlPointMap().size());
                         }
                         else
                         {
@@ -296,6 +319,8 @@ namespace ehb
 
                         region->addChild(transform);
                     }
+
+                    viewer.setCameraManipulator(manipulator);
                 }
                 else
                 {
@@ -303,6 +328,7 @@ namespace ehb
                 }
             }
         }
+#endif
 
         osgUtil::Optimizer optimizer;
         optimizer.optimize(region);

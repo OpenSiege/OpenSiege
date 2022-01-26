@@ -61,6 +61,7 @@ namespace ehb
         // traits->useCursor = false;
         osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits);
         osg::ref_ptr<osg::Camera> cam = new osg::Camera(*viewer.getCamera());
+        cam->setViewMatrixAsLookAt({ 0, 0, 1 }, { 0, 0, 0 }, { 0, 1, 0 });
         cam->setGraphicsContext(gc);
         viewer.setCamera(cam);
 
@@ -79,7 +80,8 @@ namespace ehb
         setupScene();
 
         // TODO: move this when we get our camera manipulator implemented
-        viewer.setCameraManipulator(new osgGA::TrackballManipulator());
+        // viewer.setCameraManipulator(new osgGA::TrackballManipulator());
+        viewer.setCameraManipulator(nullptr);
 
         gameStateMgr.request("InitState");
 
@@ -214,7 +216,7 @@ namespace ehb
         if (auto rotation = new osg::MatrixTransform)
         {
             // create our 90 degree rotation, im still not totally sure this is correct
-            rotation->setMatrix(osg::Matrix::rotate(osg::DegreesToRadians(90.f), osg::Vec3(1, 0, 0)));
+            rotation->setMatrix(osg::Matrix::rotate(osg::DegreesToRadians(0.f), osg::Vec3(1, 0, 0)));
 
             // create the 3d graph - this is where all 3d elements should be attached
             rotation->addChild(scene3d);
