@@ -216,6 +216,37 @@ namespace ehb
         }
 #endif
 
+        /*
+[t:dev_path_point,n:0x03200b91]
+{
+    [dev_path_point]
+    {
+      x next_scid = 0x03200BB6;
+        path_name = "zdistance_sign_1_river_forest";
+      f radius = 15;
+    }
+    [placement]
+    {
+      p position = -1.40903,0,1.30428,0x090aa818;
+    }
+}
+
+[t:dev_path_point,n:0x03200bb6]
+{
+    [dev_path_point]
+    {
+      x next_scid = 0x03200BCF;
+        path_name = "zdistance_sign_1_river_forest";
+      f radius = 15;
+    }
+    [placement]
+    {
+      q orientation = 0,-0.707107,0,0.707107;
+      p position = -1.10753,0,1.3217,0x43c87f4a;
+    }
+}
+        
+        */
 
         if (InputStream testStream = fileSys.createInputStream(objectsPath + "test.gas"); testStream != nullptr)
         {
