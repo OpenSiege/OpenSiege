@@ -59,10 +59,94 @@ namespace ehb
         Scid next_scid = 0;
         std::string path_name;
         float radius = 0.0f;
+        osg::Matrix finalPlacement;
     };
 
+    using ScidToDevPointMap = std::map<Scid, osg::ref_ptr<DevPathPoint>>;
+
     // scid
-    std::unordered_map<Scid, osg::ref_ptr<DevPathPoint>> devPathPoints;
+    ScidToDevPointMap devPathPoints;
+
+    osg::ref_ptr<osg::AnimationPath> resolveDevPathBasedOnName(const std::string& path_name, Region *region)
+    {
+        auto log = spdlog::get("log");
+
+        if (devPathPoints.empty())
+        {
+            log->error("No dev path points available for resolution of '{}'", path_name);
+
+            return {};
+        }
+
+        ScidToDevPointMap resolvedDevPathPoints;
+
+        // iterate all the points and store a new map
+        // probably not necessary
+        for (auto pathPoint : devPathPoints)
+        {
+            // make sure we belong to this path
+            if (pathPoint.second->path_name == path_name)
+            {
+                resolvedDevPathPoints.emplace(pathPoint);
+            }
+        }
+
+        log->info("resolvedPathPoint count {}", resolvedDevPathPoints.size());
+
+        osg::ref_ptr<osg::AnimationPath> path = new osg::AnimationPath;
+
+        // setup our starting path point
+        Scid startingPoint = 0;
+
+        // make sure we don't hit duplicates when placing the path
+        std::set<Scid> completeSet;
+
+        // recursive function to setup dev path points
+        std::function<void(const Scid)> func = [&func, &path, &region, &resolvedDevPathPoints, &completeSet](const Scid scid)
+        {
+            for (auto pathPoint : resolvedDevPathPoints)
+            {
+                if (completeSet.insert(scid).second)
+                {
+                    // decompose our global position for control points
+                    osg::Vec3 translation;
+                    osg::Quat rotation;
+                    resolvedDevPathPoints.at(scid)->finalPlacement.decompose(translation, rotation, osg::Vec3(), osg::Quat());
+
+                    // offset so we're not in the terrain
+                    translation.set(translation.x(), translation.y() + 5, translation.z());
+
+                    double deltaTime = 3;
+                    auto size = path->getTimeControlPointMap().size();
+                    path->insert(deltaTime * path->getTimeControlPointMap().size(), osg::AnimationPath::ControlPoint(translation, rotation));
+
+                    auto transform = new osg::MatrixTransform;
+                    transform->setMatrix(resolvedDevPathPoints.at(scid)->finalPlacement);
+                    auto mesh = dynamic_cast<Aspect*>(osgDB::readNodeFile("m_i_glb_object-waypoint.asp"));
+                    transform->addChild(mesh);
+
+                    region->addChild(transform);
+
+                    if (completeSet.count(resolvedDevPathPoints.at(scid)->next_scid) == 0)
+                    {
+                        // 0 denotes end of path?
+                        if (resolvedDevPathPoints.at(scid)->next_scid != 0)
+                            func(resolvedDevPathPoints.at(scid)->next_scid);
+                    }
+                    else
+                    {
+                        spdlog::get("log")->error("{} error", resolvedDevPathPoints.at(scid)->next_scid);
+                    }
+                }
+            }
+        };
+
+        func(resolvedDevPathPoints.begin()->first);
+
+        log->info("{} path points resolved", path->getTimeControlPointMap().size());
+
+        return path;
+    }
 }
 
 static std::ostream& operator << (std::ostream& s, const ehb::SiegePos& pos)
@@ -264,23 +348,19 @@ namespace ehb
 
                 if (go != nullptr)
                 {
-                    osg::ref_ptr<osg::AnimationPath> osgAnimationPath = new osg::AnimationPath;
-                    auto manipulator = new osgGA::AnimationPathManipulator(osgAnimationPath);
+                    // dev_path_point is a gizmo
+                    auto model = go->valueOf("gizmo:model") + ".asp";
+                    auto mesh = dynamic_cast<Aspect*>(osgDB::readNodeFile("m_i_glb_object-waypoint.asp"));
 
                     for (auto dev_path_point : doc.eachChild())
                     {
-                        dev_path_point->write(std::cout);
+                        // dev_path_point->write(std::cout);
 
                         auto my_scid = std::stoul(dev_path_point->name(), nullptr, 16);
 
-                        // dev_path_point is a gizmo
-                        auto model = go->valueOf("gizmo:model") + ".asp";
-
                         auto placement = dev_path_point->child("placement");
                         auto position = valueAsSiegePos(placement->valueOf("position"));
-                        auto orientation = placement->valueAsQuat("orientation");
-
-                        auto mesh = dynamic_cast<Aspect*>(osgDB::readNodeFile(model));
+                        auto orientation = placement->valueAsQuat("orientation");                        
 
                         auto dev_path_point_component = dev_path_point->child("dev_path_point");
                         osg::ref_ptr<DevPathPoint> point = new DevPathPoint;
@@ -290,37 +370,35 @@ namespace ehb
 
                         devPathPoints.emplace(my_scid, point);
 
-                        auto transform = new osg::MatrixTransform;
-                        transform->addChild(mesh);
-
                         if (auto localNode = region->transformForGuid(position.guid); localNode != nullptr)
                         {
                             osg::Matrix copy = localNode->getMatrix();
                             copy.preMultTranslate(position.pos);
                             copy.preMultRotate(orientation);
-                            transform->setMatrix(copy);
 
-                            osg::Vec3 translation;
-                            osg::Quat rotation;
-                            copy.decompose(translation, osg::Quat(), osg::Vec3(), osg::Quat());
-
-                            translation.set(translation.x(), translation.y() + 5, translation.z());
-
-                            double deltaTime = 6 / 2;
-                            auto size = osgAnimationPath->getTimeControlPointMap().size();
-                            osgAnimationPath->insert(deltaTime * osgAnimationPath->getTimeControlPointMap().size(), osg::AnimationPath::ControlPoint(translation, rotation));
-
-                            log->info("inserted control point with delta {}", deltaTime * osgAnimationPath->getTimeControlPointMap().size());
+                            point->finalPlacement = copy;
                         }
                         else
                         {
                             // log->debug("failed to find local node for scud {}", tmpl);
                         }
-
-                        region->addChild(transform);
                     }
 
+                    // stores only the dev path points for the given name
+                    auto osgAnimationPath = resolveDevPathBasedOnName("town_center_mainpath", region);
+                    auto manipulator = new osgGA::AnimationPathManipulator(osgAnimationPath);
+
                     viewer.setCameraManipulator(manipulator);
+
+                    auto cameraMesh = dynamic_cast<Aspect*>(osgDB::readNodeFile("m_i_glb_object-camera.asp"));
+                    auto cameraXform = new osg::MatrixTransform;
+                    cameraXform->addChild(cameraMesh);
+
+                    osg::ref_ptr <osg::AnimationPathCallback> apcb = new osg::AnimationPathCallback;
+                    apcb->setAnimationPath(osgAnimationPath);
+                    cameraXform->setUpdateCallback(apcb.get());
+
+                    region->addChild(cameraXform);
                 }
                 else
                 {

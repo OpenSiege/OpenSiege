@@ -61,7 +61,7 @@ namespace ehb
         // traits->useCursor = false;
         osg::ref_ptr<osg::GraphicsContext> gc = osg::GraphicsContext::createGraphicsContext(traits);
         osg::ref_ptr<osg::Camera> cam = new osg::Camera(*viewer.getCamera());
-        cam->setViewMatrixAsLookAt({ 0, 0, 1 }, { 0, 0, 0 }, { 0, 1, 0 });
+        cam->setViewMatrixAsLookAt({ 0, 65, 1 }, { 0, 0, -1 }, { 0, 1, 0 });
         cam->setGraphicsContext(gc);
         viewer.setCamera(cam);
 
@@ -80,7 +80,7 @@ namespace ehb
         setupScene();
 
         // TODO: move this when we get our camera manipulator implemented
-        // viewer.setCameraManipulator(new osgGA::TrackballManipulator());
+        //viewer.setCameraManipulator(new osgGA::TrackballManipulator());
         viewer.setCameraManipulator(nullptr);
 
         gameStateMgr.request("InitState");
