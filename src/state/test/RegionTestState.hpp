@@ -3,6 +3,8 @@
 
 #include "state/IGameState.hpp"
 
+#include <osg/AnimationPath>
+
 #include <spdlog/spdlog.h>
 
 namespace osg
@@ -47,6 +49,9 @@ namespace ehb
 
         Region* region = nullptr;
         SiegeNodeMesh* selectedSiegeNode = nullptr;
+
+        osg::ref_ptr <osg::AnimationPathCallback> apcb = new osg::AnimationPathCallback;
+        osg::ref_ptr <osg::AnimationPath> currentPath = nullptr;
         
         std::shared_ptr<spdlog::logger> log;
     };

@@ -18,8 +18,19 @@
 #include <osgViewer/Viewer>
 #include <osg/AnimationPath>
 #include <osgGA/AnimationPathManipulator>
+#include <osgGA/TrackballManipulator>
 
 #include <osgUtil/Optimizer>
+
+namespace osg
+{
+    static std::ostream& operator << (std::ostream& s, const osg::Vec3& pos)
+    {
+        s << "osg::Vec3(x: " << pos.x() << ", y: " << pos.y() << ", z: " << pos.z() << ")";
+
+        return s;
+    }
+}
 
 namespace ehb
 {
@@ -108,20 +119,46 @@ namespace ehb
             {
                 if (completeSet.insert(scid).second)
                 {
+                    const osg::ref_ptr<DevPathPoint> this_control_point = resolvedDevPathPoints.at(scid);
+                    osg::ref_ptr<DevPathPoint> next_control_point = nullptr; // if next_scid is 0 then this will stay null and we are at the end of the path
+                    
+                    if (this_control_point->next_scid != 0)
+                        next_control_point = resolvedDevPathPoints.at(this_control_point->next_scid);
+
                     // decompose our global position for control points
-                    osg::Vec3 translation;
-                    osg::Quat rotation;
-                    resolvedDevPathPoints.at(scid)->finalPlacement.decompose(translation, rotation, osg::Vec3(), osg::Quat());
+                    osg::Vec3 this_translation;
+                    osg::Quat this_rotation;
+                    this_control_point->finalPlacement.decompose(this_translation, this_rotation, osg::Vec3(), osg::Quat());
 
                     // offset so we're not in the terrain
-                    translation.set(translation.x(), translation.y() + 5, translation.z());
+                    this_translation.set(this_translation.x(), this_translation.y() + 5, this_translation.z());
 
+                    // don't apply rotation yet because we want a nice straight line
                     double deltaTime = 3;
                     auto size = path->getTimeControlPointMap().size();
-                    path->insert(deltaTime * path->getTimeControlPointMap().size(), osg::AnimationPath::ControlPoint(translation, rotation));
+                    path->insert(deltaTime * size, osg::AnimationPath::ControlPoint(this_translation));
 
+                    spdlog::get("log")->info("starting path point @ {}", this_translation);
+
+                    // add the next control point without rotation which we will duplicate and add the rotation to
+                    // 75% of path taken up by the point to point without rotation
+                    if (next_control_point != nullptr)
+                    {
+                        // decompose our global position for control points
+                        osg::Vec3 next_translation;
+                        osg::Quat next_rotation;
+                        next_control_point->finalPlacement.decompose(next_translation, next_rotation, osg::Vec3(), osg::Quat());
+
+                        // offset so we're not in the terrain
+                        next_translation.set(next_translation.x(), next_translation.y() + 5, this_translation.z());
+
+                        double remainingDeltaTime = deltaTime * .25;
+                        path->insert(remainingDeltaTime * size, osg::AnimationPath::ControlPoint(next_translation));
+                        spdlog::get("log")->info("inserting duplicate next point @ delta time {} @ position {}", remainingDeltaTime * size, next_translation);
+                    }
+                     
                     auto transform = new osg::MatrixTransform;
-                    transform->setMatrix(resolvedDevPathPoints.at(scid)->finalPlacement);
+                    transform->setMatrix(this_control_point->finalPlacement);
                     auto mesh = dynamic_cast<Aspect*>(osgDB::readNodeFile("m_i_glb_object-waypoint.asp"));
                     transform->addChild(mesh);
 
@@ -380,7 +417,7 @@ namespace ehb
                         }
                         else
                         {
-                            // log->debug("failed to find local node for scud {}", tmpl);
+                        // log->debug("failed to find local node for scud {}", tmpl);
                         }
                     }
 
@@ -394,7 +431,7 @@ namespace ehb
                     auto cameraXform = new osg::MatrixTransform;
                     cameraXform->addChild(cameraMesh);
 
-                    osg::ref_ptr <osg::AnimationPathCallback> apcb = new osg::AnimationPathCallback;
+                    currentPath = osgAnimationPath;
                     apcb->setAnimationPath(osgAnimationPath);
                     cameraXform->setUpdateCallback(apcb.get());
 
@@ -402,7 +439,7 @@ namespace ehb
                 }
                 else
                 {
-                    log->error("attempting to visualize path points but 'dev_path_point' is not available");
+                log->error("attempting to visualize path points but 'dev_path_point' is not available");
                 }
             }
         }
@@ -470,7 +507,15 @@ namespace ehb
         }
         else if (event.getEventType() == osgGA::GUIEventAdapter::KEYUP)
         {
-            if (event.getKey() == '2')
+            if (event.getKey() == '1')
+            {
+                viewer.setCameraManipulator(new osgGA::TrackballManipulator());
+            }
+            else if (event.getKey() == '2')
+            {
+                apcb = new osg::AnimationPathCallback(currentPath);
+            }
+            else if (event.getKey() == '3')
             {
                 log->info("enabling logical flags");
 
