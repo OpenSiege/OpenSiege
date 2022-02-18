@@ -73,3 +73,4 @@ This project is licensed under the GPLv3 License - see the [LICENSE](LICENSE) fi
 
 * Gas Powered Games for creating such a fantastic engine and game
 * The Dungeon Siege community
+* Guilherme Lampert for his [Reverse Engineering Dungeon Siege](https://github.com/glampert/reverse-engineering-dungeon-siege) project for tank loading and other inspirations.
