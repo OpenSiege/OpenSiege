@@ -59,6 +59,7 @@ If you **do not** pass a state to OpenSiege you will get a purple viewport with 
 * [re2c](https://re2c.org/)
 * [bison](https://www.gnu.org/software/bison/)
 * [miniz](https://github.com/richgel999/miniz)
+* [Reverse Engineering Dungeon Siege](https://github.com/glampert/reverse-engineering-dungeon-siege)
 
 ## Authors
 
