@@ -1,0 +1,792 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+xmlns:o="urn:schemas-microsoft-com:office:office"
+xmlns:w="urn:schemas-microsoft-com:office:word"
+xmlns="http://www.w3.org/TR/REC-html40">
+
+<head>
+<meta http-equiv=Content-Type content="text/html; charset=windows-1252">
+<meta name=ProgId content=Word.Document>
+<meta name=Generator content="Microsoft Word 10">
+<meta name=Originator content="Microsoft Word 10">
+<link rel=File-List
+href="Siege%20FX%20Tutorial%20%232%20-%20The%20Stack_files/filelist.xml">
+<title>Siege FX Tutorial #1</title>
+<!--[if gte mso 9]><xml>
+ <o:DocumentProperties>
+  <o:Author>Aaron Budd Ransley</o:Author>
+  <o:LastAuthor>Aaron Budd Ransley</o:LastAuthor>
+  <o:Revision>2</o:Revision>
+  <o:TotalTime>155</o:TotalTime>
+  <o:Created>2003-01-07T23:17:00Z</o:Created>
+  <o:LastSaved>2003-01-07T23:17:00Z</o:LastSaved>
+  <o:Pages>1</o:Pages>
+  <o:Words>820</o:Words>
+  <o:Characters>4679</o:Characters>
+  <o:Company>Home</o:Company>
+  <o:Lines>38</o:Lines>
+  <o:Paragraphs>10</o:Paragraphs>
+  <o:CharactersWithSpaces>5489</o:CharactersWithSpaces>
+  <o:Version>10.2625</o:Version>
+ </o:DocumentProperties>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <w:WordDocument>
+  <w:ActiveWritingStyle Lang="EN-US" VendorID="64" DLLVersion="131078"
+   NLCheck="1">1</w:ActiveWritingStyle>
+  <w:SpellingState>Clean</w:SpellingState>
+  <w:GrammarState>Clean</w:GrammarState>
+  <w:DoNotHyphenateCaps/>
+  <w:PunctuationKerning/>
+  <w:DrawingGridHorizontalSpacing>6 pt</w:DrawingGridHorizontalSpacing>
+  <w:DrawingGridVerticalSpacing>6 pt</w:DrawingGridVerticalSpacing>
+  <w:DisplayHorizontalDrawingGridEvery>0</w:DisplayHorizontalDrawingGridEvery>
+  <w:DisplayVerticalDrawingGridEvery>3</w:DisplayVerticalDrawingGridEvery>
+  <w:UseMarginsForDrawingGridOrigin/>
+  <w:DoNotShadeFormData/>
+  <w:Compatibility>
+   <w:FootnoteLayoutLikeWW8/>
+   <w:ShapeLayoutLikeWW8/>
+   <w:AlignTablesRowByRow/>
+   <w:ForgetLastTabAlignment/>
+   <w:LayoutRawTableWidth/>
+   <w:LayoutTableRowsApart/>
+   <w:UseWord97LineBreakingRules/>
+  </w:Compatibility>
+  <w:BrowserLevel>MicrosoftInternetExplorer4</w:BrowserLevel>
+ </w:WordDocument>
+</xml><![endif]-->
+<style>
+<!--
+ /* Font Definitions */
+ @font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;
+	mso-font-charset:2;
+	mso-generic-font-family:auto;
+	mso-font-pitch:variable;
+	mso-font-signature:0 268435456 0 0 -2147483648 0;}
+ /* Style Definitions */
+ p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{mso-style-parent:"";
+	margin:0in;
+	margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+h1
+	{mso-style-next:Normal;
+	margin-top:12.0pt;
+	margin-right:0in;
+	margin-bottom:3.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	page-break-after:avoid;
+	mso-outline-level:1;
+	font-size:16.0pt;
+	font-family:Arial;
+	mso-font-kerning:16.0pt;}
+p.MsoListBullet2, li.MsoListBullet2, div.MsoListBullet2
+	{mso-style-update:auto;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	text-indent:-.25in;
+	mso-pagination:widow-orphan;
+	mso-list:l0 level1 lfo2;
+	tab-stops:list .5in;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoBodyText, li.MsoBodyText, div.MsoBodyText
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:6.0pt;
+	margin-left:0in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoBodyTextIndent, li.MsoBodyTextIndent, div.MsoBodyTextIndent
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:6.0pt;
+	margin-left:.25in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+p.MsoListContinue2, li.MsoListContinue2, div.MsoListContinue2
+	{margin-top:0in;
+	margin-right:0in;
+	margin-bottom:6.0pt;
+	margin-left:.5in;
+	mso-pagination:widow-orphan;
+	font-size:12.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";}
+a:link, span.MsoHyperlink
+	{color:blue;
+	text-decoration:underline;
+	text-underline:single;}
+a:visited, span.MsoHyperlinkFollowed
+	{color:purple;
+	text-decoration:underline;
+	text-underline:single;}
+span.SpellE
+	{mso-style-name:"";
+	mso-spl-e:yes;}
+span.GramE
+	{mso-style-name:"";
+	mso-gram-e:yes;}
+ /* Page Definitions */
+ @page
+	{mso-page-border-surround-header:no;
+	mso-page-border-surround-footer:no;}
+@page Section1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.25in 1.0in 1.25in;
+	mso-header-margin:.5in;
+	mso-footer-margin:.5in;
+	mso-paper-source:0;}
+div.Section1
+	{page:Section1;}
+ /* List Definitions */
+ @list l0
+	{mso-list-id:-125;
+	mso-list-type:simple;
+	mso-list-template-ids:205841210;}
+@list l0:level1
+	{mso-level-number-format:bullet;
+	mso-level-style-link:"List Bullet 2";
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:.5in;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Symbol;}
+@list l1
+	{mso-list-id:-2;
+	mso-list-type:simple;
+	mso-list-template-ids:572177678;}
+@list l1:level1
+	{mso-level-start-at:0;
+	mso-level-text:*;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:0in;
+	text-indent:0in;}
+@list l1:level1 lfo1
+	{mso-level-number-format:bullet;
+	mso-level-numbering:continue;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	mso-level-legacy:yes;
+	mso-level-legacy-indent:0in;
+	mso-level-legacy-space:0in;
+	margin-left:0in;
+	text-indent:0in;
+	font-family:Symbol;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+-->
+</style>
+<!--[if gte mso 10]>
+<style>
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";}
+</style>
+<![endif]--><!--[if gte mso 9]><xml>
+ <o:shapedefaults v:ext="edit" spidmax="2050"/>
+</xml><![endif]--><!--[if gte mso 9]><xml>
+ <o:shapelayout v:ext="edit">
+  <o:idmap v:ext="edit" data="1"/>
+ </o:shapelayout></xml><![endif]-->
+</head>
+
+<body lang=EN-US link=blue vlink=purple style='tab-interval:.5in;text-justify-trim:
+punctuation'>
+
+<div class=Section1>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in'><b><span style='font-size:20.0pt;font-family:Arial'>Siege FX
+Tutorial #2<br>
+</span></b><span class=GramE><b><span style='font-size:16.0pt;mso-bidi-font-size:
+20.0pt;font-family:Arial'>T</span></b><b><span style='font-size:16.0pt;
+font-family:Arial'>he</span></b></span><b><span style='font-size:16.0pt;
+font-family:Arial'> Stack</span></b><b><span style='font-size:20.0pt;
+font-family:Arial'><o:p></o:p></span></b></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;text-autospace:
+none'><span style='font-family:Arial'>By: Aaron 'Jomdom' Ransley<br>
+Created: 1/6/2003<b><u><o:p></o:p></u></b></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;text-autospace:
+none'><b><u><span style='font-family:Arial'>Introduction<o:p></o:p></span></u></b></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;text-autospace:
+none'><span style='font-family:Arial'>In this tutorial, we will be discussing
+the Stack. As always, any code will be in </span><span style='font-size:10.0pt;
+mso-bidi-font-size:12.0pt;font-family:"Courier New";mso-bidi-font-family:"Times New Roman";
+color:red'>red and in a different font</span><span style='font-family:Arial'>. I
+will try to keep code from within a text-heavy paragraph to a minimum, and save
+it for its own paragraph.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;text-autospace:
+none'><b><u><span style='font-family:Arial'>Lingo</span></u></b><span
+style='font-family:Arial'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;text-autospace:
+none'><span style='font-family:Arial'>- <b>Stack:</b> <i>The stack is the
+device that Siege FX uses to store effect data. I can’t think of any way to
+explain better than Icemage once did.<o:p></o:p></i></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in;text-indent:.5in;mso-pagination:none;mso-layout-grid-align:
+none;text-autospace:none'><i><span style='font-family:Arial'>“</span></i><i
+style='mso-bidi-font-style:normal'><span style='mso-bidi-font-size:9.0pt;
+font-family:Arial;mso-bidi-font-family:"Times New Roman"'>You can think of this
+like a stack of plates - as we create effects, we put each effect onto the
+stack, <span class=GramE>the</span> same way you would put plates that have
+been dried in a stack.” - Icemage<o:p></o:p></span></i></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;text-autospace:
+none'><b><u><span style='font-family:Arial'>The Stack<o:p></o:p></span></u></b></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;text-autospace:
+none'><i style='mso-bidi-font-style:normal'><span style='mso-bidi-font-size:
+9.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>As Icemage
+said, “...as we create effects, we put each effect onto the stack…”<o:p></o:p></span></i></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;text-autospace:
+none'><i style='mso-bidi-font-style:normal'><span style='mso-bidi-font-size:
+9.0pt;font-family:Arial;mso-bidi-font-family:"Times New Roman"'>Let me
+elaborate. Say we create an orbiter, one of the 22 base effects. It would
+automatically be entered into the stack (if it doesn’t have any errors that
+is). Here is an example:<o:p></o:p></span></i></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'>[<span
+class=SpellE>effect_script</span>*]<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'><span
+style='mso-tab-count:1'>      </span><span class=GramE>name</span><span
+style='mso-tab-count:1'>  </span>=orbs;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'><span
+style='mso-tab-count:1'>      </span><span class=GramE>script</span><span
+style='mso-tab-count:1'>      </span>=[[<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'><span
+style='mso-tab-count:3'>                  </span><span class=SpellE><span
+class=GramE>sfx</span></span> create orbiter #TARGET<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'><span
+style='mso-tab-count:4'>                        </span>&quot;<span class=GramE>color0(</span>1,1,1)scale(.25)radius(0)&quot;;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'><span
+style='mso-tab-count:3'>                  </span><span class=GramE>set</span>
+$orb1 #PEEK;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'><span
+style='mso-tab-count:3'>                  </span><span class=SpellE><span
+class=GramE>sfx</span></span> start #POP;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'><span
+style='mso-tab-count:3'>                  </span><span class=SpellE><span
+class=GramE>sfx</span></span> create orbiter #TARGET<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'><span
+style='mso-tab-count:4'>                        </span>&quot;<span class=GramE>color0(</span>1,1,1)scale(.25)radius(0)&quot;;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'><span
+style='mso-tab-count:3'>                  </span><span class=GramE>set</span>
+$orb2 #PEEK;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'><span
+style='mso-tab-count:3'>                  </span><span class=SpellE><span
+class=GramE>sfx</span></span> start #POP;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'><span
+style='mso-tab-count:3'>                  </span><span class=SpellE><span
+class=GramE>sfx</span></span> create orbiter #TARGET<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'><span
+style='mso-tab-count:4'>                        </span>&quot;<span class=GramE>color0(</span>1,1,1)scale(.25)radius(0)&quot;;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'><span
+style='mso-tab-count:3'>                  </span><span class=GramE>set</span>
+$orb3 #PEEK;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'><span
+style='mso-tab-count:3'>                  </span><span class=SpellE><span
+class=GramE>sfx</span></span> start #POP;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'><span
+style='mso-tab-count:3'>                  </span><span class=SpellE><span
+class=GramE>sfx</span></span> create orbiter #TARGET<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'><span
+style='mso-tab-count:4'>                        </span>&quot;<span class=GramE>color0(</span>1,1,1)scale(.25)radius(0)&quot;;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'><span
+style='mso-tab-count:3'>                  </span><span class=GramE>set</span>
+$orb4 #PEEK;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'><span
+style='mso-tab-count:3'>                  </span><span class=SpellE><span
+class=GramE>sfx</span></span> start #POP;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'><span
+style='mso-tab-count:3'>                  </span>]];<o:p></o:p></span></p>
+
+<p class=MsoNormal><span style='font-size:10.0pt;mso-bidi-font-size:12.0pt;
+font-family:"Courier New";mso-bidi-font-family:"Times New Roman";color:red'>}<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;text-autospace:
+none'><span style='font-family:Arial'>“Eh?” you say? No kidding.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;text-autospace:
+none'><span style='font-family:Arial'>Alright, first off, understand that this
+effect doesn’t actually do anything, and if it did, it wouldn’t consist of
+anything more than creating 4 white orbiters at its target, directly on top of
+each other.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;text-autospace:
+none'><span style='font-family:Arial'>So, <span class=GramE>lets</span> break
+it down.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;text-autospace:
+none'><span style='font-family:Arial'>You see that after I create the orbiter,
+define it’s location of creation, and <span class=GramE>it’s</span> parameters,
+I go on to say:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+class=GramE><span style='font-size:10.0pt;font-family:"Courier New";color:red'>set</span></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'> $orb1 #PEEK;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span class=SpellE><span class=GramE><span style='font-size:
+10.0pt;mso-bidi-font-size:12.0pt;font-family:"Courier New";mso-bidi-font-family:
+"Times New Roman";color:red'>sfx</span></span></span><span style='font-size:
+10.0pt;mso-bidi-font-size:12.0pt;font-family:"Courier New";mso-bidi-font-family:
+"Times New Roman";color:red'> start #POP;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;text-autospace:
+none'><span style='font-family:Arial;mso-bidi-font-weight:bold'>Let’s break
+this down further… By writing:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+class=GramE><span style='font-size:10.0pt;font-family:"Courier New";color:red'>set</span></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'> $orb1 #PEEK;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;text-autospace:
+none'><span style='font-family:Arial;mso-bidi-font-weight:bold'>I tell the
+Siege FX engine to create a variable (something to contain the effect for quick
+referencing) out of whatever is on top of the stack. It effectively peeks at
+the top of the stack to check what’s there… Since we just created an orbiter,
+it is currently king of the stack. While we are talking about variables, I
+might as well mention that whenever you define a variable, it should be
+structured like so:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+class=GramE><span style='font-size:10.0pt;font-family:"Courier New";color:red'>set</span></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'> &lt;name of the
+variable with $ in prefixing it&gt; &lt;what you are creating the variable
+from&gt;;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;text-autospace:
+none'><span style='font-family:Arial;mso-bidi-font-weight:bold'>This means that
+if you want to create a variable to store a color, you can do this:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+class=GramE><span style='font-size:10.0pt;font-family:"Courier New";color:red'>set</span></span><span
+style='font-size:10.0pt;font-family:"Courier New";color:red'> $green .3,1,.3;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;text-autospace:
+none'><span style='font-family:Arial;mso-bidi-font-weight:bold'>And it will
+store that color value inside the variable for later use in the script.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;text-autospace:
+none'><span style='font-family:Arial;mso-bidi-font-weight:bold'>Getting back on
+track... Next we have this line:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span class=SpellE><span class=GramE><span style='font-size:
+10.0pt;mso-bidi-font-size:12.0pt;font-family:"Courier New";mso-bidi-font-family:
+"Times New Roman";color:red'>sfx</span></span></span><span style='font-size:
+10.0pt;mso-bidi-font-size:12.0pt;font-family:"Courier New";mso-bidi-font-family:
+"Times New Roman";color:red'> start #POP;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;text-autospace:
+none'><span style='font-family:Arial;mso-bidi-font-weight:bold'>This is telling
+the Siege FX engine to ‘start’ what ever is on top of the stack, but ‘pop’ it
+off so it’s not on the stack anymore. If we then tried to use another command
+to look for the effect, you wouldn’t find it, because someone knocked it off
+the stack, and made a huge mess! Some people! <o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;text-autospace:
+none'><span style='font-family:Arial;mso-bidi-font-weight:bold'>Here is an
+example of an invalid way of using the #POP and #PEEK commands.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;text-autospace:
+none'><span class=GramE><span style='font-size:10.0pt;font-family:"Courier New";
+color:red'>set</span></span><span style='font-size:10.0pt;font-family:"Courier New";
+color:red'> $orb1 #POP;<br>
+</span><span class=SpellE><span style='font-size:10.0pt;mso-bidi-font-size:
+12.0pt;font-family:"Courier New";mso-bidi-font-family:"Times New Roman";
+color:red'>sfx</span></span><span style='font-size:10.0pt;mso-bidi-font-size:
+12.0pt;font-family:"Courier New";mso-bidi-font-family:"Times New Roman";
+color:red'> start #PEEK;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;text-autospace:
+none'><span style='mso-bidi-font-size:10.0pt;font-family:Arial;mso-bidi-font-family:
+"Courier New"'>We create a variable by using the data from the top of the stack,
+currently the data from the last effect we created, but ‘pop’ it off at the
+end, because we are supposedly done using it… Wrong.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;text-autospace:
+none'><span style='mso-bidi-font-size:10.0pt;font-family:Arial;mso-bidi-font-family:
+"Courier New"'>The next line tries to start whatever is currently in the stack,
+but there is nothing there! Jeepers! It must be because someone made a mistake
+and knocked the effect off the stack too soon.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;text-autospace:
+none'><b style='mso-bidi-font-weight:normal'><u><span style='mso-bidi-font-size:
+10.0pt;font-family:Arial;mso-bidi-font-family:"Courier New"'>Slick Stack <span
+class=SpellE>Slingin</span>’ <o:p></o:p></span></u></b></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;text-autospace:
+none'><span style='mso-bidi-font-size:10.0pt;font-family:Arial;mso-bidi-font-family:
+"Courier New"'>Think your hot stuff? Try this on for size:<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'>[<span class=SpellE>effect_script</span>*]<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'>{<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><span style='mso-tab-count:1'>      </span><span class=GramE>name</span><span
+style='mso-tab-count:1'>  </span>=<span class=SpellE>technicolor_orbs</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><span style='mso-tab-count:1'>      </span><span class=GramE>script</span><span
+style='mso-tab-count:1'>      </span>=[[<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><span style='mso-tab-count:3'>                  </span><span
+class=GramE>set</span> $color4 .5,.5,.5;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><span style='mso-tab-count:3'>                  </span><span
+class=GramE>set</span> $color3 0,1,0;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><span style='mso-tab-count:3'>                  </span><span
+class=GramE>set</span> $color2 0,0,1;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><span style='mso-tab-count:3'>                  </span><span
+class=GramE>set</span> $color1 1,0,0;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><span style='mso-tab-count:3'>                  </span><span
+class=SpellE><span class=GramE>sfx</span></span> create orbiter #TARGET<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><span style='mso-tab-count:4'>                        </span>&quot;<span
+class=GramE>color0(</span>$color4)scale(2)radius(0)&quot;;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><span style='mso-tab-count:3'>                  </span><span
+class=SpellE><span class=GramE>sfx</span></span> create orbiter #TARGET<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><span style='mso-tab-count:4'>                        </span>&quot;<span
+class=GramE>color0(</span>$color3)scale(2)radius(0)&quot;;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><span style='mso-tab-count:3'>                  </span><span
+class=SpellE><span class=GramE>sfx</span></span> create orbiter #TARGET<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><span style='mso-tab-count:4'>                        </span>&quot;<span
+class=GramE>color0(</span>$color2)scale(2)radius(0)&quot;;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><span style='mso-tab-count:3'>                  </span><span
+class=SpellE><span class=GramE>sfx</span></span> create orbiter #TARGET<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><span style='mso-tab-count:4'>                        </span>&quot;<span
+class=GramE>color0(</span>$color1)scale(2)radius(0)&quot;;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><span style='mso-tab-count:3'>                  </span><span
+class=GramE>set</span> $orb3 #POP;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><span style='mso-tab-count:3'>                  </span><span
+class=GramE>set</span> $orb2 #POP;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><span style='mso-tab-count:3'>                  </span><span
+class=SpellE><span class=GramE>sfx</span></span> start $orb2;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><span style='mso-tab-count:3'>                  </span><span
+class=SpellE><span class=GramE>sfx</span></span> start $orb3;<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'><span style='mso-tab-count:3'>                  </span>]];<o:p></o:p></span></p>
+
+<p class=MsoNormal style='mso-layout-grid-align:none;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";mso-bidi-font-family:Arial;
+color:red'>}<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;text-autospace:
+none'><span style='mso-bidi-font-size:10.0pt;font-family:Arial;mso-bidi-font-family:
+"Courier New"'>What color will the pile of orbs be when the script is complete?
+If you can figure that out, you’re done with the tutorial. If you can’t, just
+keep decoding it, because everything here has been covered so far.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;
+margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;text-autospace:
+none'><span style='mso-bidi-font-size:10.0pt;font-family:Arial;mso-bidi-font-family:
+"Courier New"'>See you next time!<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:.5in;margin-bottom:
+5.0pt;margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none'><b><u><span style='font-family:Arial'>Resources<o:p></o:p></span></u></b></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:.5in;margin-bottom:
+5.0pt;margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none'><span style='font-family:Arial'>These are various
+resources I find <i>very</i> useful.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:.5in;margin-bottom:
+5.0pt;margin-left:0in;text-indent:0in;mso-pagination:none;mso-list:l1 level1 lfo1;
+mso-layout-grid-align:none;text-autospace:none'><![if !supportLists]><span
+style='font-family:Symbol;mso-fareast-font-family:Symbol;mso-bidi-font-family:
+Symbol'><span style='mso-list:Ignore'>·</span></span><![endif]><span
+style='font-family:Arial'><span style='mso-spacerun:yes'>  </span><a
+href="http://www.dungeonsiege.com/index.shtml">Dungeon Siege's Main Site</a>
+(Take a look around. Contains various mod resources, as well as the Dungeon
+Siege Toolkit)<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:.5in;margin-bottom:
+5.0pt;margin-left:0in;text-indent:0in;mso-pagination:none;mso-list:l1 level1 lfo1;
+mso-layout-grid-align:none;text-autospace:none'><![if !supportLists]><span
+style='font-family:Symbol;mso-fareast-font-family:Symbol;mso-bidi-font-family:
+Symbol'><span style='mso-list:Ignore'>·</span></span><![endif]><span
+style='font-family:Arial'><span style='mso-spacerun:yes'>  </span><a
+href="http://www.game-editing.net/forum/index.php?c=3">Game-Editing.net Dungeon
+Siege Forums</a> (If you plan of modifying Dungeon Siege, this is the place to
+be. Make sure to make use of the search function.)<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:.5in;margin-bottom:
+5.0pt;margin-left:0in;text-indent:0in;mso-pagination:none;mso-list:l1 level1 lfo1;
+mso-layout-grid-align:none;text-autospace:none'><![if !supportLists]><span
+style='font-family:Symbol;mso-fareast-font-family:Symbol;mso-bidi-font-family:
+Symbol'><span style='mso-list:Ignore'>·</span></span><![endif]><span
+style='font-family:Arial'><span style='mso-spacerun:yes'>  </span><a
+href="http://www.dungeonsiege.com/su_212.shtml">Siege FX Siege University
+Course</a> (Contains a list of the 22 base effects, a list of all possible
+parameters for those 22 base effects, and more. A great resource indeed.)<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:.5in;margin-bottom:
+5.0pt;margin-left:0in;text-indent:0in;mso-pagination:none;mso-list:l1 level1 lfo1;
+mso-layout-grid-align:none;text-autospace:none'><![if !supportLists]><span
+style='font-family:Symbol;mso-fareast-font-family:Symbol;mso-bidi-font-family:
+Symbol'><span style='mso-list:Ignore'>·</span></span><![endif]><span
+style='font-family:Arial'><span style='mso-spacerun:yes'>  </span><a
+href="http://dsc.conflict-imminent.com/">Dungeon Siege Cosmetics</a> (Home of
+this tutorial.)<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:.5in;margin-bottom:
+5.0pt;margin-left:0in;text-indent:0in;mso-pagination:none;mso-list:l1 level1 lfo1;
+mso-layout-grid-align:none;text-autospace:none'><![if !supportLists]><span
+style='font-family:Symbol;mso-fareast-font-family:Symbol;mso-bidi-font-family:
+Symbol'><span style='mso-list:Ignore'>·</span></span><![endif]><span
+style='font-family:Arial'><span style='mso-spacerun:yes'>  </span><a
+href="mailto:jomdom@hotmail.com?subject=Siege%20FX%20Tutorial">Jomdom's E-Mail</a>
+(Feel free to e-mail me with <i>any</i> questions you have about this
+tutorial.)<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:.5in;margin-bottom:
+5.0pt;margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none'><b><u><span style='font-family:Arial'>In the Future<o:p></o:p></span></u></b></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:.5in;margin-bottom:
+5.0pt;margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none'><span style='font-family:Arial'>Expect more and more
+advanced tutorials in the future. Enough said </span><span style='font-family:
+Wingdings;mso-ascii-font-family:Arial;mso-hansi-font-family:Arial;mso-bidi-font-family:
+Arial;mso-char-type:symbol;mso-symbol-font-family:Wingdings'><span
+style='mso-char-type:symbol;mso-symbol-font-family:Wingdings'>J</span></span><span
+style='font-family:Arial'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:.5in;margin-bottom:
+5.0pt;margin-left:0in;mso-pagination:none;mso-layout-grid-align:none;
+text-autospace:none'><b><u><span style='font-family:Arial'>Credits</span></u></b><span
+style='font-family:Arial'><o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:.5in;margin-bottom:
+5.0pt;margin-left:0in;text-indent:0in;mso-pagination:none;mso-list:l1 level1 lfo1;
+mso-layout-grid-align:none;text-autospace:none'><![if !supportLists]><span
+style='font-family:Symbol;mso-fareast-font-family:Symbol;mso-bidi-font-family:
+Symbol'><span style='mso-list:Ignore'>·</span></span><![endif]><span
+style='font-family:Arial'><span style='mso-spacerun:yes'>  </span>Icemage - You
+have really helped me with the more advanced aspects of Siege FX. I thank you,
+Icemage.<o:p></o:p></span></p>
+
+<p class=MsoNormal style='margin-top:5.0pt;margin-right:.5in;margin-bottom:
+5.0pt;margin-left:0in;text-indent:0in;mso-pagination:none;mso-list:l1 level1 lfo1;
+mso-layout-grid-align:none;text-autospace:none'><![if !supportLists]><span
+style='font-family:Symbol;mso-fareast-font-family:Symbol;mso-bidi-font-family:
+Symbol'><span style='mso-list:Ignore'>·</span></span><![endif]><span
+style='font-family:Arial'><span style='mso-spacerun:yes'>  </span>Gas Powered
+Games - You make a killer effects engine! Great <span class=GramE>job,</span>
+can't wait for Dungeon Siege 2's version of Siege FX.<o:p></o:p></span></p>
+
+</div>
+
+</body>
+
+</html>
