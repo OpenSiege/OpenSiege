@@ -1,12 +1,11 @@
-       Siege FX Tutorial #1 <!-- /\* Font Definitions \*/ @font-face {font-family:Wingdings; panose-1:5 0 0 0 0 0 0 0 0 0; mso-font-charset:2; mso-generic-font-family:auto; mso-font-pitch:variable; mso-font-signature:0 268435456 0 0 -2147483648 0;} /\* Style Definitions \*/ p.MsoNormal, li.MsoNormal, div.MsoNormal {mso-style-parent:""; margin:0in; margin-bottom:.0001pt; mso-pagination:widow-orphan; font-size:12.0pt; font-family:"Times New Roman"; mso-fareast-font-family:"Times New Roman";} h1 {mso-style-next:Normal; margin-top:12.0pt; margin-right:0in; margin-bottom:3.0pt; margin-left:0in; mso-pagination:widow-orphan; page-break-after:avoid; mso-outline-level:1; font-size:16.0pt; font-family:Arial; mso-font-kerning:16.0pt;} p.MsoListBullet2, li.MsoListBullet2, div.MsoListBullet2 {mso-style-update:auto; margin-top:0in; margin-right:0in; margin-bottom:0in; margin-left:.5in; margin-bottom:.0001pt; text-indent:-.25in; mso-pagination:widow-orphan; mso-list:l0 level1 lfo2; tab-stops:list .5in; font-size:12.0pt; font-family:"Times New Roman"; mso-fareast-font-family:"Times New Roman";} p.MsoBodyText, li.MsoBodyText, div.MsoBodyText {margin-top:0in; margin-right:0in; margin-bottom:6.0pt; margin-left:0in; mso-pagination:widow-orphan; font-size:12.0pt; font-family:"Times New Roman"; mso-fareast-font-family:"Times New Roman";} p.MsoBodyTextIndent, li.MsoBodyTextIndent, div.MsoBodyTextIndent {margin-top:0in; margin-right:0in; margin-bottom:6.0pt; margin-left:.25in; mso-pagination:widow-orphan; font-size:12.0pt; font-family:"Times New Roman"; mso-fareast-font-family:"Times New Roman";} p.MsoListContinue2, li.MsoListContinue2, div.MsoListContinue2 {margin-top:0in; margin-right:0in; margin-bottom:6.0pt; margin-left:.5in; mso-pagination:widow-orphan; font-size:12.0pt; font-family:"Times New Roman"; mso-fareast-font-family:"Times New Roman";} a:link, span.MsoHyperlink {color:blue; text-decoration:underline; text-underline:single;} a:visited, span.MsoHyperlinkFollowed {color:purple; text-decoration:underline; text-underline:single;} span.SpellE {mso-style-name:""; mso-spl-e:yes;} span.GramE {mso-style-name:""; mso-gram-e:yes;} /\* Page Definitions \*/ @page {mso-page-border-surround-header:no; mso-page-border-surround-footer:no;} @page Section1 {size:8.5in 11.0in; margin:9.35pt .25in .5in .25in; mso-header-margin:.5in; mso-footer-margin:.5in; mso-paper-source:0;} div.Section1 {page:Section1;} /\* List Definitions \*/ @list l0 {mso-list-id:-125; mso-list-type:simple; mso-list-template-ids:205841210;} @list l0:level1 {mso-level-number-format:bullet; mso-level-style-link:"List Bullet 2"; mso-level-text:\\F0B7; mso-level-tab-stop:.5in; mso-level-number-position:left; text-indent:-.25in; font-family:Symbol;} @list l1 {mso-list-id:-2; mso-list-type:simple; mso-list-template-ids:572177678;} @list l1:level1 {mso-level-start-at:0; mso-level-text:\*; mso-level-tab-stop:none; mso-level-number-position:left; margin-left:0in; text-indent:0in;} @list l1:level1 lfo1 {mso-level-number-format:bullet; mso-level-numbering:continue; mso-level-text:\\F0B7; mso-level-tab-stop:none; mso-level-number-position:left; mso-level-legacy:yes; mso-level-legacy-indent:0in; mso-level-legacy-space:0in; margin-left:0in; text-indent:0in; font-family:Symbol;} ol {margin-bottom:0in;} ul {margin-bottom:0in;} -->
+# Siege FX Tutorial #1
 
-**Siege FX Tutorial #1  
-****Getting Started**
+## Getting Started
 
-By: Aaron 'Jomdom' Ransley  
+By: Aaron 'Jomdom' Ransley
 Created: 1/4/2003
 
-**Introduction**
+### Introduction
 
 This tutorial will cover a small bit of the language used to create effects in Dungeon Siege.  Siege FX.  Fire from the torches on grimy dungeon walls, healing spells you cast frantically to stay alive, the glow on that new sword you just got from a chicken run, it's all done with Siege FX.  Since I have been working with Siege FX for quite awhile now, and I thought its about time I put together a tutorial for those of you interested in it.
 
@@ -14,44 +13,48 @@ Please take note that I have never written a tutorial before, so don't expect to
 
 _When I give examples of code,_ they will be in a different font, and in red. _When I show full scripts, they will be formatted for the web, so don’t expect your script to look exactly like mine._
 
-**Lingo**
+#### Lingo
 
 \- **Base Effect:**  _All Siege FX scripts are built off 22 different base effects. Please check the Resources section at the bottom of this tutorial for a link to a full listing of the base effects._  
 \- **Parameter:**  _A parameter is how we tell any of the base effects how to act. They can be used to manipulate various aspects of a base effect; size, speed, color, density, duration, etc._
 
-**Dissecting the Fire Parameter**
+##### Dissecting the Fire Parameter
 
 We will start the tutorial by learning how to use one of the most versatile of all the Siege FX base effects, fire. This base effect supports many different parameters that allow you to manipulate the way it acts.  Let’s find an effect that keeps it simple for the time being...  Ah yes, this looks like a good effect script:
 
-\[effect\_script\*\]  
-{  
-      name = fire\_pit\_fire\_small;  
-  
-      script = \[\[  
-  
-            sfx create fire #TARGET  
-                 "instant()offset(0,.25,0)scale(1)ts(.5)";  
-            sfx start #POP;  
-  
-            \]\];  
-}
+```
+[effect_script*]  
+{
+      name = fire_pit_fire_small;
 
-Alright, let’s break it down...
+      script = [[  
+
+            sfx create fire #TARGET
+                 "instant()offset(0,.25,0)scale(1)ts(.5)";
+            sfx start #POP;
+
+            ]];
+}
+```
+
+Alright, let's break it down...
 
 All Siege FX scripts will be structured like so:
 
-\[effect\_script\*\]  
-{  
-      name = <name of script>;  
-  
-      script = \[\[
+```
+[effect_script*]  
+{
+      name = <name of script>;
 
-            ...Code...  
-  
-            \]\];  
+      script = [[
+
+            ...Code...
+
+            ]];
 }
+```
 
-With that in mind, let’s talk about the base effect created here. We prefix the command to create the base effect with sfx, as we do with almost every command in Siege FX. What we are doing is telling the sfx engine to create fire at a certain place - in this case, at our target.
+With that in mind, let's talk about the base effect created here. We prefix the command to create the base effect with sfx, as we do with almost every command in Siege FX. What we are doing is telling the sfx engine to create fire at a certain place - in this case, at our target.
 
 Next we start the creating the actual parameters that effect the way the base effect acts. We start it with a double quote, followed by these parameters:
 
