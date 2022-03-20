@@ -68,7 +68,7 @@ Alright, now that we have that done, lets take a look at what it looks like in t
 
 Now, go ahead and fire up DSMOD.exe and get yourself into a map. Bring up the console by pressing the ~ key to the left of the 1 key. Type in: sfx run fire\_pit\_fire\_small.
 
-![](Siege%20FX%20Tutorial%20%231%20-%20Getting%20Started_files/image002.jpg)
+![](images/image002.jpg)
 
 Ack, you’re on fire! Put yourself out by typing sfx stop scripts.
 
@@ -108,7 +108,7 @@ Save the script, Tank it if you aren't using the Bits folder, and open up DSMOD.
 
 Ack! Well, since it isn't actually hurting, you don't need to put it out this time.
 
-![](Siege%20FX%20Tutorial%20%231%20-%20Getting%20Started_files/image001.jpg)
+![](images/image001.jpg)
 
 Observe the flame... Notice how it fades out so fast? Bah! Let’s change that...
 
