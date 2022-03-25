@@ -237,7 +237,7 @@ namespace ehb
         log->info("RegionTestState::enter()");
 
         // variablizing these out as it helps my brain think about the world class a bit more
-#if 1
+#if 0
         const std::string worldName = "multiplayer_world";
         const std::string regionName = "town_center";
 #else
@@ -251,8 +251,8 @@ namespace ehb
 
         // man it would be really nice to convert these to fuel paths...
         const std::string nodesDotGas = regionPath + "/terrain_nodes/nodes.gas";
-        const std::string objectsPath = regionPath + "/objects/regular/";
-        //const std::string objectsPath = regionPath + "/objects/";
+        //const std::string objectsPath = regionPath + "/objects/regular/";
+        const std::string objectsPath = regionPath + "/objects/";
 
         region = static_cast<Region*> (osgDB::readNodeFile(nodesDotGas));
 
@@ -389,6 +389,95 @@ namespace ehb
                     auto model = go->valueOf("gizmo:model") + ".asp";
                     auto mesh = dynamic_cast<Aspect*>(osgDB::readNodeFile("m_i_glb_object-waypoint.asp"));
 
+                    /*
+                    * let do this in 2 passes:
+                    * pass 1: position all path points
+                    * pass 2: orient path points - if there is a orientation then just set it, if there is no orientation get the previous point to look at the current point
+                    */
+
+                    // first pass
+                    for (auto dev_path_point : doc.eachChild())
+                    {
+                        // dev_path_point->write(std::cout);
+
+                        auto my_scid = std::stoul(dev_path_point->name(), nullptr, 16);
+                        auto position = valueAsSiegePos(dev_path_point->valueOf("placement:position"));
+
+                        auto dev_path_point_component = dev_path_point->child("dev_path_point");
+                        osg::ref_ptr<DevPathPoint> point = new DevPathPoint;
+                        point->next_scid = dev_path_point_component->valueAsUInt("next_scid");
+                        point->path_name = dev_path_point_component->valueAsString("path_name");
+                        point->radius = dev_path_point_component->valueAsFloat("radius");
+
+                        devPathPoints.emplace(my_scid, point);
+
+                        if (auto localNode = region->transformForGuid(position.guid); localNode != nullptr)
+                        {
+                            osg::Matrix copy = localNode->getMatrix();
+                            copy.preMultTranslate(position.pos);
+
+                            point->finalPlacement = copy;
+                        }
+                        else
+                        {
+                            // log->debug("failed to find local node for scud {}", tmpl);
+
+                        }
+                    }
+
+                    // first pass
+                    for (auto dev_path_point : doc.eachChild())
+                    {
+                        // dev_path_point->write(std::cout);
+
+                        static osg::Quat defaultValue = { 0.0f, 0.0f, 0.0f, 1.f };
+
+                        auto my_scid = std::stoul(dev_path_point->name(), nullptr, 16);
+                        auto orientation = dev_path_point->valueAsQuat("placement:orientation");
+
+                        auto point = devPathPoints[my_scid];
+
+                        if (orientation == defaultValue)
+                        {
+                            if (point->next_scid != 0)
+                            {
+                                auto next_point = devPathPoints[point->next_scid];
+
+                                osg::Vec3 point_pos, next_point_pos;
+                                point->finalPlacement.decompose(point_pos, osg::Quat(), osg::Vec3(), osg::Quat());
+                                next_point->finalPlacement.decompose(next_point_pos, osg::Quat(), osg::Vec3(), osg::Quat());
+
+                                osg::Quat rotation;
+                                rotation.makeRotate(point_pos, next_point_pos);
+
+                                point->finalPlacement.preMultRotate(rotation);
+                            }
+                        }
+
+                        int foo = 55;
+
+#if 0
+                        osg::ref_ptr<DevPathPoint> point = new DevPathPoint;
+                        point->next_scid = dev_path_point_component->valueAsUInt("next_scid");
+                        point->path_name = dev_path_point_component->valueAsString("path_name");
+                        point->radius = dev_path_point_component->valueAsFloat("radius");
+
+                        devPathPoints.emplace(my_scid, point);
+
+                        if (auto localNode = region->transformForGuid(position.guid); localNode != nullptr)
+                        {
+                            osg::Matrix copy = localNode->getMatrix();
+                            copy.preMultTranslate(position.pos);
+
+                            point->finalPlacement = copy;
+                        }
+                        else
+                        {
+                            // log->debug("failed to find local node for scud {}", tmpl);
+                        }
+#endif
+                    }
+#if 0
                     for (auto dev_path_point : doc.eachChild())
                     {
                         // dev_path_point->write(std::cout);
@@ -418,11 +507,12 @@ namespace ehb
                         else
                         {
                         // log->debug("failed to find local node for scud {}", tmpl);
-                        }
+                       
                     }
+#endif
 
                     // stores only the dev path points for the given name
-                    auto osgAnimationPath = resolveDevPathBasedOnName("town_center_mainpath", region);
+                    auto osgAnimationPath = resolveDevPathBasedOnName("test_dev_path", region);
                     auto manipulator = new osgGA::AnimationPathManipulator(osgAnimationPath);
 
                     viewer.setCameraManipulator(manipulator);
