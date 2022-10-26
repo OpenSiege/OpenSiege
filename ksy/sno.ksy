@@ -181,14 +181,8 @@ types:
         enum: floor
       - id: num_connections
         type: u4
-      - id: connection_section_array_6_2
-        type: connection_section_6_2
-        if: _root.version.major == 6 and _root.version.minor >= 4
-        repeat: expr
-        repeat-expr: num_connections
-      - id: connection_section_array_7
-        type: connection_section_7
-        if: _root.version.major == 7
+      - id: general_connection_section
+        type: general_connection_section
         repeat: expr
         repeat-expr: num_connections
       - id: num_nodal_connections
@@ -205,44 +199,42 @@ types:
         repeat-expr: triangle_section_count
       - id: bsp_tree
         type: bsp_section
-  connection_section_6_2:
+  general_connection_section:
     seq:
-      - id: index
-        type: u2
-      - id: bounding_box
-        type: bounding_box
-      - id: triangle_count
-        type: u2
-      - id: triangle_array
-        type: u2
-        repeat: expr
-        repeat-expr: triangle_count
-      - id: local_connection_count
-        type: u4
-      - id: local_connection_array
-        type: u2
-        repeat: expr
-        repeat-expr: local_connection_count
-  connection_section_7:
+     - id: newid
+       type: u2
+     - id: min_box
+       type: v3
+     - id: max_box
+       type: v3
+     - id: center
+       type: v3
+       if: _root.version.major > 6 or (_root.version.major == 6 and _root.version.minor >= 4)
+     - id: triangles
+       type: triangle_index_section_6_2
+       if: _root.version.major > 6 or (_root.version.major == 6 and _root.version.minor >= 2)
+  triangle_index_section_6_2:
     seq:
-      - id: index
+      - id: num_triangles
         type: u2
-      - id: bounding_box
-        type: bounding_box
-      - id: center
-        type: v3
-      - id: triangle_count
-        type: u2
-      - id: trangle_array
+      - id: triangles
         type: u2
         repeat: expr
-        repeat-expr: triangle_count
-      - id: local_connection_count
+        repeat-expr: num_triangles
+      - id: num_localconnections
         type: u4
-      - id: local_connection_array
+      - id: local_connections
         type: u2
         repeat: expr
-        repeat-expr: local_connection_count
+        repeat-expr: num_localconnections
+  triangle_index_section:
+    seq:
+      - id: num_triangles
+        type: u2
+      - id: triangles
+        type: u2
+        repeat: expr
+        repeat-expr: 1
   nodal_section:
     seq:
       - id: far_id
